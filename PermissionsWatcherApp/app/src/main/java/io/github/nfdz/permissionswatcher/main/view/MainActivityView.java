@@ -1,14 +1,16 @@
 package io.github.nfdz.permissionswatcher.main.view;
 
-import android.app.Application;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import java.util.List;
+import java.util.Set;
 
 import io.github.nfdz.permissionswatcher.R;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
 import io.github.nfdz.permissionswatcher.main.presenter.MainActivityPresenter;
+import io.github.nfdz.permissionswatcher.model.Application;
 
 public class MainActivityView extends AppCompatActivity implements MainActivityContract.View {
 
@@ -20,7 +22,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        presenter = new MainActivityPresenter(this);
+        presenter = new MainActivityPresenter(this, getPackageManager());
     }
 
     @Override
@@ -29,12 +31,22 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     }
 
     @Override
-    public void showLoading() {
+    public void showData(List<Application> applications, @Nullable Set<String> appsWithChanges) {
 
     }
 
     @Override
-    public void showData(List<Application> applications) {
+    public void showUpdating(int progress, int total) {
+
+    }
+
+    @Override
+    public void hideUpdating() {
+
+    }
+
+    @Override
+    public void showUpdateErrorMessage() {
 
     }
 }

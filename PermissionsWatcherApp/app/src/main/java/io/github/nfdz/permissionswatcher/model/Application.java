@@ -3,39 +3,58 @@ package io.github.nfdz.permissionswatcher.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import java.util.Set;
+import io.realm.RealmList;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
-public class Application {
+public class Application extends RealmObject {
 
-    @NonNull
-    public final String packageName;
+    @PrimaryKey
+    public String packageName;
+    public final static String PACKAGE_NAME_FIELD = "packageName";
 
-    @Nullable
-    public final String label;
+    public String label;
+    public final static String LABEL_FIELD = "label";
 
-    @Nullable
-    public final Integer versionCode;
+    public Integer versionCode;
+    public final static String VERSION_CODE_FIELD = "versionCode";
 
-    @Nullable
-    public final String versionName;
+    public String versionName;
+    public final static String VERSION_NAME_FIELD = "versionName";
 
-    public final boolean isSystemApplication;
+    public boolean isSystemApplication;
+    public final static String IS_SYSTEM_APP_FLAG_FIELD = "isSystemApplication";
 
-    @NonNull
-    public final Set<String> permissions;
+    public RealmList<String> permissions;
+    public final static String PERMISSIONS_FIELD = "permissions";
+
+    public boolean notifyPermissions;
+    public final static String NOTIFY_FLAG_FIELD = "notifyPermissions";
+
+    public Application() {
+        this.packageName = null;
+        this.label = null;
+        this.versionCode = null;
+        this.versionName = null;
+        this.isSystemApplication = false;
+        this.permissions = null;
+        this.notifyPermissions = false;
+    }
 
     public Application(@NonNull String packageName,
                        @Nullable String label,
                        @Nullable Integer versionCode,
                        @Nullable String versionName,
                        boolean isSystemApplication,
-                       @NonNull Set<String> permissions) {
+                       @NonNull RealmList<String> permissions,
+                       boolean notifyPermissions) {
         this.packageName = packageName;
-        this.label = label;
+        this.label = label == null ? packageName : label;
         this.versionCode = versionCode;
         this.versionName = versionName;
         this.isSystemApplication = isSystemApplication;
         this.permissions = permissions;
+        this.notifyPermissions = notifyPermissions;
     }
 
 }

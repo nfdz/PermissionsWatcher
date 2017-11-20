@@ -6,11 +6,14 @@ import android.content.pm.PackageManager;
 import android.support.annotation.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import io.github.nfdz.permissionswatcher.model.Application;
+import io.realm.RealmList;
 
 public class PermissionsParser {
 
@@ -33,22 +36,30 @@ public class PermissionsParser {
     }
 
     @Nullable
-    public List<Application> retrieveAllAppsWithPermissions() {
+    public Map<String,Application> retrieveAllAppsWithPermissions() {
         List<ApplicationInfo> apps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
         if (apps == null || apps.isEmpty()) return null;
         final int total = apps.size();
         int progress = 0;
-        List<Application> applications = new ArrayList<>();
+        Map<String,Application> applications = new HashMap<>();
         for (ApplicationInfo app : apps) {
             callback.notifyProcessState(++progress, total);
-            Set<String> permissions = tryToGetPermissions(app);
-            if (permissions == null || permissions.isEmpty()) continue;
+            Set<String> permissionsSet = tryToGetPermissions(app);
+            if (permissionsSet == null || permissionsSet.isEmpty()) continue;
+            RealmList<String> permissionsList = new RealmList<>();
+            permissionsList.addAll(permissionsSet);
             String packageName = app.packageName;
             String label = tryToGetLabel(app);
             Integer versionCode = tryToGetVersionCode(app);
             String versionName = tryToGetVersionName(app);
             boolean isSystemApplication = (app.flags & ApplicationInfo.FLAG_SYSTEM) != 0;
-            applications.add(new Application(packageName, label, versionCode, versionName, isSystemApplication, permissions));
+            applications.put(packageName, new Application(packageName,
+                    label,
+                    versionCode,
+                    versionName,
+                    isSystemApplication,
+                    permissionsList,
+                    true));
         }
         return applications;
     }
