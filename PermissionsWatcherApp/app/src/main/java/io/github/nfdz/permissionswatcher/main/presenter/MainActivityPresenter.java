@@ -2,6 +2,7 @@ package io.github.nfdz.permissionswatcher.main.presenter;
 
 import android.content.Context;
 
+import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
 import io.github.nfdz.permissionswatcher.main.model.MainActivityInteractor;
 
@@ -34,6 +35,25 @@ public class MainActivityPresenter implements MainActivityContract.Presenter  {
     public void onSyncSwipe() {
         if (interactor != null) {
             interactor.launchSynchronization();
+        }
+    }
+
+    @Override
+    public void onIgnoreAppClick(ApplicationInfo app) {
+        if (interactor != null) {
+            interactor.toggleIgnoreFlag(app);
+        }
+    }
+
+    @Override
+    public void onAppClick(ApplicationInfo app) {
+        view.navigateToAppDetails(app);
+    }
+
+    @Override
+    public void onShowSystemAppsFlagChanged() {
+        if (view != null && interactor != null) {
+            view.bindViewToLiveData(interactor.loadDataAsync());
         }
     }
 }

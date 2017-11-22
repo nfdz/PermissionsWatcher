@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.content.Context;
 
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
+import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
 import io.github.nfdz.permissionswatcher.sync.SyncService;
@@ -38,11 +39,37 @@ public class MainActivityInteractor implements MainActivityContract.Model {
 
     @Override
     public LiveData<RealmResults<ApplicationInfo>> loadDataAsync() {
-        if (realm != null) {
-            return RealmUtils.asLiveData(realm.where(ApplicationInfo.class)
-                    .findAllSortedAsync(ApplicationInfo.LABEL_FIELD, Sort.ASCENDING));
+        if (realm != null && context != null) {
+            boolean showSystemApps = PreferencesUtils.showSystemApps(context);
+            if (showSystemApps) {
+                return RealmUtils.asLiveData(realm.where(ApplicationInfo.class)
+                        .findAllSortedAsync(ApplicationInfo.LABEL_FIELD, Sort.ASCENDING));
+            } else {
+                return RealmUtils.asLiveData(realm.where(ApplicationInfo.class)
+                        .equalTo(ApplicationInfo.IS_SYSTEM_APP_FLAG_FIELD, false)
+                        .findAllSortedAsync(ApplicationInfo.LABEL_FIELD, Sort.ASCENDING));
+            }
         }
         return null;
     }
 
+    @Override
+    public void toggleIgnoreFlag(ApplicationInfo app) {
+        if (realm != null) {
+            final String pkgName = app.packageName;
+            final boolean notifyPermissions = app.notifyPermissions;
+            realm.executeTransactionAsync(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    ApplicationInfo managedApp = realm.where(ApplicationInfo.class)
+                            .equalTo(ApplicationInfo.PACKAGE_NAME_FIELD, pkgName)
+                            .findFirst();
+                    if (managedApp != null) {
+                        managedApp.notifyPermissions = ! notifyPermissions;
+                    }
+                }
+            });
+
+        }
+    }
 }

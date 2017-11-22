@@ -10,12 +10,16 @@ public interface MainActivityContract {
 
     interface View {
         void bindViewToLiveData(LiveData<RealmResults<ApplicationInfo>> data);
+        void navigateToAppDetails(ApplicationInfo app);
     }
 
     interface Presenter {
         void initialize(Context context);
         void destroy();
         void onSyncSwipe();
+        void onIgnoreAppClick(ApplicationInfo app);
+        void onAppClick(ApplicationInfo app);
+        void onShowSystemAppsFlagChanged();
     }
 
     interface Model {
@@ -23,5 +27,6 @@ public interface MainActivityContract {
         void destroy();
         void launchSynchronization();
         LiveData<RealmResults<ApplicationInfo>> loadDataAsync();
+        void toggleIgnoreFlag(ApplicationInfo app);
     }
 }
