@@ -3,20 +3,23 @@ package io.github.nfdz.permissionswatcher.common.utils;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
+import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.realm.RealmList;
+
+import static android.content.pm.PermissionInfo.PROTECTION_DANGEROUS;
 
 public class PermissionsParser {
 
     private static final boolean NOTIFY_FLAG_DEFAULT = true;
     private static final boolean HAS_CHANGES_FLAG_DEFAULT = true;
+    private static final boolean HAS_CHANGED_FLAG_DEFAULT = true;
 
     public interface RetrieveProcessCallback {
         void notifyProcessState(int current, int total);
@@ -45,10 +48,10 @@ public class PermissionsParser {
         Map<String,ApplicationInfo> applications = new HashMap<>();
         for (android.content.pm.ApplicationInfo app : apps) {
             callback.notifyProcessState(++progress, total);
-            Set<String> permissionsSet = tryToGetPermissions(app);
-            if (permissionsSet == null || permissionsSet.isEmpty()) continue;
-            RealmList<String> permissionsList = new RealmList<>();
-            permissionsList.addAll(permissionsSet);
+            Map<String,Boolean> permissionsMap = tryToGetPermissions(app);
+            if (permissionsMap == null || permissionsMap.isEmpty()) continue;
+            RealmList<PermissionState> permissionsList = new RealmList<>();
+            addPermissions(permissionsMap, permissionsList);
             String packageName = app.packageName;
             String label = tryToGetLabel(app);
             Integer versionCode = tryToGetVersionCode(app);
@@ -66,21 +69,42 @@ public class PermissionsParser {
         return applications;
     }
 
+    private void addPermissions(Map<String,Boolean> permissionsMap,
+                                RealmList<PermissionState> permissionsList) {
+        for (Map.Entry<String,Boolean> entry : permissionsMap.entrySet()) {
+            permissionsList.add(new PermissionState(entry.getKey(),
+                    entry.getValue(),
+                    HAS_CHANGED_FLAG_DEFAULT));
+        }
+    }
+
     @Nullable
-    private Set<String> tryToGetPermissions(android.content.pm.ApplicationInfo app) {
+    private Map<String,Boolean> tryToGetPermissions(android.content.pm.ApplicationInfo app) {
         try {
             PackageInfo pi = pm.getPackageInfo(app.packageName, PackageManager.GET_PERMISSIONS);
             if (pi.requestedPermissions == null || pi.requestedPermissions.length == 0) return null;
-            Set<String> permissions = new HashSet<>();
+            Map<String,Boolean> permissions = new HashMap<>();
             for (int i = 0; i < pi.requestedPermissions.length; ++i) {
                 String permission = pi.requestedPermissions[i];
-                if (permission.startsWith(ANDROID_PERMISSIONS_PREFIX)) {
-                    permissions.add(permission);
+                if (!TextUtils.isEmpty(permission) &&
+                        permission.startsWith(ANDROID_PERMISSIONS_PREFIX) &&
+                        isDangerousPermission(permission)) {
+                    permissions.put(permission,
+                            pi.requestedPermissionsFlags[i] == PackageInfo.REQUESTED_PERMISSION_GRANTED);
                 }
             }
             return permissions;
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    private boolean isDangerousPermission(String permission) {
+        try {
+            int protLevel = pm.getPermissionInfo(permission, 0).protectionLevel;
+            return protLevel == PROTECTION_DANGEROUS;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
         }
     }
 

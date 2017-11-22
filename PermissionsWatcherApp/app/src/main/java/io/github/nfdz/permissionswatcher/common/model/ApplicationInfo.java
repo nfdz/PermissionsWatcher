@@ -3,6 +3,7 @@ package io.github.nfdz.permissionswatcher.common.model;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
+import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
@@ -25,7 +26,7 @@ public class ApplicationInfo extends RealmObject {
     public boolean isSystemApplication;
     public final static String IS_SYSTEM_APP_FLAG_FIELD = "isSystemApplication";
 
-    public RealmList<String> permissions;
+    public RealmList<PermissionState> permissions;
     public final static String PERMISSIONS_FIELD = "permissions";
 
     public boolean notifyPermissions;
@@ -50,7 +51,7 @@ public class ApplicationInfo extends RealmObject {
                            @Nullable Integer versionCode,
                            @Nullable String versionName,
                            boolean isSystemApplication,
-                           @NonNull RealmList<String> permissions,
+                           @NonNull RealmList<PermissionState> permissions,
                            boolean notifyPermissions,
                            boolean hasChanges) {
         this.packageName = packageName;
@@ -60,6 +61,21 @@ public class ApplicationInfo extends RealmObject {
         this.isSystemApplication = isSystemApplication;
         this.permissions = permissions;
         this.notifyPermissions = notifyPermissions;
+        this.hasChanges = hasChanges;
+    }
+
+    public static ApplicationInfo copyToRealm(Realm realm, ApplicationInfo app) {
+        ApplicationInfo managed = realm.createObject(ApplicationInfo.class, app.packageName);
+        managed.label = app.label;
+        managed.versionCode = app.versionCode;
+        managed.versionName = app.versionName;
+        managed.isSystemApplication = app.isSystemApplication;
+        managed.notifyPermissions = app.notifyPermissions;
+        managed.hasChanges = app.hasChanges;
+        for (PermissionState permission : app.permissions) {
+            managed.permissions.add(realm.copyToRealm(permission));
+        }
+        return managed;
     }
 
 }

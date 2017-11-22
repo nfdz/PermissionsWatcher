@@ -6,15 +6,16 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.annotation.Nullable;
 
-import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
+import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.common.utils.PermissionsParser;
 import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.realm.Realm;
+import io.realm.RealmList;
 import timber.log.Timber;
 
 public class SyncService extends IntentService {
@@ -52,20 +53,14 @@ public class SyncService extends IntentService {
                     storedApp.versionName = parsedApp.versionName;
                     storedApp.versionCode = parsedApp.versionCode;
                     storedApp.isSystemApplication = parsedApp.isSystemApplication;
-                    Set<String> storedPermissions = new HashSet<>(storedApp.permissions);
-                    Set<String> parsedPermissions = new HashSet<>(parsedApp.permissions);
-                    if (!storedPermissions.equals(parsedPermissions)) {
-                        storedApp.permissions.clear();
-                        storedApp.permissions.addAll(parsedPermissions);
-                        storedApp.hasChanges = true;
-                    }
+                    storedApp.hasChanges = processPermissions(realm, storedApp.permissions, parsedApp.permissions);
                     parsedApps.remove(storedApp.packageName);
                 } else {
-                    storedApp.deleteFromRealm();
+                    delete(storedApp);
                 }
             }
             for (Map.Entry<String,ApplicationInfo> entry : parsedApps.entrySet()) {
-                realm.copyToRealm(entry.getValue());
+                ApplicationInfo.copyToRealm(realm, entry.getValue());
             }
             realm.commitTransaction();
 
@@ -75,5 +70,57 @@ public class SyncService extends IntentService {
         } finally {
             if (realm != null) realm.close();
         }
+    }
+
+    private void delete(ApplicationInfo app) {
+        for (PermissionState permission : app.permissions) {
+            permission.deleteFromRealm();
+        }
+        app.deleteFromRealm();
+    }
+
+    private boolean processPermissions(Realm realm,
+                                       RealmList<PermissionState> storedPermissions,
+                                       RealmList<PermissionState> parsedPermissions) {
+        boolean anyChange = false;
+
+        // update or delete stored ones
+        Iterator<PermissionState> it = storedPermissions.iterator();
+        while(it.hasNext()) {
+            PermissionState storedPermission = it.next();
+            boolean deleted = true;
+            for (PermissionState parsedPermission : parsedPermissions) {
+                if (storedPermission.permission.equals(parsedPermission.permission)) {
+                    if (storedPermission.granted != parsedPermission.granted) {
+                        storedPermission.granted = parsedPermission.granted;
+                        storedPermission.hasChanged = true;
+                        anyChange = true;
+                    }
+                    deleted = false;
+                    break;
+                }
+            }
+            if (deleted) {
+                storedPermission.deleteFromRealm();
+                it.remove();
+            }
+        }
+
+        // look for new ones
+        for (PermissionState parsedPermission : parsedPermissions) {
+            boolean add = true;
+            for (PermissionState storedPermission : storedPermissions) {
+                if (storedPermission.permission.equals(parsedPermission.permission)) {
+                    add = false;
+                    break;
+                }
+            }
+            if (add) {
+                storedPermissions.add(realm.copyToRealm(parsedPermission));
+                anyChange = true;
+            }
+        }
+
+        return anyChange;
     }
 }
