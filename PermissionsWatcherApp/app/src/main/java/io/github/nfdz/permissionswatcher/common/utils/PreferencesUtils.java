@@ -1,4 +1,4 @@
-package io.github.nfdz.permissionswatcher.utils;
+package io.github.nfdz.permissionswatcher.common.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/item_app_container"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_height"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/selector_list_item">
+
+    <ImageView
+        android:id="@+id/item_app_iv_icon"
+        android:layout_width="@dimen/list_item_app_icon_size"
+        android:layout_height="@dimen/list_item_app_icon_size"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:layout_marginStart="@dimen/list_item_app_horizontal_margin"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/item_app_tv_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/item_app_iv_icon"
+        app:layout_constraintEnd_toStartOf="@+id/item_app_iv_ignore"
+        android:layout_marginStart="@dimen/list_item_app_horizontal_margin"
+        android:layout_marginEnd="@dimen/list_item_app_horizontal_margin"
+        android:maxLines="1"
+        android:ellipsize="end"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/list_item_app_name_size"
+        tools:text="Messenger" />
+
+    <TextView
+        android:id="@+id/item_app_tv_permissions_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/item_app_tv_name"
+        app:layout_constraintStart_toStartOf="@+id/item_app_tv_name"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/list_item_app_details_size"
+        android:text="Permissions:"/>
+
+    <TextView
+        android:id="@+id/item_app_tv_permissions_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/item_app_tv_name"
+        app:layout_constraintStart_toEndOf="@+id/item_app_tv_permissions_label"
+        android:layout_marginStart="2dp"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/list_item_app_details_size"
+        tools:text="10"/>
+
+    <TextView
+        android:id="@+id/item_app_tv_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@+id/item_app_tv_name"
+        app:layout_constraintStart_toEndOf="@+id/item_app_tv_permissions_value"
+        android:layout_marginStart="8dp"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/list_item_app_details_size"
+        tools:text="v1.0"/>
+
+    <ImageView
+        android:id="@+id/item_app_iv_ignore"
+        android:layout_width="@dimen/list_item_app_ignore_size"
+        android:layout_height="@dimen/list_item_app_ignore_size"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/ic_ignore_off"
+        android:layout_marginEnd="@dimen/list_item_app_horizontal_margin"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</android.support.constraint.ConstraintLayout>

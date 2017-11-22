@@ -1,4 +1,4 @@
-package io.github.nfdz.permissionswatcher.model;
+package io.github.nfdz.permissionswatcher.common.model;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,7 +7,7 @@ import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Application extends RealmObject {
+public class ApplicationInfo extends RealmObject {
 
     @PrimaryKey
     public String packageName;
@@ -31,7 +31,10 @@ public class Application extends RealmObject {
     public boolean notifyPermissions;
     public final static String NOTIFY_FLAG_FIELD = "notifyPermissions";
 
-    public Application() {
+    public boolean hasChanges;
+    public final static String HAS_CHANGES_FLAG_FIELD = "hasChanges";
+
+    public ApplicationInfo() {
         this.packageName = null;
         this.label = null;
         this.versionCode = null;
@@ -39,15 +42,17 @@ public class Application extends RealmObject {
         this.isSystemApplication = false;
         this.permissions = null;
         this.notifyPermissions = false;
+        this.hasChanges = false;
     }
 
-    public Application(@NonNull String packageName,
-                       @Nullable String label,
-                       @Nullable Integer versionCode,
-                       @Nullable String versionName,
-                       boolean isSystemApplication,
-                       @NonNull RealmList<String> permissions,
-                       boolean notifyPermissions) {
+    public ApplicationInfo(@NonNull String packageName,
+                           @Nullable String label,
+                           @Nullable Integer versionCode,
+                           @Nullable String versionName,
+                           boolean isSystemApplication,
+                           @NonNull RealmList<String> permissions,
+                           boolean notifyPermissions,
+                           boolean hasChanges) {
         this.packageName = packageName;
         this.label = label == null ? packageName : label;
         this.versionCode = versionCode;

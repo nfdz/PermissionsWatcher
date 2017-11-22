@@ -6,4 +6,7 @@
 
     <color name="windowBackground">@color/colorPrimaryDark</color>
     <color name="textColorPrimary">@android:color/white</color>
+
+    <color name="colorIgnoreOn">@color/colorAccent</color>
+    <color name="colorIgnoreOff">#3F3F3F</color>
 </resources>

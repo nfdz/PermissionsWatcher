@@ -1,36 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_activity_swipe_refresh"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/main_activity_recycler_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/main_activity_tv_empty"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="NO DATA"
-        android:padding="20dp"/>
-
+    android:layout_height="match_parent" >
     <FrameLayout
-        android:id="@+id/main_activity_container_loading"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/windowBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:visibility="gone">
+        android:layout_height="match_parent">
 
-        <ProgressBar
-            android:id="@+id/main_activity_pb_loading"
-            android:layout_width="50dp"
-            android:layout_height="50dp" />
+        <android.support.v7.widget.RecyclerView
+            android:visibility="invisible"
+            android:id="@+id/main_activity_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical" />
+
+        <TextView
+            android:visibility="invisible"
+            android:id="@+id/main_activity_tv_empty"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:textColor="@color/textColorPrimary"
+            android:text="There is no applications information, swipe down to refresh."
+            android:padding="20dp"/>
 
     </FrameLayout>
-
-</FrameLayout>
+</android.support.v4.widget.SwipeRefreshLayout>

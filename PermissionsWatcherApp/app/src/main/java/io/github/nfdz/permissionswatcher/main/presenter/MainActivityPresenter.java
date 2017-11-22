@@ -1,31 +1,25 @@
 package io.github.nfdz.permissionswatcher.main.presenter;
 
-import android.content.pm.PackageManager;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import android.content.Context;
 
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
 import io.github.nfdz.permissionswatcher.main.model.MainActivityInteractor;
-import io.github.nfdz.permissionswatcher.model.Application;
 
-public class MainActivityPresenter implements MainActivityContract.Presenter,
-        MainActivityContract.LoadCallback, MainActivityContract.UpdateCallback {
+public class MainActivityPresenter implements MainActivityContract.Presenter  {
 
     private MainActivityContract.View view;
     private MainActivityContract.Model interactor;
 
-    public MainActivityPresenter(MainActivityContract.View view, PackageManager pm) {
+    public MainActivityPresenter(MainActivityContract.View view) {
         this.view = view;
-        this.interactor = new MainActivityInteractor(pm);
+        this.interactor = new MainActivityInteractor();
     }
 
     @Override
-    public void initialize() {
+    public void initialize(Context context) {
         if (view != null && interactor != null) {
-            interactor.initialize();
-            interactor.loadApplications(this);
+            interactor.initialize(context);
+            view.bindViewToLiveData(interactor.loadDataAsync());
         }
     }
 
@@ -37,38 +31,9 @@ public class MainActivityPresenter implements MainActivityContract.Presenter,
     }
 
     @Override
-    public void onUpdateSwipe() {
+    public void onSyncSwipe() {
         if (interactor != null) {
-            interactor.updateApplications(this);
-        }
-    }
-
-    @Override
-    public void onLoadSuccess(List<Application> applications) {
-        if (view != null) {
-            view.showData(applications, Collections.<String>emptySet());
-        }
-    }
-
-    @Override
-    public void notifyUpdateProgress(int progress, int total) {
-        if (view != null) {
-            view.showUpdating(progress, total);
-        }
-    }
-
-    @Override
-    public void onUpdateSuccess(List<Application> applications, Set<String> appsWithChanges) {
-        if (view != null) {
-            view.showData(applications, appsWithChanges);
-        }
-    }
-
-    @Override
-    public void onUpdateError() {
-        if (view != null) {
-            view.showUpdateErrorMessage();
-            view.hideUpdating();
+            interactor.launchSynchronization();
         }
     }
 }

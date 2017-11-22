@@ -1,43 +1,27 @@
 package io.github.nfdz.permissionswatcher.main;
 
-import android.support.annotation.Nullable;
+import android.arch.lifecycle.LiveData;
+import android.content.Context;
 
-import java.util.List;
-import java.util.Set;
-
-import io.github.nfdz.permissionswatcher.model.Application;
+import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
+import io.realm.RealmResults;
 
 public interface MainActivityContract {
 
     interface View {
-        void showEmpty();
-        void showData(List<Application> applications, @Nullable Set<String> appsWithChanges);
-        void showUpdating(int progress, int total);
-        void hideUpdating();
-        void showUpdateErrorMessage();
+        void bindViewToLiveData(LiveData<RealmResults<ApplicationInfo>> data);
     }
 
     interface Presenter {
-        void initialize();
+        void initialize(Context context);
         void destroy();
-        void onUpdateSwipe();
+        void onSyncSwipe();
     }
 
     interface Model {
-        void initialize();
+        void initialize(Context context);
         void destroy();
-        void updateApplications(UpdateCallback callback);
-        void loadApplications(LoadCallback callback);
+        void launchSynchronization();
+        LiveData<RealmResults<ApplicationInfo>> loadDataAsync();
     }
-
-    interface UpdateCallback {
-        void notifyUpdateProgress(int progress, int total);
-        void onUpdateSuccess(List<Application> applications, Set<String> appsWithChanges);
-        void onUpdateError();
-    }
-
-    interface LoadCallback {
-        void onLoadSuccess(List<Application> applications);
-    }
-
 }
