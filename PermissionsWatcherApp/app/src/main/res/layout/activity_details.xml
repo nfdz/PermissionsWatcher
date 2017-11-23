@@ -50,8 +50,8 @@
             android:id="@+id/details_activity_permissions_label"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@+id/details_activity_iv_watch"
             app:layout_constraintBottom_toBottomOf="@+id/details_activity_iv_watch"
-            android:layout_marginBottom="10dp"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/details_activity_horizontal_margin"
             android:textColor="@color/textColorPrimary"
@@ -63,9 +63,10 @@
             android:id="@+id/details_activity_recycler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/details_activity_iv_watch"
+            app:layout_constraintTop_toBottomOf="@+id/details_activity_permissions_label"
             app:layout_constraintBottom_toBottomOf="parent"
             android:scrollbars="vertical" />
 

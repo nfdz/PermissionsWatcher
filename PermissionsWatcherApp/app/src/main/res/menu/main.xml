@@ -8,6 +8,11 @@
         android:title="" />
 
     <item
+        android:id="@+id/action_show_no_permissions"
+        app:showAsAction="never"
+        android:title="" />
+
+    <item
         android:id="@+id/action_search"
         android:title="@string/action_search"
         android:orderInCategory="200"

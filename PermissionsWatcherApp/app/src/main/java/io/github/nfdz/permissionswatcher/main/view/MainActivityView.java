@@ -69,6 +69,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         setSupportActionBar(toolbar);
         swipeRefreshLayout.setOnRefreshListener(this);
         adapter = new Adapter();
+        adapter.setShowAppsWithoutPermissions(PreferencesUtils.showAppsWithoutPermissions(this));
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(lm);
         recyclerView.setAdapter(adapter);
@@ -79,6 +80,8 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         getMenuInflater().inflate(R.menu.main, menu);
         menu.findItem(R.id.action_show_system).setTitle(PreferencesUtils.showSystemApps(this) ?
                 R.string.action_show_system_apps_on : R.string.action_show_system_apps_off);
+        menu.findItem(R.id.action_show_no_permissions).setTitle(PreferencesUtils.showSystemApps(this) ?
+                R.string.action_show_apps_without_permissions_on : R.string.action_show_apps_without_permissions_off);
         MenuItem searchMenuItem = menu.findItem( R.id.action_search);
         searchView = (SearchView)searchMenuItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -103,6 +106,12 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
                 boolean toggledFlag = !currentFlag;
                 PreferencesUtils.setShowSystemApps(this, toggledFlag);
                 item.setTitle(toggledFlag ? R.string.action_show_system_apps_on : R.string.action_show_system_apps_off);
+                return true;
+            case R.id.action_show_no_permissions:
+                boolean currentShowFlag = PreferencesUtils.showAppsWithoutPermissions(this);
+                boolean toggledShowFlag = !currentShowFlag;
+                PreferencesUtils.setShowAppsWithoutPermissions(this, toggledShowFlag);
+                item.setTitle(toggledShowFlag ? R.string.action_show_apps_without_permissions_on : R.string.action_show_apps_without_permissions_off);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -169,6 +178,8 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         if (PreferencesUtils.SHOW_SYSTEM_APPS_FLAG_KEY.equals(key)) {
             presenter.onShowSystemAppsFlagChanged();
+        } else if (PreferencesUtils.SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_KEY.equals(key)) {
+            adapter.setShowAppsWithoutPermissions(PreferencesUtils.showAppsWithoutPermissions(this));
         }
     }
 
@@ -177,6 +188,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         private List<ApplicationInfo> data = null;
         private List<ApplicationInfo> filteredData = null;
         private String filterQuery = null;
+        private boolean showAppsWithoutPermissions = false;
 
         public void setData(List<ApplicationInfo> data) {
             this.data = data;
@@ -190,15 +202,30 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
             notifyDataSetChanged();
         }
 
+        public void setShowAppsWithoutPermissions(boolean showAppsWithoutPermissions) {
+            this.showAppsWithoutPermissions = showAppsWithoutPermissions;
+            this.filteredData = filterData();
+            notifyDataSetChanged();
+        }
+
         private List<ApplicationInfo> filterData() {
             if (data == null) return null;
-            if (TextUtils.isEmpty(filterQuery)) return data;
+            if (TextUtils.isEmpty(filterQuery) && showAppsWithoutPermissions) return data;
             List<ApplicationInfo> filteredData = new ArrayList<>();
             for (ApplicationInfo app : data) {
-                String appText = TextUtils.isEmpty(app.label) ? app.packageName : app.label;
-                if (appText.toLowerCase().contains(filterQuery.toLowerCase())) {
-                    filteredData.add(app);
+                boolean add = true;
+
+                if (!showAppsWithoutPermissions) {
+                    int grantedPermissions = PermissionsUtils.countGrantedRawPermissions(app.permissions);
+                    add = grantedPermissions > 0;
                 }
+
+                if (add && !TextUtils.isEmpty(filterQuery)) {
+                    String appText = TextUtils.isEmpty(app.label) ? app.packageName : app.label;
+                    add = appText.toLowerCase().contains(filterQuery.toLowerCase());
+                }
+
+                if (add) filteredData.add(app);
             }
             return filteredData;
         }

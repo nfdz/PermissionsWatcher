@@ -108,6 +108,14 @@ public class PermissionsUtils {
         return result;
     }
 
+    public static int countGrantedRawPermissions(List<PermissionState> permissions) {
+        int count = 0;
+        for (PermissionState permissionState : permissions) {
+            if (permissionState.granted) count++;
+        }
+        return count;
+    }
+
     @PermissionType
     private static int getType(String permission) {
         if (CALENDAR_GROUP_PERMISSIONS.contains(permission)) {

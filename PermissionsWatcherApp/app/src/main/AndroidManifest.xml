@@ -17,7 +17,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".details.view.DetailsActivityView" />
+        <activity
+            android:name=".details.view.DetailsActivityView"
+            android:parentActivityName=".main.view.MainActivityView">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".main.view.MainActivityView" />
+        </activity>
         <service android:name=".sync.SyncService"
            android:exported="false" />
     </application>

@@ -4,6 +4,8 @@
 
     <string name="action_show_system_apps_off">Show system apps</string>
     <string name="action_show_system_apps_on">Hide system apps</string>
+    <string name="action_show_apps_without_permissions_off">Show apps without permissions</string>
+    <string name="action_show_apps_without_permissions_on">Hide apps without permissions</string>
     <string name="action_search">Search</string>
 
     <string name="permissions_label">Permissions:</string>

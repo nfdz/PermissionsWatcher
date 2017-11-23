@@ -40,4 +40,18 @@ public class PreferencesUtils {
     }
     //endregion
 
+    //region Show apps without permissions flag
+    public final static String SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_KEY = "showAppsWithoutPermissionsFlag";
+    public final static boolean SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_DEFAULT = false;
+
+    public static boolean showAppsWithoutPermissions(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_KEY, SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_DEFAULT);
+    }
+
+    public static void setShowAppsWithoutPermissions(Context context, boolean showAppsWithoutPermissions) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_KEY, showAppsWithoutPermissions).apply();
+    }
+    //endregion
 }

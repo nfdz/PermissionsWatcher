@@ -1,5 +1,6 @@
 package io.github.nfdz.permissionswatcher.details.view;
 
+import android.app.ActionBar;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
@@ -85,6 +86,11 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
     private void setupView() {
         setSupportActionBar(toolbar);
         setTitle("");
+        ActionBar ab = getActionBar();
+        if (ab != null) {
+            ab.setDisplayShowHomeEnabled(true);
+            ab.setDisplayHomeAsUpEnabled(true);
+        }
         adapter = new Adapter();
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(lm);
