@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/list_item_permission_height"
+    android:id="@+id/item_permission_container"
+    android:background="@drawable/selector_list_item">
+
+    <ImageView
+        android:id="@+id/item_permission_iv_icon"
+        android:layout_width="@dimen/list_item_permission_icon_size"
+        android:layout_height="@dimen/list_item_permission_icon_size"
+        tools:srcCompat="@drawable/ic_permission_type_calendar"
+        android:layout_gravity="center"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        android:layout_marginStart="@dimen/list_item_permission_horizontal_margin" />
+
+    <TextView
+        android:id="@+id/item_permission_tv_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/list_item_permission_name"
+        android:layout_marginStart="@dimen/list_item_permission_horizontal_margin"
+        tools:text="@string/permissions_type_calendar"/>
+
+</LinearLayout>

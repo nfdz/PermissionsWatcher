@@ -1,11 +1,13 @@
 package io.github.nfdz.permissionswatcher.common.utils;
 
 import android.arch.lifecycle.LiveData;
+import android.support.annotation.NonNull;
 
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.realm.RealmChangeListener;
 import io.realm.RealmConfiguration;
 import io.realm.RealmModel;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 public class RealmUtils {
@@ -49,6 +51,37 @@ public class RealmUtils {
         @Override
         protected void onInactive() {
             results.removeChangeListener(listener);
+        }
+    }
+
+    public static <T extends RealmObject> LiveData<T> asLiveData(T result) {
+        return new RealmObjectLiveData<>(result);
+    }
+
+    public static class RealmObjectLiveData<T extends RealmObject> extends LiveData<T> {
+
+        private T object;
+
+        private final RealmChangeListener<T> listener =
+                new RealmChangeListener<T>() {
+                    @Override
+                    public void onChange(@NonNull T result) {
+                        setValue(result);
+                    }
+                };
+
+        public RealmObjectLiveData(T object) {
+            this.object = object;
+        }
+
+        @Override
+        protected void onActive() {
+            object.addChangeListener(listener);
+        }
+
+        @Override
+        protected void onInactive() {
+            object.removeChangeListener(listener);
         }
     }
 }

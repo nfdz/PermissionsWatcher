@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_app_container"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_height"
+    android:layout_height="@dimen/list_item_app_height"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@drawable/selector_list_item">
@@ -43,7 +43,7 @@
         app:layout_constraintStart_toStartOf="@+id/item_app_tv_name"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/list_item_app_details_size"
-        android:text="Permissions:"/>
+        android:text="@string/permissions_label"/>
 
     <TextView
         android:id="@+id/item_app_tv_permissions_value"

@@ -30,7 +30,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.github.nfdz.permissionswatcher.R;
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
+import io.github.nfdz.permissionswatcher.common.model.PermissionState;
+import io.github.nfdz.permissionswatcher.common.utils.PermissionsUtils;
 import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
+import io.github.nfdz.permissionswatcher.details.view.DetailsActivityView;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
 import io.github.nfdz.permissionswatcher.main.presenter.MainActivityPresenter;
 import io.realm.RealmResults;
@@ -136,7 +139,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
     @Override
     public void navigateToAppDetails(ApplicationInfo app) {
-        // TODO
+        DetailsActivityView.start(this, app.packageName);
     }
 
     @Override
@@ -246,7 +249,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
                     icon.setImageDrawable(getPackageManager().getDefaultActivityIcon());
                 }
                 name.setText(TextUtils.isEmpty(app.label) ? app.packageName : app.label);
-                permissionsValue.setText(String.format(Locale.getDefault(), "%d",app.permissions.size()));
+                permissionsValue.setText(getPermissionsValue(app.permissions));
                 version.setText(processVersion(app.versionName));
                 ignoreIcon.setImageResource(app.notifyPermissions ? R.drawable.ic_ignore_off : R.drawable.ic_ignore_on);
             }
@@ -256,6 +259,15 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
                     return "v" + version;
                 }
                 return "";
+            }
+
+            private String getPermissionsValue(List<PermissionState> permissionStates) {
+                int grantedPermissions = PermissionsUtils.processAndCompactPermissionStates(permissionStates, true).size();
+                int allPermissions = PermissionsUtils.processAndCompactPermissionStates(permissionStates, false).size();
+                return String.format(Locale.getDefault(),
+                        "%d/%d",
+                        grantedPermissions,
+                        allPermissions);
             }
 
         }

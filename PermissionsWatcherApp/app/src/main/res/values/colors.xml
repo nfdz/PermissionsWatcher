@@ -9,4 +9,6 @@
 
     <color name="colorIgnoreOn">@color/colorAccent</color>
     <color name="colorIgnoreOff">#3F3F3F</color>
+
+    <color name="colorPermissionTypeIcon">@android:color/white</color>
 </resources>

@@ -1,7 +1,22 @@
 <resources>
+
     <string name="app_name">Permissions Watcher</string>
 
     <string name="action_show_system_apps_off">Show system apps</string>
     <string name="action_show_system_apps_on">Hide system apps</string>
     <string name="action_search">Search</string>
+
+    <string name="permissions_label">Permissions:</string>
+
+    <string name="permissions_type_calendar">Calendar</string>
+    <string name="permissions_type_camera">Camera</string>
+    <string name="permissions_type_contacts">Contacts</string>
+    <string name="permissions_type_location">Location</string>
+    <string name="permissions_type_mic">Microphone</string>
+    <string name="permissions_type_phone">Phone</string>
+    <string name="permissions_type_sensors">Sensors</string>
+    <string name="permissions_type_sms">SMS</string>
+    <string name="permissions_type_storage">Storage</string>
+    <string name="permissions_type_unknown">Other</string>
+
 </resources>

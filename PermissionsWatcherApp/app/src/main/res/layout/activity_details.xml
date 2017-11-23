@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/details_activity_toolbar"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorPrimary"
+            android:layout_width="match_parent" />
+
+    </android.support.design.widget.AppBarLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ImageView
+            android:id="@+id/details_activity_iv_watch"
+            android:layout_width="@dimen/details_activity_watch_size"
+            android:layout_height="@dimen/details_activity_watch_size"
+            app:srcCompat="@drawable/ic_watch"
+            android:scaleType="fitCenter"
+            android:adjustViewBounds="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <ImageView
+            android:id="@+id/details_activity_iv_icon"
+            android:layout_width="@dimen/details_activity_icon_size"
+            android:layout_height="@dimen/details_activity_icon_size"
+            android:scaleType="fitCenter"
+            tools:srcCompat="@mipmap/ic_launcher"
+            android:adjustViewBounds="true"
+            app:layout_constraintTop_toTopOf="@+id/details_activity_iv_watch"
+            app:layout_constraintBottom_toBottomOf="@+id/details_activity_iv_watch"
+            app:layout_constraintStart_toStartOf="@+id/details_activity_iv_watch"
+            app:layout_constraintEnd_toEndOf="@+id/details_activity_iv_watch" />
+
+        <TextView
+            android:id="@+id/details_activity_permissions_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/details_activity_iv_watch"
+            android:layout_marginBottom="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="@dimen/details_activity_horizontal_margin"
+            android:textColor="@color/textColorPrimary"
+            android:textStyle="bold"
+            android:textSize="@dimen/details_activity_permissions_label_size"
+            android:text="@string/permissions_label" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/details_activity_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/details_activity_iv_watch"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:scrollbars="vertical" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.design.widget.CoordinatorLayout>

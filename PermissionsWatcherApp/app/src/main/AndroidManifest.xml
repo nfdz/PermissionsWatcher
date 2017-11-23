@@ -17,6 +17,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".details.view.DetailsActivityView" />
         <service android:name=".sync.SyncService"
            android:exported="false" />
     </application>
