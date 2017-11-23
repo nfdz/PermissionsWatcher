@@ -10,16 +10,18 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -41,6 +43,8 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     @BindView(R.id.main_activity_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.main_activity_tv_empty) TextView emptyMessage;
     @BindView(R.id.main_activity_swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.main_activity_toolbar) Toolbar toolbar;
+    private SearchView searchView;
 
     private MainActivityContract.Presenter presenter;
     private Adapter adapter;
@@ -55,9 +59,11 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         PreferencesUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
         presenter = new MainActivityPresenter(this);
         presenter.initialize(this);
+
     }
 
     private void setupView() {
+        setSupportActionBar(toolbar);
         swipeRefreshLayout.setOnRefreshListener(this);
         adapter = new Adapter();
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -70,6 +76,19 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         getMenuInflater().inflate(R.menu.main, menu);
         menu.findItem(R.id.action_show_system).setTitle(PreferencesUtils.showSystemApps(this) ?
                 R.string.action_show_system_apps_on : R.string.action_show_system_apps_off);
+        MenuItem searchMenuItem = menu.findItem( R.id.action_search);
+        searchView = (SearchView)searchMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+            @Override
+            public boolean onQueryTextChange(String query) {
+                presenter.onSearchQueryChanged(query);
+                return true;
+            }
+        });
         return true;
     }
 
@@ -84,6 +103,16 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (searchView != null && !searchView.isIconified()) {
+            searchView.onActionViewCollapsed();
+            recyclerView.requestFocus();
+        } else {
+            super.onBackPressed();
         }
     }
 
@@ -108,6 +137,11 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     @Override
     public void navigateToAppDetails(ApplicationInfo app) {
         // TODO
+    }
+
+    @Override
+    public void filterContent(@Nullable String query) {
+        adapter.setFilter(query);
     }
 
     @Override
@@ -138,10 +172,32 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     class Adapter extends RecyclerView.Adapter<Adapter.AppViewHolder> {
 
         private List<ApplicationInfo> data = null;
+        private List<ApplicationInfo> filteredData = null;
+        private String filterQuery = null;
 
         public void setData(List<ApplicationInfo> data) {
             this.data = data;
+            this.filteredData = filterData();
             notifyDataSetChanged();
+        }
+
+        public void setFilter(@Nullable String query) {
+            this.filterQuery = query;
+            this.filteredData = filterData();
+            notifyDataSetChanged();
+        }
+
+        private List<ApplicationInfo> filterData() {
+            if (data == null) return null;
+            if (TextUtils.isEmpty(filterQuery)) return data;
+            List<ApplicationInfo> filteredData = new ArrayList<>();
+            for (ApplicationInfo app : data) {
+                String appText = TextUtils.isEmpty(app.label) ? app.packageName : app.label;
+                if (appText.toLowerCase().contains(filterQuery.toLowerCase())) {
+                    filteredData.add(app);
+                }
+            }
+            return filteredData;
         }
 
         @Override
@@ -152,12 +208,12 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
         @Override
         public void onBindViewHolder(AppViewHolder holder, int position) {
-            holder.bindApp(data.get(position));
+            holder.bindApp(filteredData.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return data != null ? data.size() : 0;
+            return filteredData != null ? filteredData.size() : 0;
         }
 
         class AppViewHolder extends RecyclerView.ViewHolder {
@@ -175,12 +231,12 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
             @OnClick(R.id.item_app_container)
             void onAppClick() {
-                presenter.onAppClick(data.get(getAdapterPosition()));
+                presenter.onAppClick(filteredData.get(getAdapterPosition()));
             }
 
             @OnClick(R.id.item_app_iv_ignore)
             void onIgnoreClick() {
-                presenter.onIgnoreAppClick(data.get(getAdapterPosition()));
+                presenter.onIgnoreAppClick(filteredData.get(getAdapterPosition()));
             }
 
             void bindApp(ApplicationInfo app) {

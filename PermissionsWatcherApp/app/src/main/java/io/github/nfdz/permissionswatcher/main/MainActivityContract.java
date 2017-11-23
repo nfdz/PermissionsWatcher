@@ -2,6 +2,7 @@ package io.github.nfdz.permissionswatcher.main;
 
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.realm.RealmResults;
@@ -11,6 +12,7 @@ public interface MainActivityContract {
     interface View {
         void bindViewToLiveData(LiveData<RealmResults<ApplicationInfo>> data);
         void navigateToAppDetails(ApplicationInfo app);
+        void filterContent(@Nullable String query);
     }
 
     interface Presenter {
@@ -20,6 +22,7 @@ public interface MainActivityContract {
         void onIgnoreAppClick(ApplicationInfo app);
         void onAppClick(ApplicationInfo app);
         void onShowSystemAppsFlagChanged();
+        void onSearchQueryChanged(@Nullable String query);
     }
 
     interface Model {

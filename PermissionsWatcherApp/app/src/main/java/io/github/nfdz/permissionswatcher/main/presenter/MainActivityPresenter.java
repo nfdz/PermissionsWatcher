@@ -1,6 +1,7 @@
 package io.github.nfdz.permissionswatcher.main.presenter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
@@ -55,5 +56,10 @@ public class MainActivityPresenter implements MainActivityContract.Presenter  {
         if (view != null && interactor != null) {
             view.bindViewToLiveData(interactor.loadDataAsync());
         }
+    }
+
+    @Override
+    public void onSearchQueryChanged(@Nullable String query) {
+        view.filterContent(query);
     }
 }

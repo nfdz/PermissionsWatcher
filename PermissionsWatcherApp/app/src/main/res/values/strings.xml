@@ -3,4 +3,5 @@
 
     <string name="action_show_system_apps_off">Show system apps</string>
     <string name="action_show_system_apps_on">Hide system apps</string>
+    <string name="action_search">Search</string>
 </resources>
