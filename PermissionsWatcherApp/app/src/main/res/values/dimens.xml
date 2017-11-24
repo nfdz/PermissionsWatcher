@@ -16,7 +16,7 @@
     <dimen name="details_activity_icon_size">70dp</dimen>
 
     <dimen name="list_item_permission_height">50dp</dimen>
-    <dimen name="list_item_permission_icon_size">35dp</dimen>
+    <dimen name="list_item_permission_icon_size">25dp</dimen>
     <dimen name="list_item_permission_name">14sp</dimen>
     <dimen name="list_item_permission_horizontal_margin">@dimen/horizontal_margin</dimen>
 

@@ -90,7 +90,7 @@ public class PermissionsParser {
                         permission.startsWith(ANDROID_PERMISSIONS_PREFIX) &&
                         isDangerousPermission(permission)) {
                     permissions.put(permission,
-                            0 == (pi.requestedPermissionsFlags[i] & PackageInfo.REQUESTED_PERMISSION_GRANTED));
+                            0 != (pi.requestedPermissionsFlags[i] & PackageInfo.REQUESTED_PERMISSION_GRANTED));
                 }
             }
             return permissions;

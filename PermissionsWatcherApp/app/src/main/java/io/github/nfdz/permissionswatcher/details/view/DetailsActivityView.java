@@ -7,7 +7,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,6 +19,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -132,7 +133,8 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
         public void setData(ApplicationInfo data) {
             if (data != null) {
-                permissions = PermissionsUtils.processPermissionStates(data.permissions, true);
+                permissions = new ArrayList<>(PermissionsUtils.processAndCompactPermissionStates(data.permissions, true));
+                Collections.sort(permissions);
             } else {
                 permissions = null;
             }
@@ -157,8 +159,8 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
         class PermissionGroupViewHolder extends RecyclerView.ViewHolder {
 
-            @BindView(R.id.item_app_iv_icon) ImageView icon;
-            @BindView(R.id.item_app_tv_name) TextView name;
+            @BindView(R.id.item_permission_iv_icon) ImageView icon;
+            @BindView(R.id.item_permission_tv_name) TextView name;
 
             PermissionGroupViewHolder(View itemView) {
                 super(itemView);
