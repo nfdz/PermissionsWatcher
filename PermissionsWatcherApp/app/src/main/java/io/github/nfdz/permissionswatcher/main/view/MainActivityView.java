@@ -147,8 +147,12 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     }
 
     @Override
-    public void navigateToAppDetails(ApplicationInfo app) {
-        DetailsActivityView.start(this, app.packageName);
+    public void navigateToAppDetails(ApplicationInfo app, ImageView appIcon) {
+        //DetailsActivityView.start(this, app.packageName);
+        DetailsActivityView.start(this,
+                app.packageName,
+                getString(R.string.app_icon_transition_string),
+                appIcon);
     }
 
     @Override
@@ -261,7 +265,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
             @OnClick(R.id.item_app_container)
             void onAppClick() {
-                presenter.onAppClick(filteredData.get(getAdapterPosition()));
+                presenter.onAppClick(filteredData.get(getAdapterPosition()), icon);
             }
 
             @OnClick(R.id.item_app_iv_ignore)

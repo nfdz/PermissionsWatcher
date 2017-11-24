@@ -14,7 +14,9 @@
             android:id="@+id/details_activity_toolbar"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
-            android:layout_width="match_parent" />
+            android:layout_width="match_parent"
+            app:theme="@style/AppTheme.ThemeOverlay.Navigation"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -41,6 +43,7 @@
             android:scaleType="fitCenter"
             tools:srcCompat="@mipmap/ic_launcher"
             android:adjustViewBounds="true"
+            android:transitionName="@string/app_icon_transition_string"
             app:layout_constraintTop_toTopOf="@+id/details_activity_iv_watch"
             app:layout_constraintBottom_toBottomOf="@+id/details_activity_iv_watch"
             app:layout_constraintStart_toStartOf="@+id/details_activity_iv_watch"

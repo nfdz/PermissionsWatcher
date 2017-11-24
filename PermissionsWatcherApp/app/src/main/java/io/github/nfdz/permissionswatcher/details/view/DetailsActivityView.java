@@ -1,6 +1,7 @@
 package io.github.nfdz.permissionswatcher.details.view;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
@@ -8,12 +9,15 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -46,6 +50,15 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
         context.startActivity(starter);
     }
 
+    public static void start(Activity activity, String packageName, String transitionName, ImageView appIcon) {
+        Intent starter = new Intent(activity, DetailsActivityView.class);
+        starter.putExtra(PKG_NAME_INTENT_KEY, packageName);
+        ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                appIcon,
+                transitionName);
+        ActivityCompat.startActivity(activity, starter, options.toBundle());
+    }
+
     @BindView(R.id.details_activity_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.details_activity_toolbar) Toolbar toolbar;
     @BindView(R.id.details_activity_iv_icon) ImageView icon;
@@ -59,10 +72,10 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
-        setupView();
-        presenter = new DetailsActivityPresenter(this);
         String pkgName = readPackageFromIntent(getIntent());
         if (!TextUtils.isEmpty(pkgName)) {
+            setupView(pkgName);
+            presenter = new DetailsActivityPresenter(this);
             presenter.initialize(pkgName);
         } else {
             Timber.e("Details activity created with no package name.");
@@ -76,6 +89,15 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
         super.onDestroy();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finishAfterTransition();
+            return true;
+        }
+        return false;
+    }
+
     @Nullable
     private String readPackageFromIntent(Intent intent) {
         if (intent != null && intent.hasExtra(PKG_NAME_INTENT_KEY)) {
@@ -84,14 +106,29 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
         return null;
     }
 
-    private void setupView() {
+    private void setupView(String pkgName) {
         setSupportActionBar(toolbar);
-        setTitle("");
         ActionBar ab = getActionBar();
         if (ab != null) {
-            ab.setDisplayShowHomeEnabled(true);
             ab.setDisplayHomeAsUpEnabled(true);
+            ab.setDisplayShowHomeEnabled(true);
         }
+
+        PackageManager pm = getPackageManager();
+        String label;
+        try {
+            label = pm.getApplicationLabel(pm.getApplicationInfo(pkgName, PackageManager.GET_META_DATA)).toString();
+            if (TextUtils.isEmpty(label)) label = pkgName;
+        } catch (Exception e) {
+            label = pkgName;
+        }
+        setTitle(label);
+        try {
+            icon.setImageDrawable(pm.getApplicationIcon(pkgName));
+        } catch (Exception e) {
+            icon.setImageDrawable(pm.getDefaultActivityIcon());
+        }
+
         adapter = new Adapter();
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(lm);
@@ -116,14 +153,6 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
     @Override
     public void onChanged(@Nullable ApplicationInfo app) {
-        if (app != null) {
-            setTitle(TextUtils.isEmpty(app.label) ? app.packageName : app.label);
-            try {
-                icon.setImageDrawable(getPackageManager().getApplicationIcon(app.packageName));
-            } catch (PackageManager.NameNotFoundException e) {
-                icon.setImageDrawable(getPackageManager().getDefaultActivityIcon());
-            }
-        }
         adapter.setData(app);
     }
 

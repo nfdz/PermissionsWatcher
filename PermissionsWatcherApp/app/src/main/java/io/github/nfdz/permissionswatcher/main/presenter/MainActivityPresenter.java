@@ -2,6 +2,7 @@ package io.github.nfdz.permissionswatcher.main.presenter;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.widget.ImageView;
 
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
@@ -47,8 +48,8 @@ public class MainActivityPresenter implements MainActivityContract.Presenter  {
     }
 
     @Override
-    public void onAppClick(ApplicationInfo app) {
-        view.navigateToAppDetails(app);
+    public void onAppClick(ApplicationInfo app, ImageView appIcon) {
+        view.navigateToAppDetails(app, appIcon);
     }
 
     @Override

@@ -15,6 +15,7 @@
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         android:layout_marginStart="@dimen/list_item_app_horizontal_margin"
+        android:transitionName="@string/app_icon_transition_string"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
