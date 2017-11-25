@@ -61,7 +61,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         setupView();
         PreferencesUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
         presenter = new MainActivityPresenter(this);
-        presenter.initialize(this);
+        presenter.initialize(this, savedInstanceState == null);
 
     }
 
