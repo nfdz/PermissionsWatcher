@@ -87,7 +87,7 @@ public class PermissionsParser {
             for (int i = 0; i < pi.requestedPermissions.length; ++i) {
                 String permission = pi.requestedPermissions[i];
                 if (!TextUtils.isEmpty(permission) &&
-                        permission.startsWith(ANDROID_PERMISSIONS_PREFIX) &&
+                        PermissionsUtils.isAndroidPermission(permission) &&
                         isDangerousPermission(permission)) {
                     permissions.put(permission,
                             0 != (pi.requestedPermissionsFlags[i] & PackageInfo.REQUESTED_PERMISSION_GRANTED));

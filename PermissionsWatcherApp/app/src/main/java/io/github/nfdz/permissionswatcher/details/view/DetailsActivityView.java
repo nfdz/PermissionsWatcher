@@ -2,6 +2,7 @@ package io.github.nfdz.permissionswatcher.details.view;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
@@ -25,7 +26,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -147,8 +150,78 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
     }
 
     @Override
-    public void navigateToPermissionSettings(PermissionState permission) {
+    public void navigateToPermissionSettings(int permissionGroupType) {
         // TODO
+    }
+
+    @Override
+    public void showPermissionsDetailsDialog(List<PermissionState> permissions, int permissionGroupType) {
+        final AtomicReference<String> perissionGroupName = new AtomicReference<>("");
+        PermissionsUtils.visitPermissionType(permissionGroupType, new PermissionsUtils.PermissionTypeVisitor() {
+                    @Override
+                    public void visitCalendarType() {
+                        perissionGroupName.set(getString(R.string.permissions_type_calendar));
+                    }
+                    @Override
+                    public void visitCameraType() {
+                        perissionGroupName.set(getString(R.string.permissions_type_camera));
+                    }
+                    @Override
+                    public void visitContactsType() {
+                        perissionGroupName.set(getString(R.string.permissions_type_contacts));
+                    }
+                    @Override
+                    public void visitLocationType() {
+                        perissionGroupName.set(getString(R.string.permissions_type_location));
+                    }
+                    @Override
+                    public void visitMicrophoneType() {
+                        perissionGroupName.set(getString(R.string.permissions_type_mic));
+                    }
+                    @Override
+                    public void visitPhoneType() {
+                        perissionGroupName.set(getString(R.string.permissions_type_phone));
+                    }
+                    @Override
+                    public void visitSensorsType() {
+                        perissionGroupName.set(getString(R.string.permissions_type_sensors));
+                    }
+                    @Override
+                    public void visitSMSType() {
+                        perissionGroupName.set(getString(R.string.permissions_type_sms));
+                    }
+                    @Override
+                    public void visitStorageType() {
+                        perissionGroupName.set(getString(R.string.permissions_type_storage));
+                    }
+                    @Override
+                    public void visitUnknownType() {
+                        perissionGroupName.set(getString(R.string.permissions_type_unknown));
+                    }
+                });
+        String title = getString(R.string.permissions_dialog_title_format, perissionGroupName.get());
+        List<String> permissionsText = new ArrayList<>();
+        for (PermissionState permissionState : PermissionsUtils.filterPermissions(permissions, permissionGroupType, true)) {
+            permissionsText.add(PermissionsUtils.shortAndroidPermission(permissionState.permission));
+        }
+        StringBuilder messageBld = new StringBuilder();
+        Collections.sort(permissionsText);
+        Iterator<String> it = permissionsText.iterator();
+        while (it.hasNext()) {
+            String permissionText = it.next();
+            messageBld.append(permissionText);
+            if (it.hasNext()) messageBld.append('\n');
+        }
+        String message = messageBld.toString();
+        if (TextUtils.isEmpty(message)) {
+            Timber.e("Permissions dialog with no message. Permission type="+permissionGroupType+".");
+        } else {
+            new AlertDialog.Builder(this)
+                    .setTitle(title)
+                    .setMessage(message)
+                    .create()
+                    .show();
+        }
     }
 
     @Override
@@ -158,14 +231,17 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
     class Adapter extends RecyclerView.Adapter<Adapter.PermissionGroupViewHolder> {
 
-        private List<Integer> permissions = null;
+        private List<Integer> permissionsGroups = null;
+        private List<PermissionState> permissions = null;
 
         public void setData(ApplicationInfo data) {
             if (data != null) {
-                permissions = new ArrayList<>(PermissionsUtils.processAndCompactPermissionStates(data.permissions, true));
-                Collections.sort(permissions);
+                permissions = data.permissions;
+                permissionsGroups = new ArrayList<>(PermissionsUtils.processAndCompactPermissionStates(permissions, true));
+                Collections.sort(permissionsGroups);
             } else {
                 permissions = null;
+                permissionsGroups = null;
             }
             notifyDataSetChanged();
         }
@@ -178,12 +254,12 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
         @Override
         public void onBindViewHolder(PermissionGroupViewHolder holder, int position) {
-            holder.bindPermissionGroup(permissions.get(position));
+            holder.bindPermissionGroup(permissionsGroups.get(position));
         }
 
         @Override
         public int getItemCount() {
-            return permissions != null ? permissions.size() : 0;
+            return permissionsGroups != null ? permissionsGroups.size() : 0;
         }
 
         class PermissionGroupViewHolder extends RecyclerView.ViewHolder {
@@ -198,56 +274,68 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
             @OnClick(R.id.item_permission_container)
             void onPermissionClick() {
+                presenter.onClickPermissionGroup(permissionsGroups.get(getAdapterPosition()));
             }
 
             @OnLongClick(R.id.item_permission_container)
             boolean onPermissionLongClick() {
+                presenter.onLongClickPermissionGroup(permissions, permissionsGroups.get(getAdapterPosition()));
                 return true;
             }
 
             void bindPermissionGroup(int permissionType) {
-                switch (permissionType) {
-                    case PermissionsUtils.CALENDAR_TYPE:
+                PermissionsUtils.visitPermissionType(permissionType, new PermissionsUtils.PermissionTypeVisitor() {
+                    @Override
+                    public void visitCalendarType() {
                         icon.setImageResource(R.drawable.ic_permission_type_calendar);
                         name.setText(R.string.permissions_type_calendar);
-                        break;
-                    case PermissionsUtils.CAMERA_TYPE:
+                    }
+                    @Override
+                    public void visitCameraType() {
                         icon.setImageResource(R.drawable.ic_permission_type_camera);
                         name.setText(R.string.permissions_type_camera);
-                        break;
-                    case PermissionsUtils.CONTACTS_TYPE:
+                    }
+                    @Override
+                    public void visitContactsType() {
                         icon.setImageResource(R.drawable.ic_permission_type_contacts);
                         name.setText(R.string.permissions_type_contacts);
-                        break;
-                    case PermissionsUtils.LOCATION_TYPE:
+                    }
+                    @Override
+                    public void visitLocationType() {
                         icon.setImageResource(R.drawable.ic_permission_type_location);
                         name.setText(R.string.permissions_type_location);
-                        break;
-                    case PermissionsUtils.MICROPHONE_TYPE:
+                    }
+                    @Override
+                    public void visitMicrophoneType() {
                         icon.setImageResource(R.drawable.ic_permission_type_mic);
                         name.setText(R.string.permissions_type_mic);
-                        break;
-                    case PermissionsUtils.PHONE_TYPE:
+                    }
+                    @Override
+                    public void visitPhoneType() {
                         icon.setImageResource(R.drawable.ic_permission_type_phone);
                         name.setText(R.string.permissions_type_phone);
-                        break;
-                    case PermissionsUtils.SENSORS_TYPE:
+                    }
+                    @Override
+                    public void visitSensorsType() {
                         icon.setImageResource(R.drawable.ic_permission_type_sensors);
                         name.setText(R.string.permissions_type_sensors);
-                        break;
-                    case PermissionsUtils.SMS_TYPE:
+                    }
+                    @Override
+                    public void visitSMSType() {
                         icon.setImageResource(R.drawable.ic_permission_type_sms);
                         name.setText(R.string.permissions_type_sms);
-                        break;
-                    case PermissionsUtils.STORAGE_TYPE:
+                    }
+                    @Override
+                    public void visitStorageType() {
                         icon.setImageResource(R.drawable.ic_permission_type_storage);
                         name.setText(R.string.permissions_type_storage);
-                        break;
-                    default:
+                    }
+                    @Override
+                    public void visitUnknownType() {
                         icon.setImageResource(R.drawable.ic_permission_type_unknown);
                         name.setText(R.string.permissions_type_unknown);
-                        break;
-                }
+                    }
+                });
             }
         }
     }

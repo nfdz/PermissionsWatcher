@@ -23,4 +23,6 @@
     <string name="permissions_type_storage">Storage</string>
     <string name="permissions_type_unknown">Other</string>
 
+    <string name="permissions_dialog_title_format">%1$s permissions</string>
+
 </resources>

@@ -2,6 +2,8 @@ package io.github.nfdz.permissionswatcher.details;
 
 import android.arch.lifecycle.LiveData;
 
+import java.util.List;
+
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 
@@ -9,13 +11,15 @@ public interface DetailsActivityContract {
 
     interface View {
         void bindViewToLiveData(LiveData<ApplicationInfo> data);
-        void navigateToPermissionSettings(PermissionState permission);
+        void navigateToPermissionSettings(int permissionGroupType);
+        void showPermissionsDetailsDialog(List<PermissionState> permissions, int permissionGroupType);
     }
 
     interface Presenter {
         void initialize(String packageName);
         void destroy();
-        void onClickPermission(PermissionState permission);
+        void onClickPermissionGroup(int permissionGroupType);
+        void onLongClickPermissionGroup(List<PermissionState> permissions, int permissionGroupType);
     }
 
     interface Model {

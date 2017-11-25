@@ -1,5 +1,7 @@
 package io.github.nfdz.permissionswatcher.details.presenter;
 
+import java.util.List;
+
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.details.DetailsActivityContract;
 import io.github.nfdz.permissionswatcher.details.model.DetailsActivityInteractor;
@@ -30,7 +32,12 @@ public class DetailsActivityPresenter implements DetailsActivityContract.Present
     }
 
     @Override
-    public void onClickPermission(PermissionState permission) {
-        // TODO
+    public void onClickPermissionGroup(int permissionGroupType) {
+        view.navigateToPermissionSettings(permissionGroupType);
+    }
+
+    @Override
+    public void onLongClickPermissionGroup(List<PermissionState> permissions, int permissionGroupType) {
+        view.showPermissionsDetailsDialog(permissions, permissionGroupType);
     }
 }
