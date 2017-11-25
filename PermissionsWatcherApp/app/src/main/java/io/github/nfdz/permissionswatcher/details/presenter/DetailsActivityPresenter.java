@@ -32,8 +32,8 @@ public class DetailsActivityPresenter implements DetailsActivityContract.Present
     }
 
     @Override
-    public void onClickPermissionGroup(int permissionGroupType) {
-        view.navigateToPermissionSettings(permissionGroupType);
+    public void onClickPermissionGroup() {
+        view.navigateToPermissionSettings();
     }
 
     @Override

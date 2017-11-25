@@ -11,14 +11,14 @@ public interface DetailsActivityContract {
 
     interface View {
         void bindViewToLiveData(LiveData<ApplicationInfo> data);
-        void navigateToPermissionSettings(int permissionGroupType);
+        void navigateToPermissionSettings();
         void showPermissionsDetailsDialog(List<PermissionState> permissions, int permissionGroupType);
     }
 
     interface Presenter {
         void initialize(String packageName);
         void destroy();
-        void onClickPermissionGroup(int permissionGroupType);
+        void onClickPermissionGroup();
         void onLongClickPermissionGroup(List<PermissionState> permissions, int permissionGroupType);
     }
 

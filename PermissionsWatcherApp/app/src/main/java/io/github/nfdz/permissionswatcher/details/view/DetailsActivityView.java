@@ -69,13 +69,14 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
     private DetailsActivityContract.Presenter presenter;
     private Adapter adapter;
     private LiveData<ApplicationInfo> bindedData = null;
+    private String pkgName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
-        String pkgName = readPackageFromIntent(getIntent());
+        pkgName = readPackageFromIntent(getIntent());
         if (!TextUtils.isEmpty(pkgName)) {
             setupView(pkgName);
             presenter = new DetailsActivityPresenter(this);
@@ -150,56 +151,56 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
     }
 
     @Override
-    public void navigateToPermissionSettings(int permissionGroupType) {
-        // TODO
+    public void navigateToPermissionSettings() {
+        PermissionsUtils.startSettingsActivity(this, pkgName);
     }
 
     @Override
     public void showPermissionsDetailsDialog(List<PermissionState> permissions, int permissionGroupType) {
-        final AtomicReference<String> perissionGroupName = new AtomicReference<>("");
+        final AtomicReference<String> permissionGroupName = new AtomicReference<>("");
         PermissionsUtils.visitPermissionType(permissionGroupType, new PermissionsUtils.PermissionTypeVisitor() {
                     @Override
                     public void visitCalendarType() {
-                        perissionGroupName.set(getString(R.string.permissions_type_calendar));
+                        permissionGroupName.set(getString(R.string.permissions_type_calendar));
                     }
                     @Override
                     public void visitCameraType() {
-                        perissionGroupName.set(getString(R.string.permissions_type_camera));
+                        permissionGroupName.set(getString(R.string.permissions_type_camera));
                     }
                     @Override
                     public void visitContactsType() {
-                        perissionGroupName.set(getString(R.string.permissions_type_contacts));
+                        permissionGroupName.set(getString(R.string.permissions_type_contacts));
                     }
                     @Override
                     public void visitLocationType() {
-                        perissionGroupName.set(getString(R.string.permissions_type_location));
+                        permissionGroupName.set(getString(R.string.permissions_type_location));
                     }
                     @Override
                     public void visitMicrophoneType() {
-                        perissionGroupName.set(getString(R.string.permissions_type_mic));
+                        permissionGroupName.set(getString(R.string.permissions_type_mic));
                     }
                     @Override
                     public void visitPhoneType() {
-                        perissionGroupName.set(getString(R.string.permissions_type_phone));
+                        permissionGroupName.set(getString(R.string.permissions_type_phone));
                     }
                     @Override
                     public void visitSensorsType() {
-                        perissionGroupName.set(getString(R.string.permissions_type_sensors));
+                        permissionGroupName.set(getString(R.string.permissions_type_sensors));
                     }
                     @Override
                     public void visitSMSType() {
-                        perissionGroupName.set(getString(R.string.permissions_type_sms));
+                        permissionGroupName.set(getString(R.string.permissions_type_sms));
                     }
                     @Override
                     public void visitStorageType() {
-                        perissionGroupName.set(getString(R.string.permissions_type_storage));
+                        permissionGroupName.set(getString(R.string.permissions_type_storage));
                     }
                     @Override
                     public void visitUnknownType() {
-                        perissionGroupName.set(getString(R.string.permissions_type_unknown));
+                        permissionGroupName.set(getString(R.string.permissions_type_unknown));
                     }
                 });
-        String title = getString(R.string.permissions_dialog_title_format, perissionGroupName.get());
+        String title = getString(R.string.permissions_dialog_title_format, permissionGroupName.get());
         List<String> permissionsText = new ArrayList<>();
         for (PermissionState permissionState : PermissionsUtils.filterPermissions(permissions, permissionGroupType, true)) {
             permissionsText.add(PermissionsUtils.shortAndroidPermission(permissionState.permission));
@@ -274,7 +275,7 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
             @OnClick(R.id.item_permission_container)
             void onPermissionClick() {
-                presenter.onClickPermissionGroup(permissionsGroups.get(getAdapterPosition()));
+                presenter.onClickPermissionGroup();
             }
 
             @OnLongClick(R.id.item_permission_container)

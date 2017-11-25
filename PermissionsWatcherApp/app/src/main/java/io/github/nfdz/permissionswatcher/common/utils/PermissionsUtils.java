@@ -2,7 +2,11 @@ package io.github.nfdz.permissionswatcher.common.utils;
 
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
+import android.provider.Settings;
 import android.support.annotation.IntDef;
 
 import java.lang.annotation.Retention;
@@ -209,5 +213,15 @@ public class PermissionsUtils {
                 visitor.visitUnknownType();
                 break;
         }
+    }
+
+
+    public static void startSettingsActivity(Context context, String packageName) {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        Uri uri = Uri.fromParts("package", packageName, null);
+        intent.setData(uri);
+        context.startActivity(intent);
     }
 }
