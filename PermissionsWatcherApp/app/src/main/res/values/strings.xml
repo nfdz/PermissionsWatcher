@@ -10,7 +10,7 @@
     <string name="action_show_apps_without_permissions_on">Hide apps without permissions</string>
     <string name="action_search">Search</string>
 
-    <string name="permissions_label">Permissions:</string>
+    <string name="permissions_label">Permissions</string>
 
     <string name="permissions_type_calendar">Calendar</string>
     <string name="permissions_type_camera">Camera</string>
