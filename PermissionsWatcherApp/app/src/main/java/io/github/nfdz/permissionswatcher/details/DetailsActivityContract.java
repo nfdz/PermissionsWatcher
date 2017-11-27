@@ -28,6 +28,7 @@ public interface DetailsActivityContract {
         void destroy();
         LiveData<ApplicationInfo> loadDataAsync(String packageName);
         void toggleIgnoreFlag(List<PermissionState> permissions);
+        void clearChangesFlags(String packageName);
     }
 
 

@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.content.Context;
 
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
+import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
@@ -63,7 +64,7 @@ public class MainActivityInteractor implements MainActivityContract.Model {
     public void toggleIgnoreFlag(ApplicationInfo app) {
         if (realm != null) {
             final String pkgName = app.packageName;
-            final boolean notifyPermissions = app.notifyPermissions;
+            final boolean toggledFlag = !app.notifyPermissions;
             realm.executeTransactionAsync(new Realm.Transaction() {
                 @Override
                 public void execute(Realm realm) {
@@ -71,7 +72,14 @@ public class MainActivityInteractor implements MainActivityContract.Model {
                             .equalTo(ApplicationInfo.PACKAGE_NAME_FIELD, pkgName)
                             .findFirst();
                     if (managedApp != null) {
-                        managedApp.notifyPermissions = ! notifyPermissions;
+                        managedApp.notifyPermissions = toggledFlag;
+                        // remove changes flags
+                        if (!toggledFlag /* not notify */) {
+                            managedApp.hasChanges = false;
+                            for (PermissionState permission : managedApp.permissions) {
+                                permission.hasChanged = false;
+                            }
+                        }
                     }
                 }
             });

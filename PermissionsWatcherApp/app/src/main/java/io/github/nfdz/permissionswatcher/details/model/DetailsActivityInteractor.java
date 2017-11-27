@@ -1,7 +1,6 @@
 package io.github.nfdz.permissionswatcher.details.model;
 
 import android.arch.lifecycle.LiveData;
-import android.content.Context;
 
 import java.util.List;
 
@@ -10,7 +9,6 @@ import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.github.nfdz.permissionswatcher.details.DetailsActivityContract;
 import io.realm.Realm;
-import io.realm.Sort;
 
 public class DetailsActivityInteractor implements DetailsActivityContract.Model {
 
@@ -47,7 +45,25 @@ public class DetailsActivityInteractor implements DetailsActivityContract.Model 
         realm.beginTransaction();
         for (PermissionState permission : permissions) {
             permission.notifyChanges =  toggledFlag;
+            if (!toggledFlag /* not notify */) {
+                permission.hasChanged = false;
+            }
         }
         realm.commitTransaction();
+    }
+
+    @Override
+    public void clearChangesFlags(final String packageName) {
+        ApplicationInfo managedApp = realm.where(ApplicationInfo.class)
+                .equalTo(ApplicationInfo.PACKAGE_NAME_FIELD, packageName)
+                .findFirst();
+        if (managedApp != null) {
+            realm.beginTransaction();
+            managedApp.hasChanges = false;
+            for (PermissionState permission : managedApp.permissions) {
+                permission.hasChanged = false;
+            }
+            realm.commitTransaction();
+        }
     }
 }

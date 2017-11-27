@@ -43,7 +43,7 @@ public class SyncService extends IntentService {
             realm.beginTransaction();
             PackageManager pm = getPackageManager();
             List<ApplicationInfo> storedApps = realm.where(ApplicationInfo.class).findAll();
-            PermissionsParser parser = new PermissionsParser(pm, null);
+            PermissionsParser parser = new PermissionsParser(pm);
             Map<String,ApplicationInfo> parsedApps = parser.retrieveAllAppsWithPermissions();
 
             for (ApplicationInfo storedApp : storedApps) {
@@ -53,7 +53,8 @@ public class SyncService extends IntentService {
                     storedApp.versionName = parsedApp.versionName;
                     storedApp.versionCode = parsedApp.versionCode;
                     storedApp.isSystemApplication = parsedApp.isSystemApplication;
-                    storedApp.hasChanges = processPermissions(realm, storedApp.permissions, parsedApp.permissions);
+                    boolean anyChange = processPermissions(realm, storedApp.permissions, parsedApp.permissions);
+                    storedApp.hasChanges = storedApp.hasChanges || anyChange;
                     parsedApps.remove(storedApp.packageName);
                 } else {
                     delete(storedApp);
@@ -91,10 +92,15 @@ public class SyncService extends IntentService {
             boolean deleted = true;
             for (PermissionState parsedPermission : parsedPermissions) {
                 if (storedPermission.permission.equals(parsedPermission.permission)) {
-                    if (storedPermission.granted != parsedPermission.granted) {
+                    // notify only if was not granted and now is granted
+                    boolean wasGranted = storedPermission.granted;
+                    boolean isGranted = parsedPermission.granted;
+                    if (wasGranted != isGranted) {
                         storedPermission.granted = parsedPermission.granted;
-                        storedPermission.hasChanged = true;
-                        anyChange = true;
+                        if (!wasGranted && isGranted) {
+                            storedPermission.hasChanged = true;
+                            anyChange = true;
+                        }
                     }
                     deleted = false;
                     break;

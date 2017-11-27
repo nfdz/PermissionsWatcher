@@ -29,10 +29,13 @@ public class DetailsActivityPresenter implements DetailsActivityContract.Present
 
     @Override
     public void destroy() {
+        if (interactor != null) {
+            interactor.clearChangesFlags(packageName);
+            interactor.destroy();
+        }
+        interactor = null;
         packageName = null;
         view = null;
-        if (interactor != null) interactor.destroy();
-        interactor = null;
     }
 
     @Override

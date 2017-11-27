@@ -16,6 +16,7 @@
         android:adjustViewBounds="true"
         android:layout_marginStart="@dimen/list_item_app_horizontal_margin"
         android:transitionName="@string/app_icon_transition_string"
+        tools:srcCompat="@drawable/ic_permission_type_calendar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -82,5 +83,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:visibility="invisible"
+        android:id="@+id/item_app_iv_icon_has_changes"
+        android:layout_width="@dimen/list_item_app_has_changes_icon_size"
+        android:layout_height="@dimen/list_item_app_has_changes_icon_size"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/ic_has_changes"
+        app:layout_constraintTop_toTopOf="@+id/item_app_iv_icon"
+        app:layout_constraintBottom_toTopOf="@+id/item_app_iv_icon"
+        app:layout_constraintStart_toStartOf="@+id/item_app_iv_icon"
+        app:layout_constraintEnd_toStartOf="@+id/item_app_iv_icon" />
 
 </android.support.constraint.ConstraintLayout>

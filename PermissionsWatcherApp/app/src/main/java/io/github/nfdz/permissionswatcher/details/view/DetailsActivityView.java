@@ -268,6 +268,7 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
             @BindView(R.id.item_permission_iv_icon) ImageView icon;
             @BindView(R.id.item_permission_tv_name) TextView name;
             @BindView(R.id.item_permission_iv_ignore) ImageView ignoreIcon;
+            @BindView(R.id.item_permission_iv_icon_has_changed) ImageView hasChangedIcon;
 
             PermissionGroupViewHolder(View itemView) {
                 super(itemView);
@@ -291,12 +292,22 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
             }
 
             void bindPermissionGroup(int permissionType) {
+                List<PermissionState> groupPermissions = PermissionsUtils.filterPermissions(permissions, permissionType, false);
+                // set notify flag icon state
                 boolean anyNotify = false;
-                for (PermissionState permissionState : PermissionsUtils.filterPermissions(permissions, permissionType, false)) {
+                for (PermissionState permissionState : groupPermissions) {
                     anyNotify = anyNotify || permissionState.notifyChanges;
                 }
                 ignoreIcon.setImageResource(anyNotify ? R.drawable.ic_ignore_off : R.drawable.ic_ignore_on);
 
+                // set has changes flag icon state
+                boolean anyChange = false;
+                for (PermissionState permissionState : groupPermissions) {
+                    anyChange = anyChange || (permissionState.notifyChanges && permissionState.hasChanged);
+                }
+                hasChangedIcon.setVisibility(anyChange ? View.VISIBLE : View.INVISIBLE);
+
+                // set icon and text
                 PermissionsUtils.visitPermissionType(permissionType, new PermissionsUtils.PermissionTypeVisitor() {
                     @Override
                     public void visitCalendarType() {

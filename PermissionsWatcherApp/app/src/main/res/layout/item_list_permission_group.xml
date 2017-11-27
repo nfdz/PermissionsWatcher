@@ -9,14 +9,23 @@
     android:background="@drawable/selector_list_item">
 
     <ImageView
+        android:visibility="invisible"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/item_permission_iv_icon_has_changed"
+        android:layout_width="@dimen/list_item_permission_has_changes_width"
+        android:layout_height="@dimen/list_item_permission_has_changes_height"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/ic_has_changes"/>
+
+    <ImageView
         android:id="@+id/item_permission_iv_icon"
         android:layout_width="@dimen/list_item_permission_icon_size"
         android:layout_height="@dimen/list_item_permission_icon_size"
         tools:srcCompat="@drawable/ic_permission_type_calendar"
         android:layout_gravity="center"
         android:scaleType="fitCenter"
-        android:adjustViewBounds="true"
-        android:layout_marginStart="@dimen/list_item_permission_horizontal_margin" />
+        android:adjustViewBounds="true" />
 
     <TextView
         android:id="@+id/item_permission_tv_name"

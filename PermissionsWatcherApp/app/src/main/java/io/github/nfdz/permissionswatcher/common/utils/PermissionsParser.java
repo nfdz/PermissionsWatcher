@@ -18,40 +18,23 @@ import static android.content.pm.PermissionInfo.PROTECTION_DANGEROUS;
 public class PermissionsParser {
 
     private static final boolean NOTIFY_FLAG_DEFAULT = true;
-    private static final boolean HAS_CHANGES_FLAG_DEFAULT = true;
-    private static final boolean HAS_CHANGED_FLAG_DEFAULT = true;
-
-    public interface RetrieveProcessCallback {
-        void notifyProcessState(int current, int total);
-    }
-
-    private static final String ANDROID_PERMISSIONS_PREFIX = "android.permission.";
-
-    private static final RetrieveProcessCallback NULL_CALLBACK = new RetrieveProcessCallback() {
-        public void notifyProcessState(int current, int total) {}
-    };
 
     private final PackageManager pm;
-    private final RetrieveProcessCallback callback;
 
-    public PermissionsParser(PackageManager pm, @Nullable RetrieveProcessCallback callback) {
+    public PermissionsParser(PackageManager pm) {
         this.pm = pm;
-        this.callback = callback == null ? NULL_CALLBACK : callback;
     }
 
     @Nullable
     public Map<String,ApplicationInfo> retrieveAllAppsWithPermissions() {
         List<android.content.pm.ApplicationInfo> apps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
         if (apps == null || apps.isEmpty()) return null;
-        final int total = apps.size();
-        int progress = 0;
         Map<String,ApplicationInfo> applications = new HashMap<>();
         for (android.content.pm.ApplicationInfo app : apps) {
-            callback.notifyProcessState(++progress, total);
             Map<String,Boolean> permissionsMap = tryToGetPermissions(app);
             if (permissionsMap == null || permissionsMap.isEmpty()) continue;
             RealmList<PermissionState> permissionsList = new RealmList<>();
-            addPermissions(permissionsMap, permissionsList);
+            boolean anyGranted = addPermissions(permissionsMap, permissionsList);
             String packageName = app.packageName;
             String label = tryToGetLabel(app);
             Integer versionCode = tryToGetVersionCode(app);
@@ -64,19 +47,23 @@ public class PermissionsParser {
                     isSystemApplication,
                     permissionsList,
                     NOTIFY_FLAG_DEFAULT,
-                    HAS_CHANGES_FLAG_DEFAULT));
+                    anyGranted));
         }
         return applications;
     }
 
-    private void addPermissions(Map<String,Boolean> permissionsMap,
+    private boolean addPermissions(Map<String,Boolean> permissionsMap,
                                 RealmList<PermissionState> permissionsList) {
+        boolean anyGranted = false;
         for (Map.Entry<String,Boolean> entry : permissionsMap.entrySet()) {
+            boolean isGranted = entry.getValue();
+            anyGranted = anyGranted || isGranted;
             permissionsList.add(new PermissionState(entry.getKey(),
-                    entry.getValue(),
-                    HAS_CHANGED_FLAG_DEFAULT,
+                    isGranted,
+                    isGranted, // has changes = true only if it is granted
                     NOTIFY_FLAG_DEFAULT));
         }
+        return anyGranted;
     }
 
     @Nullable

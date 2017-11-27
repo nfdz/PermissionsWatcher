@@ -257,6 +257,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
             @BindView(R.id.item_app_tv_permissions_value) TextView permissionsValue;
             @BindView(R.id.item_app_tv_version) TextView version;
             @BindView(R.id.item_app_iv_ignore) ImageView ignoreIcon;
+            @BindView(R.id.item_app_iv_icon_has_changes) ImageView hasChangesIcon;
 
             AppViewHolder(View itemView) {
                 super(itemView);
@@ -279,6 +280,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
                 } catch (PackageManager.NameNotFoundException e) {
                     icon.setImageDrawable(getPackageManager().getDefaultActivityIcon());
                 }
+                hasChangesIcon.setVisibility(app.notifyPermissions && app.hasChanges ? View.VISIBLE : View.INVISIBLE);
                 name.setText(TextUtils.isEmpty(app.label) ? app.packageName : app.label);
                 permissionsValue.setText(getPermissionsValue(app.permissions));
                 version.setText(processVersion(app.versionName));
