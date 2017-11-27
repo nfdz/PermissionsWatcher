@@ -20,12 +20,14 @@ public interface DetailsActivityContract {
         void destroy();
         void onClickPermissionGroup();
         void onLongClickPermissionGroup(List<PermissionState> permissions, int permissionGroupType);
+        void onIgnorePermissionClick(List<PermissionState> permissions, int permissionGroupType);
     }
 
     interface Model {
         void initialize();
         void destroy();
         LiveData<ApplicationInfo> loadDataAsync(String packageName);
+        void toggleIgnoreFlag(List<PermissionState> permissions);
     }
 
 

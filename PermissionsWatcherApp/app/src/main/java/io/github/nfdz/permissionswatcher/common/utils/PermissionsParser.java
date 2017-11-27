@@ -74,7 +74,8 @@ public class PermissionsParser {
         for (Map.Entry<String,Boolean> entry : permissionsMap.entrySet()) {
             permissionsList.add(new PermissionState(entry.getKey(),
                     entry.getValue(),
-                    HAS_CHANGED_FLAG_DEFAULT));
+                    HAS_CHANGED_FLAG_DEFAULT,
+                    NOTIFY_FLAG_DEFAULT));
         }
     }
 

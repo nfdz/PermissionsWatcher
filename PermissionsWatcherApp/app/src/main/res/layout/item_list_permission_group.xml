@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_permission_height"
@@ -19,12 +20,28 @@
 
     <TextView
         android:id="@+id/item_permission_tv_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/list_item_permission_name"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:layout_marginStart="@dimen/list_item_permission_name_margin_start"
         tools:text="@string/permissions_type_calendar"/>
+
+    <ImageView
+        android:id="@+id/item_permission_iv_ignore"
+        android:layout_width="@dimen/list_item_permission_ignore_width"
+        android:layout_height="@dimen/list_item_permission_ignore_height"
+        android:paddingTop="@dimen/list_item_permission_ignore_vertical_padding"
+        android:paddingBottom="@dimen/list_item_permission_ignore_vertical_padding"
+        android:paddingStart="@dimen/list_item_permission_ignore_start_padding"
+        android:paddingEnd="@dimen/list_item_permission_ignore_end_padding"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        app:srcCompat="@drawable/ic_ignore_off"
+        android:layout_gravity="center_vertical"/>
 
 </LinearLayout>

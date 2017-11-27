@@ -13,16 +13,22 @@ public class PermissionState extends RealmObject {
     public boolean hasChanged;
     public final static String HAS_CHANGED_FLAG_FIELD = "hasChanged";
 
+    public boolean notifyChanges;
+    public final static String NOTIFY_CHANGES_FLAG_FIELD = "notifyChanges";
+
+
     public PermissionState() {
         permission = null;
         granted = false;
         hasChanged = false;
+        notifyChanges = false;
     }
 
-    public PermissionState(String permission, boolean granted, boolean hasChanged) {
+    public PermissionState(String permission, boolean granted, boolean hasChanged, boolean notifyChanges) {
         this.permission = permission;
         this.granted = granted;
         this.hasChanged = hasChanged;
+        this.notifyChanges = notifyChanges;
     }
 
 }

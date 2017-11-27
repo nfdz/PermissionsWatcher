@@ -20,5 +20,10 @@
     <dimen name="list_item_permission_name">14sp</dimen>
     <dimen name="list_item_permission_horizontal_margin">@dimen/details_activity_horizontal_margin</dimen>
     <dimen name="list_item_permission_name_margin_start">16dp</dimen>
+    <dimen name="list_item_permission_ignore_height">@dimen/list_item_permission_height</dimen>
+    <dimen name="list_item_permission_ignore_vertical_padding">15dp</dimen>
+    <dimen name="list_item_permission_ignore_width">100dp</dimen>
+    <dimen name="list_item_permission_ignore_start_padding">50dp</dimen>
+    <dimen name="list_item_permission_ignore_end_padding">30dp</dimen>
 
 </resources>

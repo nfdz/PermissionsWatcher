@@ -267,6 +267,7 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
             @BindView(R.id.item_permission_iv_icon) ImageView icon;
             @BindView(R.id.item_permission_tv_name) TextView name;
+            @BindView(R.id.item_permission_iv_ignore) ImageView ignoreIcon;
 
             PermissionGroupViewHolder(View itemView) {
                 super(itemView);
@@ -284,7 +285,18 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
                 return true;
             }
 
+            @OnClick(R.id.item_permission_iv_ignore)
+            void onIgnoreClick() {
+                presenter.onIgnorePermissionClick(permissions, permissionsGroups.get(getAdapterPosition()));
+            }
+
             void bindPermissionGroup(int permissionType) {
+                boolean anyNotify = false;
+                for (PermissionState permissionState : PermissionsUtils.filterPermissions(permissions, permissionType, false)) {
+                    anyNotify = anyNotify || permissionState.notifyChanges;
+                }
+                ignoreIcon.setImageResource(anyNotify ? R.drawable.ic_ignore_off : R.drawable.ic_ignore_on);
+
                 PermissionsUtils.visitPermissionType(permissionType, new PermissionsUtils.PermissionTypeVisitor() {
                     @Override
                     public void visitCalendarType() {
