@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:title="@string/prefs_category_view_title"
+        android:key="@string/prefs_category_view_key">
+
+        <SwitchPreference
+            android:key="@string/prefs_show_apps_without_perm_key"
+            android:title="@string/prefs_show_apps_without_perm_title"
+            android:summary="@string/prefs_show_apps_without_perm_summary"
+            android:defaultValue="@string/prefs_show_apps_without_perm_default" />
+
+        <SwitchPreference
+            android:key="@string/prefs_show_system_apps_key"
+            android:title="@string/prefs_show_system_apps_title"
+            android:summary="@string/prefs_show_system_apps_summary"
+            android:defaultValue="@string/prefs_show_system_apps_default" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/prefs_category_notifications_title"
+        android:key="@string/prefs_category_notifications_key">
+
+        <SwitchPreference
+            android:key="@string/prefs_notifications_enable_key"
+            android:title="@string/prefs_notifications_enable_title"
+            android:summary="@string/prefs_notifications_enable_summary"
+            android:defaultValue="@string/prefs_notifications_enable_default" />
+
+        <io.github.nfdz.permissionswatcher.settings.TimePreference
+            android:key="@string/prefs_notifications_time_key"
+            android:title="@string/prefs_notifications_time_title"
+            android:defaultValue="@string/prefs_notifications_time_default"
+            android:dependency="@string/prefs_notifications_enable_key" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

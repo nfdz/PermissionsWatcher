@@ -16,8 +16,9 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             android:layout_width="match_parent"
-            app:theme="@style/AppTheme.ThemeOverlay"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:theme="@style/AppTheme.ThemeOverlay"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:layout_scrollFlags="scroll|enterAlways" />
 
     </android.support.design.widget.AppBarLayout>
 
@@ -36,7 +37,8 @@
                 android:id="@+id/main_activity_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="vertical" />
+                android:scrollbars="vertical"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
             <TextView
                 android:visibility="invisible"

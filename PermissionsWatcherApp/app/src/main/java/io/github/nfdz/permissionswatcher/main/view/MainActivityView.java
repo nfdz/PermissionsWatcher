@@ -36,6 +36,7 @@ import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.details.view.DetailsActivityView;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
 import io.github.nfdz.permissionswatcher.main.presenter.MainActivityPresenter;
+import io.github.nfdz.permissionswatcher.settings.SettingsActivity;
 import io.realm.RealmResults;
 
 public class MainActivityView extends AppCompatActivity implements MainActivityContract.View,
@@ -78,10 +79,6 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        menu.findItem(R.id.action_show_system).setTitle(PreferencesUtils.showSystemApps(this) ?
-                R.string.action_show_system_apps_on : R.string.action_show_system_apps_off);
-        menu.findItem(R.id.action_show_no_permissions).setTitle(PreferencesUtils.showSystemApps(this) ?
-                R.string.action_show_apps_without_permissions_on : R.string.action_show_apps_without_permissions_off);
         MenuItem searchMenuItem = menu.findItem( R.id.action_search);
         searchView = (SearchView)searchMenuItem.getActionView();
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -101,17 +98,8 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_show_system:
-                boolean currentFlag = PreferencesUtils.showSystemApps(this);
-                boolean toggledFlag = !currentFlag;
-                PreferencesUtils.setShowSystemApps(this, toggledFlag);
-                item.setTitle(toggledFlag ? R.string.action_show_system_apps_on : R.string.action_show_system_apps_off);
-                return true;
-            case R.id.action_show_no_permissions:
-                boolean currentShowFlag = PreferencesUtils.showAppsWithoutPermissions(this);
-                boolean toggledShowFlag = !currentShowFlag;
-                PreferencesUtils.setShowAppsWithoutPermissions(this, toggledShowFlag);
-                item.setTitle(toggledShowFlag ? R.string.action_show_apps_without_permissions_on : R.string.action_show_apps_without_permissions_off);
+            case R.id.action_settings:
+                SettingsActivity.start(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -180,9 +168,9 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (PreferencesUtils.SHOW_SYSTEM_APPS_FLAG_KEY.equals(key)) {
+        if (getString(R.string.prefs_show_system_apps_key).equals(key)) {
             presenter.onShowSystemAppsFlagChanged();
-        } else if (PreferencesUtils.SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_KEY.equals(key)) {
+        } else if (getString(R.string.prefs_show_apps_without_perm_key).equals(key)) {
             adapter.setShowAppsWithoutPermissions(PreferencesUtils.showAppsWithoutPermissions(this));
         }
     }

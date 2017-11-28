@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import io.github.nfdz.permissionswatcher.R;
+
 public class PreferencesUtils {
 
     public static SharedPreferences getSharedPreferences(Context context) {
@@ -25,33 +27,27 @@ public class PreferencesUtils {
     }
     //endregion
 
-    //region Show system applications flag
-    public final static String SHOW_SYSTEM_APPS_FLAG_KEY = "showSystemAppsFlag";
-    public final static boolean SHOW_SYSTEM_APPS_FLAG_DEFAULT = false;
-
     public static boolean showSystemApps(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(SHOW_SYSTEM_APPS_FLAG_KEY, SHOW_SYSTEM_APPS_FLAG_DEFAULT);
+        return sp.getBoolean(context.getString(R.string.prefs_show_system_apps_key),
+                Boolean.parseBoolean(context.getString(R.string.prefs_show_system_apps_default)));
     }
-
-    public static void setShowSystemApps(Context context, boolean showSystemApps) {
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putBoolean(SHOW_SYSTEM_APPS_FLAG_KEY, showSystemApps).apply();
-    }
-    //endregion
-
-    //region Show apps without permissions flag
-    public final static String SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_KEY = "showAppsWithoutPermissionsFlag";
-    public final static boolean SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_DEFAULT = false;
 
     public static boolean showAppsWithoutPermissions(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_KEY, SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_DEFAULT);
+        return sp.getBoolean(context.getString(R.string.prefs_show_apps_without_perm_key),
+                Boolean.parseBoolean(context.getString(R.string.prefs_show_apps_without_perm_default)));
     }
 
-    public static void setShowAppsWithoutPermissions(Context context, boolean showAppsWithoutPermissions) {
+    public static boolean notificationsEnable(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        sp.edit().putBoolean(SHOW_APPS_WITHOUT_PERMISSIONS_FLAG_KEY, showAppsWithoutPermissions).apply();
+        return sp.getBoolean(context.getString(R.string.prefs_notifications_enable_key),
+                Boolean.parseBoolean(context.getString(R.string.prefs_notifications_enable_default)));
     }
-    //endregion
+
+    public static String notificationsTime(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getString(context.getString(R.string.prefs_notifications_time_key),
+                context.getString(R.string.prefs_notifications_time_default));
+    }
 }

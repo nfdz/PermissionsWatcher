@@ -3,14 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_show_system"
+        android:id="@+id/action_settings"
         app:showAsAction="never"
-        android:title="" />
-
-    <item
-        android:id="@+id/action_show_no_permissions"
-        app:showAsAction="never"
-        android:title="" />
+        android:title="@string/action_settings" />
 
     <item
         android:id="@+id/action_search"

@@ -15,7 +15,7 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorPrimary"
             android:layout_width="match_parent"
-            app:theme="@style/AppTheme.ThemeOverlay.Navigation"
+            android:theme="@style/AppTheme.ThemeOverlay.Navigation"
             app:popupTheme="@style/AppTheme.PopupOverlay" />
 
     </android.support.design.widget.AppBarLayout>

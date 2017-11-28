@@ -29,4 +29,6 @@
     <dimen name="list_item_permission_ignore_start_padding">50dp</dimen>
     <dimen name="list_item_permission_ignore_end_padding">30dp</dimen>
 
+    <dimen name="prefs_time_picker_padding">12dp</dimen>
+
 </resources>

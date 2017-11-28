@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.github.nfdz.permissionswatcher">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:name=".PermissionsWatcherApp"
         android:allowBackup="true"
@@ -24,8 +26,29 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".main.view.MainActivityView" />
         </activity>
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:label="@string/action_settings"
+            android:parentActivityName=".main.view.MainActivityView">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".main.view.MainActivityView" />
+        </activity>
         <service android:name=".sync.SyncService"
            android:exported="false" />
+        <service
+            android:name=".sched.ReportService"
+            android:exported="false" />
+        <receiver
+            android:enabled="true"
+            android:name=".boot.BootReceiver"
+            android:exported="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
