@@ -41,7 +41,7 @@
             android:exported="false" />
         <receiver
             android:enabled="true"
-            android:name=".boot.BootReceiver"
+            android:name=".sched.BootReceiver"
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>

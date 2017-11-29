@@ -55,7 +55,7 @@ public class SchedUtils {
             Timber.d("Scheduling report alarm at %s", new Date(triggerAtMillis));
             manager.setInexactRepeating(AlarmManager.RTC, triggerAtMillis, DAILY_INTERVAL_MILLIS, getReportOperation(context));
         } else {
-            Timber.d("Cannot schedule report alarm because AlarmManager is not available.");
+            Timber.e("Cannot schedule report alarm because AlarmManager is not available.");
         }
     }
 
@@ -72,7 +72,7 @@ public class SchedUtils {
         if (manager != null) {
             manager.cancel(getReportOperation(context));
         } else {
-            Timber.d("Cannot cancel report alarm because AlarmManager is not available.");
+            Timber.e("Cannot cancel report alarm because AlarmManager is not available.");
         }
     }
 }

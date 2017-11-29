@@ -47,19 +47,21 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
     public static final String PKG_NAME_INTENT_KEY = "package_name";
 
-    public static void start(Context context, String packageName) {
+    public static Intent starter(Context context, String packageName) {
         Intent starter = new Intent(context, DetailsActivityView.class);
         starter.putExtra(PKG_NAME_INTENT_KEY, packageName);
-        context.startActivity(starter);
+        return starter;
+    }
+
+    public static void start(Context context, String packageName) {
+        context.startActivity(starter(context, packageName));
     }
 
     public static void start(Activity activity, String packageName, String transitionName, ImageView appIcon) {
-        Intent starter = new Intent(activity, DetailsActivityView.class);
-        starter.putExtra(PKG_NAME_INTENT_KEY, packageName);
         ActivityOptionsCompat options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
                 appIcon,
                 transitionName);
-        ActivityCompat.startActivity(activity, starter, options.toBundle());
+        ActivityCompat.startActivity(activity, starter(activity, packageName), options.toBundle());
     }
 
     @BindView(R.id.details_activity_recycler_view) RecyclerView recyclerView;

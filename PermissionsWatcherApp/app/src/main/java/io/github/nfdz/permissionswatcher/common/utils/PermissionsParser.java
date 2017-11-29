@@ -2,6 +2,7 @@ package io.github.nfdz.permissionswatcher.common.utils;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -25,11 +26,11 @@ public class PermissionsParser {
         this.pm = pm;
     }
 
-    @Nullable
+    @NonNull
     public Map<String,ApplicationInfo> retrieveAllAppsWithPermissions() {
-        List<android.content.pm.ApplicationInfo> apps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
-        if (apps == null || apps.isEmpty()) return null;
         Map<String,ApplicationInfo> applications = new HashMap<>();
+        List<android.content.pm.ApplicationInfo> apps = pm.getInstalledApplications(PackageManager.GET_META_DATA);
+        if (apps == null || apps.isEmpty()) return applications;
         for (android.content.pm.ApplicationInfo app : apps) {
             Map<String,Boolean> permissionsMap = tryToGetPermissions(app);
             if (permissionsMap == null || permissionsMap.isEmpty()) continue;

@@ -2,6 +2,8 @@ package io.github.nfdz.permissionswatcher.main.view;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -43,6 +45,10 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         SwipeRefreshLayout.OnRefreshListener,
         Observer<RealmResults<ApplicationInfo>>,
         SharedPreferences.OnSharedPreferenceChangeListener {
+
+    public static Intent starter(Context context) {
+        return new Intent(context, MainActivityView.class);
+    }
 
     @BindView(R.id.main_activity_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.main_activity_tv_empty) TextView emptyMessage;

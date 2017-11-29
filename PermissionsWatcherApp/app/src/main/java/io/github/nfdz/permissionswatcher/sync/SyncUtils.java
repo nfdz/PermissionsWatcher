@@ -9,48 +9,35 @@ import java.util.Map;
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.common.utils.PermissionsParser;
-import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.realm.Realm;
 import io.realm.RealmList;
-import timber.log.Timber;
 
 public class SyncUtils {
 
-    public static void tryToSync(PackageManager pm) {
-        Realm realm = null;
-        try {
-            realm = Realm.getInstance(RealmUtils.getConfiguration());
+    public static void tryToSync(Realm realm, PackageManager pm) {
+        realm.beginTransaction();
+        List<ApplicationInfo> storedApps = realm.where(ApplicationInfo.class).findAll();
+        PermissionsParser parser = new PermissionsParser(pm);
+        Map<String,ApplicationInfo> parsedApps = parser.retrieveAllAppsWithPermissions();
 
-            realm.beginTransaction();
-            List<ApplicationInfo> storedApps = realm.where(ApplicationInfo.class).findAll();
-            PermissionsParser parser = new PermissionsParser(pm);
-            Map<String,ApplicationInfo> parsedApps = parser.retrieveAllAppsWithPermissions();
-
-            for (ApplicationInfo storedApp : storedApps) {
-                if (parsedApps.containsKey(storedApp.packageName)) {
-                    ApplicationInfo parsedApp = parsedApps.get(storedApp.packageName);
-                    storedApp.label = parsedApp.label;
-                    storedApp.versionName = parsedApp.versionName;
-                    storedApp.versionCode = parsedApp.versionCode;
-                    storedApp.isSystemApplication = parsedApp.isSystemApplication;
-                    boolean anyChange = processPermissions(realm, storedApp.permissions, parsedApp.permissions);
-                    storedApp.hasChanges = storedApp.hasChanges || anyChange;
-                    parsedApps.remove(storedApp.packageName);
-                } else {
-                    delete(storedApp);
-                }
+        for (ApplicationInfo storedApp : storedApps) {
+            if (parsedApps.containsKey(storedApp.packageName)) {
+                ApplicationInfo parsedApp = parsedApps.get(storedApp.packageName);
+                storedApp.label = parsedApp.label;
+                storedApp.versionName = parsedApp.versionName;
+                storedApp.versionCode = parsedApp.versionCode;
+                storedApp.isSystemApplication = parsedApp.isSystemApplication;
+                boolean anyChange = processPermissions(realm, storedApp.permissions, parsedApp.permissions);
+                storedApp.hasChanges = storedApp.hasChanges || anyChange;
+                parsedApps.remove(storedApp.packageName);
+            } else {
+                delete(storedApp);
             }
-            for (Map.Entry<String,ApplicationInfo> entry : parsedApps.entrySet()) {
-                ApplicationInfo.copyToRealm(realm, entry.getValue());
-            }
-            realm.commitTransaction();
-
-            Timber.d("Synchronization finishes successfully");
-        } catch (Exception e) {
-            Timber.d(e, "There was an error during synchronization.");
-        } finally {
-            if (realm != null) realm.close();
         }
+        for (Map.Entry<String,ApplicationInfo> entry : parsedApps.entrySet()) {
+            ApplicationInfo.copyToRealm(realm, entry.getValue());
+        }
+        realm.commitTransaction();
     }
 
     private static void delete(ApplicationInfo app) {
