@@ -1,6 +1,7 @@
 package io.github.nfdz.permissionswatcher.sched;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
 
@@ -16,6 +17,10 @@ import timber.log.Timber;
 public class ReportService extends IntentService {
 
     public static final String SERVICE_NAME = "ReportService";
+
+    public static void start(Context context) {
+        context.startService(new Intent(context, ReportService.class));
+    }
 
     public ReportService() {
         super(SERVICE_NAME);

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="analyze"
+        android:enabled="true"
+        android:icon="@drawable/ic_analyze"
+        android:shortcutShortLabel="@string/shortcut_analyze_title"
+        android:shortcutLongLabel="@string/shortcut_analyze_title_long"
+        android:shortcutDisabledMessage="@string/shortcut_analyze_disabled">
+        <intent
+            android:action="io.github.nfdz.permissionswatcher.ANALYZE"
+            android:targetPackage="io.github.nfdz.permissionswatcher"
+            android:targetClass="io.github.nfdz.permissionswatcher.main.view.MainActivityView" />
+    </shortcut>
+</shortcuts>

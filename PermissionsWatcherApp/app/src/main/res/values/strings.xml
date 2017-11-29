@@ -50,13 +50,19 @@
     <string name="prefs_notifications_time_default" translatable="false">12:00</string>
 
     <!-- Notifications -->
-    <string name="notification_app_change_format_long">%1$s application has %2$d permission change… check them!</string>
+    <string name="notification_app_change_format_long">%1$s application has %2$d permission change.</string>
     <string name="notification_app_change_format_short">%1$s has %2$d change.</string>
-    <string name="notification_app_changes_format_long">%1$s application has %2$d permissions changes… check them!</string>
+    <string name="notification_app_changes_format_long">%1$s application has %2$d permissions changes.</string>
     <string name="notification_app_changes_format_short">%1$s has %2$d changes.</string>
 
-    <string name="notification_apps_changes_format_long">There are %1$d permissions changes… check them!</string>
+    <string name="notification_apps_changes_format_long">There are %1$d permissions changes.</string>
     <string name="notification_apps_changes_format_short">%1$d changes.</string>
 
+    <string name="notification_channel_name">Permissions watcher channel</string>
+
+    <!-- Shortcut -->
+    <string name="shortcut_analyze_title">Analyze</string>
+    <string name="shortcut_analyze_title_long">Launch analysis now</string>
+    <string name="shortcut_analyze_disabled">Analysis shortcut is not available</string>
 
 </resources>

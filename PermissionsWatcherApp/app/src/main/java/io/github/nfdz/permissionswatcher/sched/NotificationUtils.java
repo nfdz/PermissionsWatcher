@@ -1,11 +1,14 @@
 package io.github.nfdz.permissionswatcher.sched;
 
+import android.annotation.TargetApi;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
@@ -23,6 +26,7 @@ import timber.log.Timber;
 public class NotificationUtils {
 
     private static final int NOTIFICATION_ID = 4658;
+    private static final String NOTICIATION_CHANNEL_ID = "permissions_watcher_channel";
 
     public static void notifyReport(Context context, List<ApplicationInfo> appsWithChanges) {
         if (appsWithChanges == null || appsWithChanges.isEmpty()) return;
@@ -51,8 +55,15 @@ public class NotificationUtils {
         }
 
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_round);
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, null)
-                .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+
+        NotificationCompat.Builder notificationBuilder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationBuilder = new NotificationCompat.Builder(context, createNotificationChannel(context));
+        } else {
+            notificationBuilder = new NotificationCompat.Builder(context, "");
+        }
+
+        notificationBuilder.setColor(ContextCompat.getColor(context, R.color.colorPrimary))
                 .setSmallIcon(R.drawable.ic_notification_icon)
                 .setLargeIcon(icon)
                 .setContentTitle(notificationTitle)
@@ -83,7 +94,17 @@ public class NotificationUtils {
         return result;
     }
 
-    private static void createNotificationChannel(Context context) {
-        // TODO
+    @TargetApi(Build.VERSION_CODES.O)
+    private static String createNotificationChannel(Context context) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        CharSequence channelName = context.getString(R.string.notification_channel_name);
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel notificationChannel = new NotificationChannel(NOTICIATION_CHANNEL_ID, channelName, importance);
+        if (notificationManager != null) {
+            notificationManager.createNotificationChannel(notificationChannel);
+            return NOTICIATION_CHANNEL_ID;
+        } else {
+            return "";
+        }
     }
 }

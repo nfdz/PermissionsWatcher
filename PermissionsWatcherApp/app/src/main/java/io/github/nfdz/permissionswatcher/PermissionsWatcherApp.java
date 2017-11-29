@@ -1,11 +1,9 @@
 package io.github.nfdz.permissionswatcher;
 
 import android.app.Application;
-import android.content.Intent;
 import android.support.v7.app.AppCompatDelegate;
 
 import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
-import io.github.nfdz.permissionswatcher.sched.ReportService;
 import io.github.nfdz.permissionswatcher.sched.SchedUtils;
 import io.realm.Realm;
 import timber.log.Timber;
@@ -29,8 +27,6 @@ public class PermissionsWatcherApp extends Application {
         if (PreferencesUtils.isFirstTime(this)) {
             handleFirstTime();
         }
-
-        startService(new Intent(this, ReportService.class));
     }
 
     private void handleFirstTime() {

@@ -39,6 +39,7 @@ import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.details.view.DetailsActivityView;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
 import io.github.nfdz.permissionswatcher.main.presenter.MainActivityPresenter;
+import io.github.nfdz.permissionswatcher.sched.ReportService;
 import io.github.nfdz.permissionswatcher.settings.SettingsActivity;
 import io.realm.RealmResults;
 
@@ -46,6 +47,8 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         SwipeRefreshLayout.OnRefreshListener,
         Observer<RealmResults<ApplicationInfo>>,
         SharedPreferences.OnSharedPreferenceChangeListener {
+
+    public static final String ANALYZE_ACTION = "io.github.nfdz.permissionswatcher.ANALYZE";
 
     public static Intent starter(Context context) {
         return new Intent(context, MainActivityView.class);
@@ -64,13 +67,22 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        handleIntent(getIntent());
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         setupView();
         PreferencesUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
         presenter = new MainActivityPresenter(this);
         presenter.initialize(this, savedInstanceState == null);
+    }
 
+    private void handleIntent(@Nullable Intent intent) {
+        if (intent == null) return;
+        String action = intent.getAction();
+        if (TextUtils.isEmpty(action)) return;
+        if (ANALYZE_ACTION.equals(action)) {
+            ReportService.start(this);
+        }
     }
 
     private void setupView() {
