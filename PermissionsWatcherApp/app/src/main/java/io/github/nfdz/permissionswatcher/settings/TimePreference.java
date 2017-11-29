@@ -98,7 +98,13 @@ public class TimePreference extends DialogPreference {
 
     @Override
     public CharSequence getSummary() {
-        return value;
+        int hour = getHourFromValue(value);
+        int minutes = getMinutesFromValue(value);
+        String hourString = Integer.toString(hour);
+        if (hourString.length() == 1) hourString = "0" + hourString;
+        String minutesString = Integer.toString(minutes);
+        if (minutesString.length() == 1) minutesString = "0" + minutesString;
+        return hourString + ":" + minutesString + " (24h)";
     }
 
     @Override

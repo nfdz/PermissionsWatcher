@@ -12,7 +12,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".main.view.MainActivityView">
+        <activity
+            android:name=".main.view.MainActivityView"
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -20,7 +22,7 @@
         </activity>
         <activity
             android:name=".details.view.DetailsActivityView"
-            android:label=""
+            android:label="@string/app_name"
             android:parentActivityName=".main.view.MainActivityView">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -37,11 +39,12 @@
         <service android:name=".sync.SyncService"
            android:exported="false" />
         <service
-            android:name=".sched.ReportService"
-            android:exported="false" />
+            android:name="io.github.nfdz.permissionswatcher.sched.ReportService"
+            android:exported="true"
+            android:enabled="true" />
         <receiver
             android:enabled="true"
-            android:name=".sched.BootReceiver"
+            android:name="io.github.nfdz.permissionswatcher.sched.BootReceiver"
             android:exported="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>

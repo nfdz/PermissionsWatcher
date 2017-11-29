@@ -16,7 +16,19 @@
             android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:theme="@style/AppTheme.ThemeOverlay.Navigation"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+
+            <TextView
+                android:id="@+id/details_activity_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:fontFamily="@font/lato_regular"
+                tools:text="Application"
+                android:textColor="@color/textColorPrimary"
+                android:textSize="@dimen/text_toolbar_title_size" />
+
+        </android.support.v7.widget.Toolbar>
 
     </android.support.design.widget.AppBarLayout>
 
@@ -47,7 +59,6 @@
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="@dimen/details_activity_horizontal_margin"
             android:textColor="@color/textColorPrimary"
-            android:textStyle="bold"
             android:textSize="@dimen/details_activity_permissions_label_size"
             android:text="@string/permissions_label" />
 

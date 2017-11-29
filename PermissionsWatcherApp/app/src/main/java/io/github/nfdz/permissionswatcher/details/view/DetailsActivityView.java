@@ -1,6 +1,5 @@
 package io.github.nfdz.permissionswatcher.details.view;
 
-import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.arch.lifecycle.LiveData;
@@ -12,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -66,6 +66,7 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
     @BindView(R.id.details_activity_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.details_activity_toolbar) Toolbar toolbar;
+    @BindView(R.id.details_activity_toolbar_title) TextView toolbarTitle;
     @BindView(R.id.details_activity_iv_icon) ImageView icon;
 
     private DetailsActivityContract.Presenter presenter;
@@ -114,8 +115,9 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
     private void setupView(String pkgName) {
         setSupportActionBar(toolbar);
-        ActionBar ab = getActionBar();
+        ActionBar ab = getSupportActionBar();
         if (ab != null) {
+            ab.setDisplayShowTitleEnabled(false);
             ab.setDisplayHomeAsUpEnabled(true);
             ab.setDisplayShowHomeEnabled(true);
         }
@@ -128,7 +130,7 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
         } catch (Exception e) {
             label = pkgName;
         }
-        setTitle(label);
+        toolbarTitle.setText(label);
         try {
             icon.setImageDrawable(pm.getApplicationIcon(pkgName));
         } catch (Exception e) {

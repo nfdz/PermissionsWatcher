@@ -40,14 +40,14 @@ public class PermissionsUtils {
     private static final List<String> MICROPHONE_GROUP_PERMISSIONS = Collections.unmodifiableList(Collections.singletonList(
             Manifest.permission.RECORD_AUDIO ));
 
-    private static final List<String> PHONE_GROUP_PERMISSIONS = Arrays.asList(
+    private static final List<String> PHONE_GROUP_PERMISSIONS = new ArrayList<>(Arrays.asList(
             Manifest.permission.READ_PHONE_STATE,
             Manifest.permission.CALL_PHONE,
             Manifest.permission.READ_CALL_LOG,
             Manifest.permission.WRITE_CALL_LOG,
             Manifest.permission.ADD_VOICEMAIL,
             Manifest.permission.USE_SIP,
-            Manifest.permission.PROCESS_OUTGOING_CALLS );
+            Manifest.permission.PROCESS_OUTGOING_CALLS ));
 
     static {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

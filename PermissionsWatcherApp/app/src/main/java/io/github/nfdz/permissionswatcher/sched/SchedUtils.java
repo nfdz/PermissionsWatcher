@@ -16,7 +16,8 @@ import timber.log.Timber;
 
 public class SchedUtils {
 
-    private static final long DAILY_INTERVAL_MILLIS = TimeUnit.DAYS.toMillis(1);
+    private static long REPORT_WINDOW_LENGTH_MILLIS = TimeUnit.MINUTES.toMillis(1);
+    private static long MARGIN_TO_SCHEDULE = TimeUnit.MINUTES.toMillis(5);
 
     private static boolean sInitialized = false;
 
@@ -43,7 +44,7 @@ public class SchedUtils {
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, minutes);
         long todayTrigger = cal.getTimeInMillis();
-        if (todayTrigger > now) {
+        if (todayTrigger > (now + MARGIN_TO_SCHEDULE)) {
             triggerAtMillis = todayTrigger;
         } else {
             cal.add(Calendar.DAY_OF_MONTH, 1);
@@ -53,7 +54,8 @@ public class SchedUtils {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (manager != null) {
             Timber.d("Scheduling report alarm at %s", new Date(triggerAtMillis));
-            manager.setInexactRepeating(AlarmManager.RTC, triggerAtMillis, DAILY_INTERVAL_MILLIS, getReportOperation(context));
+            manager.setWindow(AlarmManager.RTC, triggerAtMillis, REPORT_WINDOW_LENGTH_MILLIS, getReportOperation(context));
+            Timber.d("Report alarm scheduled successfully.");
         } else {
             Timber.e("Cannot schedule report alarm because AlarmManager is not available.");
         }

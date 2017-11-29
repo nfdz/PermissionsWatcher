@@ -4,6 +4,8 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
@@ -48,9 +50,11 @@ public class NotificationUtils {
             notificationTextShort = context.getString(R.string.notification_apps_changes_format_short, changes);
         }
 
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_round);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, null)
                 .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                /*.setSmallIcon(R.drawable.ic_logo_launcher)*/
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setLargeIcon(icon)
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationTextShort)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationTextLong))

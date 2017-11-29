@@ -27,7 +27,7 @@ public class SettingsActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar ab = getSupportActionBar();
         if (ab != null) {
-            ab.setDisplayShowTitleEnabled(true);
+            ab.setDisplayShowTitleEnabled(false);
             ab.setDisplayHomeAsUpEnabled(true);
         }
     }

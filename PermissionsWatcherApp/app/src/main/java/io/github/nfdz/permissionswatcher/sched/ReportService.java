@@ -11,7 +11,6 @@ import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.github.nfdz.permissionswatcher.sync.SyncUtils;
 import io.realm.Realm;
-import io.realm.Sort;
 import timber.log.Timber;
 
 public class ReportService extends IntentService {
@@ -48,6 +47,7 @@ public class ReportService extends IntentService {
             Timber.e(e, "There was an error during reporting.");
         } finally {
             if (realm != null) realm.close();
+            SchedUtils.rescheduleAlarm(this);
         }
 
     }

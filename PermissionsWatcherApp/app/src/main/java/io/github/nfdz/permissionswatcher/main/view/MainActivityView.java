@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -74,6 +75,8 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
     private void setupView() {
         setSupportActionBar(toolbar);
+        ActionBar ab = getSupportActionBar();
+        if (ab != null) ab.setDisplayShowTitleEnabled(false);
         swipeRefreshLayout.setOnRefreshListener(this);
         adapter = new Adapter();
         adapter.setShowAppsWithoutPermissions(PreferencesUtils.showAppsWithoutPermissions(this));

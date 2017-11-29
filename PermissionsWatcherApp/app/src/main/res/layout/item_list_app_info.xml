@@ -34,7 +34,6 @@
         android:layout_marginEnd="@dimen/list_item_app_horizontal_margin"
         android:maxLines="1"
         android:ellipsize="end"
-        android:textStyle="bold"
         android:textColor="@color/textColorPrimary"
         android:textSize="@dimen/list_item_app_name_size"
         tools:text="Messenger" />
