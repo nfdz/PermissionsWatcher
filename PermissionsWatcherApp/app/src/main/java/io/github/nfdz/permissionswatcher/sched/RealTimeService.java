@@ -7,6 +7,7 @@ public class RealTimeService extends JobService {
 
     @Override
     public boolean onStartJob(JobParameters params) {
+        ReportService.startRealTimeMode(this);
         return false;
     }
 

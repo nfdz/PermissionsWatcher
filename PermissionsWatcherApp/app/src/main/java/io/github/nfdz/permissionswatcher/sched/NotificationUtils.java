@@ -28,9 +28,16 @@ public class NotificationUtils {
     private static final int NOTIFICATION_ID = 4658;
     private static final String NOTICIATION_CHANNEL_ID = "permissions_watcher_channel";
 
-    public static void notifyReport(Context context, List<ApplicationInfo> appsWithChanges) {
-        if (appsWithChanges == null || appsWithChanges.isEmpty()) return;
+    public static void notifyReport(Context context, List<ApplicationInfo> appsWithChanges, boolean analyzeMode) {
+        boolean noApps = appsWithChanges == null || appsWithChanges.isEmpty();
+        if (noApps && analyzeMode) {
+            notifyEverythingAlright(context);
+        } else if (!noApps) {
+            notifyWarnings(context, appsWithChanges);
+        }
+    }
 
+    private static void notifyWarnings(Context context, List<ApplicationInfo> appsWithChanges) {
         String notificationTitle = context.getString(R.string.app_name);
         String notificationTextShort;
         String notificationTextLong;
@@ -105,6 +112,41 @@ public class NotificationUtils {
             return NOTICIATION_CHANNEL_ID;
         } else {
             return "";
+        }
+    }
+
+    private static void notifyEverythingAlright(Context context) {
+        String notificationTitle = context.getString(R.string.app_name);
+        Intent intent = MainActivityView.starter(context);
+        String notificationTextLong = context.getString(R.string.notification_alright_long);
+        String notificationTextShort = context.getString(R.string.notification_alright_short);
+        NotificationCompat.Builder notificationBuilder;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            notificationBuilder = new NotificationCompat.Builder(context, createNotificationChannel(context));
+        } else {
+            notificationBuilder = new NotificationCompat.Builder(context, "");
+        }
+
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_round);
+
+        notificationBuilder.setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                .setSmallIcon(R.drawable.ic_notification_icon)
+                .setLargeIcon(icon)
+                .setContentTitle(notificationTitle)
+                .setContentText(notificationTextShort)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationTextLong))
+                .setAutoCancel(true);
+
+        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
+        taskStackBuilder.addNextIntentWithParentStack(intent);
+        PendingIntent resultPendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        notificationBuilder.setContentIntent(resultPendingIntent);
+
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
+        } else {
+            Timber.e("Cannot send notification because NotificationManager is not available.");
         }
     }
 }

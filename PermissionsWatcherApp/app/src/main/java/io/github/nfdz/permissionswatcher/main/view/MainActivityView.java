@@ -81,7 +81,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         String action = intent.getAction();
         if (TextUtils.isEmpty(action)) return;
         if (ANALYZE_ACTION.equals(action)) {
-            ReportService.start(this);
+            ReportService.startAnalysisMode(this);
         }
     }
 
@@ -102,6 +102,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         getMenuInflater().inflate(R.menu.main, menu);
         MenuItem searchMenuItem = menu.findItem( R.id.action_search);
         searchView = (SearchView)searchMenuItem.getActionView();
+        searchView.setMaxWidth(toolbar.getWidth());
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
