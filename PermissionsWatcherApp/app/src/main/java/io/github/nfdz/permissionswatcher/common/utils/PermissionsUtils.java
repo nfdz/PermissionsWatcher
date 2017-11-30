@@ -215,13 +215,17 @@ public class PermissionsUtils {
         }
     }
 
-
-    public static void startSettingsActivity(Context context, String packageName) {
+    public static Intent starterSettingsActivity(String packageName) {
         Intent intent = new Intent();
         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         Uri uri = Uri.fromParts("package", packageName, null);
         intent.setData(uri);
+        return intent;
+    }
+
+    public static void startSettingsActivity(Context context, String packageName) {
+        Intent intent = starterSettingsActivity(packageName);
         context.startActivity(intent);
     }
 }

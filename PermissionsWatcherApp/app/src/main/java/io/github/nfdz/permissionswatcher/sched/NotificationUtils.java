@@ -19,6 +19,7 @@ import java.util.List;
 import io.github.nfdz.permissionswatcher.R;
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
+import io.github.nfdz.permissionswatcher.common.utils.PermissionsUtils;
 import io.github.nfdz.permissionswatcher.details.view.DetailsActivityView;
 import io.github.nfdz.permissionswatcher.main.view.MainActivityView;
 import timber.log.Timber;
@@ -42,6 +43,7 @@ public class NotificationUtils {
         String notificationTextShort;
         String notificationTextLong;
         Intent intent;
+        NotificationCompat.Action action = null;
 
         int changes = countChanges(appsWithChanges);
         if (appsWithChanges.size() == 1) {
@@ -55,6 +57,11 @@ public class NotificationUtils {
                 notificationTextLong = context.getString(R.string.notification_app_changes_format_long, label, changes);
                 notificationTextShort = context.getString(R.string.notification_app_changes_format_short, label, changes);
             }
+
+            Intent actionIntent = PermissionsUtils.starterSettingsActivity(app.packageName);
+            action = new NotificationCompat.Action.Builder(R.drawable.ic_analyze,
+                    context.getString(R.string.notification_app_action_set_up),
+                    PendingIntent.getActivity(context, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build();
         } else {
             intent = MainActivityView.starter(context);
             notificationTextLong = context.getString(R.string.notification_apps_changes_format_long, changes);
@@ -82,6 +89,8 @@ public class NotificationUtils {
         taskStackBuilder.addNextIntentWithParentStack(intent);
         PendingIntent resultPendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationBuilder.setContentIntent(resultPendingIntent);
+
+        if (action != null) notificationBuilder.addAction(action);
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null) {
