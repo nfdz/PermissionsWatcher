@@ -64,16 +64,18 @@ public class ApplicationInfo extends RealmObject {
         this.hasChanges = hasChanges;
     }
 
-    public static ApplicationInfo copyToRealm(Realm realm, ApplicationInfo app) {
+    public static ApplicationInfo copyToRealm(Realm realm, ApplicationInfo app, boolean newIsChange) {
         ApplicationInfo managed = realm.createObject(ApplicationInfo.class, app.packageName);
         managed.label = app.label;
         managed.versionCode = app.versionCode;
         managed.versionName = app.versionName;
         managed.isSystemApplication = app.isSystemApplication;
         managed.notifyPermissions = app.notifyPermissions;
-        managed.hasChanges = app.hasChanges;
+        managed.hasChanges = newIsChange && app.hasChanges;
         for (PermissionState permission : app.permissions) {
-            managed.permissions.add(realm.copyToRealm(permission));
+            PermissionState managedPermission = realm.copyToRealm(permission);
+            managedPermission.hasChanged = newIsChange && permission.hasChanged;
+            managed.permissions.add(managedPermission);
         }
         return managed;
     }

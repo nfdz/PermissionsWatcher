@@ -14,7 +14,7 @@ import io.realm.RealmList;
 
 public class SyncUtils {
 
-    public static void tryToSync(Realm realm, PackageManager pm) {
+    public static void tryToSync(Realm realm, PackageManager pm, boolean firstTimeMode) {
         realm.beginTransaction();
         List<ApplicationInfo> storedApps = realm.where(ApplicationInfo.class).findAll();
         PermissionsParser parser = new PermissionsParser(pm);
@@ -35,7 +35,9 @@ public class SyncUtils {
             }
         }
         for (Map.Entry<String,ApplicationInfo> entry : parsedApps.entrySet()) {
-            ApplicationInfo.copyToRealm(realm, entry.getValue());
+            // avoid mark as change new applications the first time
+            boolean newIsChange = !firstTimeMode;
+            ApplicationInfo.copyToRealm(realm, entry.getValue(), newIsChange);
         }
         realm.commitTransaction();
     }

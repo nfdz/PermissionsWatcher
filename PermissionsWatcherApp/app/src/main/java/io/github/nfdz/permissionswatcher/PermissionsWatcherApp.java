@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatDelegate;
 
 import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.sched.SchedUtils;
+import io.github.nfdz.permissionswatcher.sync.SyncService;
 import io.realm.Realm;
 import timber.log.Timber;
 
@@ -30,7 +31,7 @@ public class PermissionsWatcherApp extends Application {
     }
 
     private void handleFirstTime() {
-        // TODO
+        SyncService.startFirstTimeMode(this);
         PreferencesUtils.setFirstTime(PermissionsWatcherApp.this, false);
     }
 }

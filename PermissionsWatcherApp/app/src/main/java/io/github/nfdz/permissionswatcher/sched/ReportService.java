@@ -49,7 +49,7 @@ public class ReportService extends IntentService {
         Realm realm = null;
         try {
             realm = Realm.getInstance(RealmUtils.getConfiguration());
-            SyncUtils.tryToSync(realm, getPackageManager());
+            SyncUtils.tryToSync(realm, getPackageManager(), false);
             boolean ignoreSystemApps = !PreferencesUtils.showSystemApps(this);
             List<ApplicationInfo> apps;
             if (ignoreSystemApps) {
