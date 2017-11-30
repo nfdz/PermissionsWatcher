@@ -2,6 +2,9 @@ package io.github.nfdz.permissionswatcher.sched;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -16,24 +19,28 @@ import timber.log.Timber;
 
 public class SchedUtils {
 
-    private static long REPORT_WINDOW_LENGTH_MILLIS = TimeUnit.MINUTES.toMillis(1);
-    private static long MARGIN_TO_SCHEDULE = TimeUnit.MINUTES.toMillis(5);
+    private static final int REAL_TIME_JOB_ID = 6238;
+    private static final long REAL_TIME_FEQ_MILLIS = TimeUnit.MINUTES.toMillis(30);
+
+    private static final long REPORT_WINDOW_LENGTH_MILLIS = TimeUnit.MINUTES.toMillis(1);
+    private static final long MARGIN_TO_SCHEDULE = TimeUnit.MINUTES.toMillis(5);
 
     private static boolean sInitialized = false;
 
     synchronized public static void initialize(@NonNull final Context context) {
         if (sInitialized) return;
         sInitialized = true;
-        rescheduleAlarm(context);
+        rescheduleReport(context);
+        rescheduleRealmTime(context);
     }
 
-    public static void rescheduleAlarm(@NonNull Context context) {
-        boolean alarmEnabled = PreferencesUtils.notificationsEnable(context);
+    public static void rescheduleReport(@NonNull Context context) {
+        boolean alarmEnabled = PreferencesUtils.isReportEnable(context);
         if (!alarmEnabled) {
-            disableAlarm(context);
+            unscheduleReport(context);
             return;
         }
-        disableAlarm(context);
+        unscheduleReport(context);
 
         long triggerAtMillis;
         String timeValue = PreferencesUtils.notificationsTime(context);
@@ -69,7 +76,7 @@ public class SchedUtils {
         return new Intent(context, ReportService.class);
     }
 
-    public static void disableAlarm(@NonNull Context context) {
+    public static void unscheduleReport(@NonNull Context context) {
         AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         if (manager != null) {
             manager.cancel(getReportOperation(context));
@@ -77,4 +84,35 @@ public class SchedUtils {
             Timber.e("Cannot cancel report alarm because AlarmManager is not available.");
         }
     }
+
+    public static void rescheduleRealmTime(@NonNull Context context) {
+        boolean realmTimeEnabled = PreferencesUtils.isRealTimeEnable(context);
+        if (!realmTimeEnabled) {
+            unscheduleRealTime(context);
+            return;
+        }
+        unscheduleRealTime(context);
+
+        ComponentName component = new ComponentName(context.getPackageName(), RealTimeService.class.getName());
+        JobInfo.Builder builder = new JobInfo.Builder(REAL_TIME_JOB_ID, component);
+        builder.setPeriodic(REAL_TIME_FEQ_MILLIS);
+        JobScheduler scheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (scheduler == null) {
+            Timber.e("Cannot schedule real time job because JobScheduler is not available.");
+        } else if (scheduler.schedule(builder.build()) == JobScheduler.RESULT_SUCCESS) {
+            Timber.d("Real time job scheduled successfully.");
+        } else {
+            Timber.e("Cannot schedule real time job.");
+        }
+    }
+
+    public static void unscheduleRealTime(@NonNull Context context) {
+        JobScheduler scheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (scheduler == null) {
+            Timber.e("Cannot unschedule real time job.");
+        } else {
+            scheduler.cancel(REAL_TIME_JOB_ID);
+        }
+    }
+
 }

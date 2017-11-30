@@ -39,15 +39,21 @@ public class PreferencesUtils {
                 Boolean.parseBoolean(context.getString(R.string.prefs_show_apps_without_perm_default)));
     }
 
-    public static boolean notificationsEnable(Context context) {
+    public static boolean isReportEnable(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getBoolean(context.getString(R.string.prefs_notifications_enable_key),
-                Boolean.parseBoolean(context.getString(R.string.prefs_notifications_enable_default)));
+        return sp.getBoolean(context.getString(R.string.prefs_report_enable_key),
+                Boolean.parseBoolean(context.getString(R.string.prefs_report_enable_default)));
+    }
+
+    public static boolean isRealTimeEnable(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(context.getString(R.string.prefs_real_time_enable_key),
+                Boolean.parseBoolean(context.getString(R.string.prefs_real_time_enable_default)));
     }
 
     public static String notificationsTime(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
-        return sp.getString(context.getString(R.string.prefs_notifications_time_key),
-                context.getString(R.string.prefs_notifications_time_default));
+        return sp.getString(context.getString(R.string.prefs_report_time_key),
+                context.getString(R.string.prefs_report_time_default));
     }
 }

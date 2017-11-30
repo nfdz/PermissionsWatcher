@@ -52,7 +52,7 @@ public class ReportService extends IntentService {
             Timber.e(e, "There was an error during reporting.");
         } finally {
             if (realm != null) realm.close();
-            SchedUtils.rescheduleAlarm(this);
+            SchedUtils.rescheduleReport(this);
         }
 
     }

@@ -40,14 +40,20 @@
     <string name="prefs_category_notifications_title">Notifications</string>
     <string name="prefs_category_notifications_key" translatable="false">category_notification</string>
 
-    <string name="prefs_notifications_enable_key" translatable="false">notifications_enable</string>
-    <string name="prefs_notifications_enable_title">Report</string>
-    <string name="prefs_notifications_enable_summary">Report the permissions analysis results through a daily notification</string>
-    <string name="prefs_notifications_enable_default" translatable="false">true</string>
+    <string name="prefs_report_enable_key" translatable="false">report_enable</string>
+    <string name="prefs_report_enable_title">Report</string>
+    <string name="prefs_report_enable_summary">Report the permissions analysis results through a daily notification</string>
+    <string name="prefs_report_enable_default" translatable="false">true</string>
 
-    <string name="prefs_notifications_time_key" translatable="false">notifications_time</string>
-    <string name="prefs_notifications_time_title">Report time</string>
-    <string name="prefs_notifications_time_default" translatable="false">12:00</string>
+    <string name="prefs_report_time_key" translatable="false">report_time</string>
+    <string name="prefs_report_time_title">Report time</string>
+    <string name="prefs_report_time_default" translatable="false">12:00</string>
+    <string name="prefs_report_time_summary_format">If there is anything to report, it will be done at this time %1$s</string>
+
+    <string name="prefs_real_time_enable_key" translatable="false">real_time_enable</string>
+    <string name="prefs_real_time_enable_title">Real time</string>
+    <string name="prefs_real_time_enable_summary">Monitor applications that get permissions in the background</string>
+    <string name="prefs_real_time_enable_default" translatable="false">false</string>
 
     <!-- Notifications -->
     <string name="notification_app_change_format_long">%1$s application has %2$d permission change.</string>

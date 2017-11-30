@@ -2,21 +2,14 @@ package io.github.nfdz.permissionswatcher.settings;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.preference.DialogPreference;
-import android.text.format.DateFormat;
+import android.support.v7.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.TimePicker;
 
 import io.github.nfdz.permissionswatcher.R;
 import timber.log.Timber;
 
 public class TimePreference extends DialogPreference {
 
-    private TimePicker timePicker;
     private String value;
 
     public static int getHourFromValue(String value) {
@@ -36,64 +29,37 @@ public class TimePreference extends DialogPreference {
         }
     }
 
+    public static String getValueFromHourAndMinutes(int hour, int minutes) {
+        return hour + ":" + minutes;
+    }
+
     public TimePreference(Context context) {
-        super(context);
+        this(context, null);
     }
 
     public TimePreference(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
-    public TimePreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public TimePreference(Context context, AttributeSet attrs,
+                          int defStyleAttr) {
+        this(context, attrs, defStyleAttr, defStyleAttr);
     }
 
-    public TimePreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public TimePreference(Context context, AttributeSet attrs,
+                          int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-    }
-
-    @Override
-    protected View onCreateDialogView() {
-        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.gravity = Gravity.CENTER;
-        timePicker = new TimePicker(getContext());
-        timePicker.setLayoutParams(layoutParams);
-        int padding = getContext().getResources().getDimensionPixelSize(R.dimen.prefs_time_picker_padding);
-        timePicker.setPadding(padding, padding, padding, padding);
-
-        FrameLayout dialogView = new FrameLayout(getContext());
-        dialogView.addView(timePicker);
-
-        return dialogView;
-    }
-
-    @Override
-    protected void onBindDialogView(View view) {
-        super.onBindDialogView(view);
-        timePicker.setHour(getHourFromValue(value));
-        timePicker.setMinute(getMinutesFromValue(value));
-        timePicker.setIs24HourView(DateFormat.is24HourFormat(getContext()));
-    }
-
-    @Override
-    protected void onDialogClosed(boolean positiveResult) {
-        if (positiveResult) {
-            timePicker.clearFocus();
-            int hour = timePicker.getHour();
-            int minute = timePicker.getMinute();
-            String newValue = getValueFromHourAndMinutes(hour, minute);
-
-            if (callChangeListener(newValue)) {
-                setValue(newValue);
-            }
-        }
+        // init
     }
 
     public void setValue(String value) {
         this.value = value;
         persistString(value);
         notifyChanged();
+    }
+
+    public String getValue() {
+        return value;
     }
 
     @Override
@@ -104,7 +70,7 @@ public class TimePreference extends DialogPreference {
         if (hourString.length() == 1) hourString = "0" + hourString;
         String minutesString = Integer.toString(minutes);
         if (minutesString.length() == 1) minutesString = "0" + minutesString;
-        return hourString + ":" + minutesString + " (24h)";
+        return getContext().getString(R.string.prefs_report_time_summary_format, (hourString + ":" + minutesString));
     }
 
     @Override
@@ -117,8 +83,9 @@ public class TimePreference extends DialogPreference {
         setValue(restorePersistedValue ? getPersistedString(value) : (String) defaultValue);
     }
 
-    private static String getValueFromHourAndMinutes(int hour, int minutes) {
-        return hour + ":" + minutes;
+    @Override
+    public int getDialogLayoutResource() {
+        return R.layout.dialog_pref_report_time;
     }
 
 }

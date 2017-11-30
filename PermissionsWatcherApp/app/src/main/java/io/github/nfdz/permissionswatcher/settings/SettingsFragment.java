@@ -4,19 +4,21 @@ import android.content.ComponentName;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.preference.PreferenceFragment;
+import android.support.v4.app.DialogFragment;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
 
 import io.github.nfdz.permissionswatcher.R;
 import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.sched.BootReceiver;
 import io.github.nfdz.permissionswatcher.sched.SchedUtils;
 
-public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        addPreferencesFromResource(R.xml.preferences);
+    public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
+        // Load the preferences from an XML resource
+        setPreferencesFromResource(R.xml.preferences, rootKey);
     }
 
     @Override
@@ -32,18 +34,52 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     }
 
     @Override
+    public void onDisplayPreferenceDialog(Preference preference) {
+        DialogFragment dialogFragment = null;
+        if (preference instanceof TimePreference) {
+            dialogFragment = TimePreferenceDialogFragmentCompat.newInstance(preference.getKey());
+        }
+
+        if (dialogFragment != null) {
+            dialogFragment.setTargetFragment(this, 0);
+            dialogFragment.show(this.getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+        } else {
+            super.onDisplayPreferenceDialog(preference);
+        }
+    }
+
+    @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(getString(R.string.prefs_notifications_enable_key))) {
-            boolean alarmEnabled = PreferencesUtils.notificationsEnable(getActivity());
-            if (alarmEnabled) {
-                SchedUtils.rescheduleAlarm(getActivity());
-                enableBootReceiver();
+        if (key.equals(getString(R.string.prefs_report_enable_key))) {
+            boolean reportEnabled = PreferencesUtils.isReportEnable(getActivity());
+            if (reportEnabled) {
+                SchedUtils.rescheduleReport(getActivity());
             } else {
-                SchedUtils.disableAlarm(getActivity());
-                disableBootReceiver();
+                SchedUtils.unscheduleReport(getActivity());
             }
-        } else if (key.equals(getString(R.string.prefs_notifications_time_key))) {
-            SchedUtils.rescheduleAlarm(getActivity());
+            boolean realTimeEnabled = PreferencesUtils.isReportEnable(getActivity());
+            updateBootReceiver(reportEnabled, realTimeEnabled);
+        } else if (key.equals(getString(R.string.prefs_report_time_key))) {
+            SchedUtils.rescheduleReport(getActivity());
+        } else if (key.equals(getString(R.string.prefs_real_time_enable_key))) {
+            boolean realTimeEnabled = PreferencesUtils.isReportEnable(getActivity());
+            if (realTimeEnabled) {
+                SchedUtils.rescheduleRealmTime(getActivity());
+            } else {
+                SchedUtils.unscheduleRealTime(getActivity());
+            }
+            boolean reportEnabled = PreferencesUtils.isReportEnable(getActivity());
+            updateBootReceiver(reportEnabled, realTimeEnabled);
+        }
+    }
+
+    private void updateBootReceiver(boolean reportEnabled, boolean realTimeEnabled) {
+        boolean anyService = realTimeEnabled || reportEnabled;
+        boolean noService = !realTimeEnabled && !reportEnabled;
+        if (anyService) {
+            enableBootReceiver();
+        } else if (noService) {
+            disableBootReceiver();
         }
     }
 
