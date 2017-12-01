@@ -14,7 +14,9 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 import io.github.nfdz.permissionswatcher.R;
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
@@ -43,7 +45,7 @@ public class NotificationUtils {
         String notificationTextShort;
         String notificationTextLong;
         Intent intent;
-        NotificationCompat.Action action = null;
+        List<NotificationCompat.Action> actions = new ArrayList<>();
 
         int changes = countChanges(appsWithChanges);
         if (appsWithChanges.size() == 1) {
@@ -51,17 +53,22 @@ public class NotificationUtils {
             intent = DetailsActivityView.starter(context, app.packageName);
             String label = TextUtils.isEmpty(app.label) ? app.packageName : app.label;
             if (changes == 1) {
-                notificationTextLong = context.getString(R.string.notification_app_change_format_long, label, changes);
-                notificationTextShort = context.getString(R.string.notification_app_change_format_short, label, changes);
+                String permission = getPermissionChangeText(context, app);
+                notificationTextLong = context.getString(R.string.notification_app_change_format_long, label, permission);
+                notificationTextShort = context.getString(R.string.notification_app_change_format_short, label, permission);
             } else {
                 notificationTextLong = context.getString(R.string.notification_app_changes_format_long, label, changes);
                 notificationTextShort = context.getString(R.string.notification_app_changes_format_short, label, changes);
             }
 
-            Intent actionIntent = PermissionsUtils.starterSettingsActivity(app.packageName);
-            action = new NotificationCompat.Action.Builder(R.drawable.ic_analyze,
+            Intent setUpIntent = PermissionsUtils.starterSettingsActivity(app.packageName);
+            actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_analyze,
                     context.getString(R.string.notification_app_action_set_up),
-                    PendingIntent.getActivity(context, 0, actionIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build();
+                    PendingIntent.getActivity(context, 0, setUpIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
+            Intent ignoreAppIntent = TasksService.starterIgnoreApp(context, app.packageName);
+            actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_analyze,
+                    context.getString(R.string.notification_app_action_ignore_app),
+                    PendingIntent.getService(context, 0, ignoreAppIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
         } else {
             intent = MainActivityView.starter(context);
             notificationTextLong = context.getString(R.string.notification_apps_changes_format_long, changes);
@@ -90,7 +97,12 @@ public class NotificationUtils {
         PendingIntent resultPendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationBuilder.setContentIntent(resultPendingIntent);
 
-        if (action != null) notificationBuilder.addAction(action);
+        Intent clearChangesIntent = TasksService.starterClearChanges(context);
+        notificationBuilder.setDeleteIntent(PendingIntent.getService(context, 0, clearChangesIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+
+        for (NotificationCompat.Action action : actions) {
+            notificationBuilder.addAction(action);
+        }
 
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if (notificationManager != null) {
@@ -98,6 +110,60 @@ public class NotificationUtils {
         } else {
             Timber.e("Cannot send notification because NotificationManager is not available.");
         }
+    }
+
+    private static String getPermissionChangeText(final Context context, ApplicationInfo app) {
+        for (PermissionState permissionState : app.permissions) {
+            if (permissionState.hasChanged) {
+                final String permission = permissionState.permission;
+                int permissionType = PermissionsUtils.getType(permission);
+                final AtomicReference<String> permissionGroupName = new AtomicReference<>("");
+                PermissionsUtils.visitPermissionType(permissionType, new PermissionsUtils.PermissionTypeVisitor() {
+                    @Override
+                    public void visitCalendarType() {
+                        permissionGroupName.set(context.getString(R.string.permissions_type_calendar));
+                    }
+                    @Override
+                    public void visitCameraType() {
+                        permissionGroupName.set(context.getString(R.string.permissions_type_camera));
+                    }
+                    @Override
+                    public void visitContactsType() {
+                        permissionGroupName.set(context.getString(R.string.permissions_type_contacts));
+                    }
+                    @Override
+                    public void visitLocationType() {
+                        permissionGroupName.set(context.getString(R.string.permissions_type_location));
+                    }
+                    @Override
+                    public void visitMicrophoneType() {
+                        permissionGroupName.set(context.getString(R.string.permissions_type_mic));
+                    }
+                    @Override
+                    public void visitPhoneType() {
+                        permissionGroupName.set(context.getString(R.string.permissions_type_phone));
+                    }
+                    @Override
+                    public void visitSensorsType() {
+                        permissionGroupName.set(context.getString(R.string.permissions_type_sensors));
+                    }
+                    @Override
+                    public void visitSMSType() {
+                        permissionGroupName.set(context.getString(R.string.permissions_type_sms));
+                    }
+                    @Override
+                    public void visitStorageType() {
+                        permissionGroupName.set(context.getString(R.string.permissions_type_storage));
+                    }
+                    @Override
+                    public void visitUnknownType() {
+                        permissionGroupName.set(permission);
+                    }
+                });
+                return permissionGroupName.get();
+            }
+        }
+        return context.getString(R.string.permissions_type_unknown);
     }
 
     private static int countChanges(List<ApplicationInfo> apps) {
@@ -114,7 +180,7 @@ public class NotificationUtils {
     private static String createNotificationChannel(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         CharSequence channelName = context.getString(R.string.notification_channel_name);
-        int importance = NotificationManager.IMPORTANCE_LOW;
+        int importance = NotificationManager.IMPORTANCE_DEFAULT;
         NotificationChannel notificationChannel = new NotificationChannel(NOTICIATION_CHANNEL_ID, channelName, importance);
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(notificationChannel);
@@ -156,6 +222,15 @@ public class NotificationUtils {
             notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
         } else {
             Timber.e("Cannot send notification because NotificationManager is not available.");
+        }
+    }
+
+    public static void cancelAll(Context context) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        if (notificationManager != null) {
+            notificationManager.cancel(NOTIFICATION_ID);
+        } else {
+            Timber.e("Cannot cancel notification because NotificationManager is not available.");
         }
     }
 }

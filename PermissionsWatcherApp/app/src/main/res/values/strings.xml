@@ -63,11 +63,12 @@
     <string name="prefs_real_time_enable_default" translatable="false">false</string>
 
     <!-- Notifications -->
-    <string name="notification_app_change_format_long">%1$s application has %2$d permission change.</string>
-    <string name="notification_app_change_format_short">%1$s has %2$d change.</string>
+    <string name="notification_app_change_format_long">%1$s application has acquired a new permission: %2$s.</string>
+    <string name="notification_app_change_format_short">%1$s acquired %2$s.</string>
     <string name="notification_app_changes_format_long">%1$s application has %2$d permissions changes.</string>
     <string name="notification_app_changes_format_short">%1$s has %2$d changes.</string>
     <string name="notification_app_action_set_up">Set up</string>
+    <string name="notification_app_action_ignore_app">Ignore app</string>
 
     <string name="notification_apps_changes_format_long">There are %1$d permissions changes.</string>
     <string name="notification_apps_changes_format_short">%1$d changes.</string>

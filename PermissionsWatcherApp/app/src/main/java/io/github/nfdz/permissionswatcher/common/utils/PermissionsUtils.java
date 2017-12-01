@@ -131,7 +131,7 @@ public class PermissionsUtils {
     }
 
     @PermissionType
-    private static int getType(String permission) {
+    public static int getType(String permission) {
         if (CALENDAR_GROUP_PERMISSIONS.contains(permission)) {
             return CALENDAR_TYPE;
         } else if (CAMERA_GROUP_PERMISSIONS.contains(permission)) {
