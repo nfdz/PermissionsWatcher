@@ -26,10 +26,13 @@
     <dimen name="list_item_permission_name_margin_start">16dp</dimen>
     <dimen name="list_item_permission_ignore_height">@dimen/list_item_permission_height</dimen>
     <dimen name="list_item_permission_ignore_vertical_padding">10dp</dimen>
-    <dimen name="list_item_permission_ignore_width">100dp</dimen>
+    <dimen name="list_item_permission_ignore_width">95dp</dimen>
     <dimen name="list_item_permission_ignore_start_padding">40dp</dimen>
     <dimen name="list_item_permission_ignore_end_padding">30dp</dimen>
 
-    <dimen name="prefs_time_picker_padding">18dp</dimen>
+    <dimen name="prefs_time_picker_vertical_padding">18dp</dimen>
+    <dimen name="prefs_time_picker_label_size">12sp</dimen>
+    <dimen name="prefs_time_picker_value_size">40sp</dimen>
+    <dimen name="prefs_time_picker_button_size">40dp</dimen>
 
 </resources>

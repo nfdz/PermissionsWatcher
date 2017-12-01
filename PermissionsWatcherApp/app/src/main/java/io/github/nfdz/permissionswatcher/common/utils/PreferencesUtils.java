@@ -39,6 +39,12 @@ public class PreferencesUtils {
                 Boolean.parseBoolean(context.getString(R.string.prefs_show_apps_without_perm_default)));
     }
 
+    public static boolean showIgnorePermissions(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(context.getString(R.string.prefs_show_ignore_permission_key),
+                Boolean.parseBoolean(context.getString(R.string.prefs_show_ignore_permission_default)));
+    }
+
     public static boolean isReportEnable(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         return sp.getBoolean(context.getString(R.string.prefs_report_enable_key),

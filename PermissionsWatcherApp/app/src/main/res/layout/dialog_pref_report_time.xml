@@ -1,8 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TimePicker
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/time_picker"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingBottom="18dp"
-    android:paddingTop="@dimen/prefs_time_picker_padding"/>
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:paddingBottom="@dimen/prefs_time_picker_vertical_padding"
+    android:paddingTop="@dimen/prefs_time_picker_vertical_padding">
+
+    <View
+        android:id="@+id/time_picker_middle"
+        android:visibility="invisible"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        android:id="@+id/time_picker_hour_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textColorPrimary"
+        android:text="@string/prefs_report_time_dialog_hour"
+        android:textSize="@dimen/prefs_time_picker_label_size"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <EditText
+        android:id="@+id/time_picker_hour_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textColorPrimary"
+        android:background="@android:color/transparent"
+        tools:text="0"
+        android:textSize="@dimen/prefs_time_picker_value_size"
+        android:inputType="number"
+        android:digits="0123456789"
+        app:layout_constraintTop_toBottomOf="@+id/time_picker_hour_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/time_picker_hour_value_decrease"
+        android:layout_width="@dimen/prefs_time_picker_button_size"
+        android:layout_height="@dimen/prefs_time_picker_button_size"
+        app:srcCompat="@drawable/ic_arrow_left"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toTopOf="@+id/time_picker_hour_value"
+        app:layout_constraintBottom_toBottomOf="@+id/time_picker_hour_value"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/time_picker_middle"/>
+
+    <ImageView
+        android:id="@+id/time_picker_hour_value_increase"
+        android:layout_width="@dimen/prefs_time_picker_button_size"
+        android:layout_height="@dimen/prefs_time_picker_button_size"
+        app:srcCompat="@drawable/ic_arrow_right"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toTopOf="@+id/time_picker_hour_value"
+        app:layout_constraintBottom_toBottomOf="@+id/time_picker_hour_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/time_picker_middle"/>
+
+    <TextView
+        android:id="@+id/time_picker_minutes_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textColorPrimary"
+        android:textSize="@dimen/prefs_time_picker_label_size"
+        android:text="@string/prefs_report_time_dialog_minutes"
+        android:layout_marginTop="@dimen/prefs_time_picker_vertical_padding"
+        app:layout_constraintTop_toBottomOf="@+id/time_picker_hour_value"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <EditText
+        android:id="@+id/time_picker_minutes_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/textColorPrimary"
+        tools:text="0"
+        android:textSize="@dimen/prefs_time_picker_value_size"
+        android:inputType="number"
+        android:digits="0123456789"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toBottomOf="@+id/time_picker_minutes_label"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <ImageView
+        android:id="@+id/time_picker_minutes_value_decrease"
+        android:layout_width="@dimen/prefs_time_picker_button_size"
+        android:layout_height="@dimen/prefs_time_picker_button_size"
+        app:srcCompat="@drawable/ic_arrow_left"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toTopOf="@+id/time_picker_minutes_value"
+        app:layout_constraintBottom_toBottomOf="@+id/time_picker_minutes_value"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/time_picker_middle"/>
+
+    <ImageView
+        android:id="@+id/time_picker_minutes_value_increase"
+        android:layout_width="@dimen/prefs_time_picker_button_size"
+        android:layout_height="@dimen/prefs_time_picker_button_size"
+        app:srcCompat="@drawable/ic_arrow_right"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"
+        app:layout_constraintTop_toTopOf="@+id/time_picker_minutes_value"
+        app:layout_constraintBottom_toBottomOf="@+id/time_picker_minutes_value"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/time_picker_middle"/>
+
+</android.support.constraint.ConstraintLayout>

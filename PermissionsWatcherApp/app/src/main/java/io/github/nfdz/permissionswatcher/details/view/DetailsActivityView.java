@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -38,12 +39,14 @@ import io.github.nfdz.permissionswatcher.R;
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.common.utils.PermissionsUtils;
+import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.details.DetailsActivityContract;
 import io.github.nfdz.permissionswatcher.details.presenter.DetailsActivityPresenter;
 import timber.log.Timber;
 
 public class DetailsActivityView extends AppCompatActivity implements DetailsActivityContract.View,
-        Observer<ApplicationInfo> {
+        Observer<ApplicationInfo>,
+        SharedPreferences.OnSharedPreferenceChangeListener  {
 
     public static final String PKG_NAME_INTENT_KEY = "package_name";
 
@@ -82,6 +85,7 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
         pkgName = readPackageFromIntent(getIntent());
         if (!TextUtils.isEmpty(pkgName)) {
             setupView(pkgName);
+            PreferencesUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
             presenter = new DetailsActivityPresenter(this);
             presenter.initialize(pkgName);
         } else {
@@ -92,7 +96,8 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
     @Override
     protected void onDestroy() {
-        presenter.destroy();
+        PreferencesUtils.getSharedPreferences(this).unregisterOnSharedPreferenceChangeListener(this);
+        if (presenter != null) presenter.destroy();
         super.onDestroy();
     }
 
@@ -141,6 +146,7 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(lm);
         recyclerView.setAdapter(adapter);
+        adapter.showIgnorePermissions(PreferencesUtils.showIgnorePermissions(this));
     }
 
     @Override
@@ -221,7 +227,7 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
         if (TextUtils.isEmpty(message)) {
             Timber.e("Permissions dialog with no message. Permission type="+permissionGroupType+".");
         } else {
-            new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.AppAlertDialog)
                     .setTitle(title)
                     .setMessage(message)
                     .create()
@@ -234,10 +240,18 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
         adapter.setData(app);
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if (getString(R.string.prefs_show_ignore_permission_key).equals(key)) {
+            adapter.showIgnorePermissions(PreferencesUtils.showIgnorePermissions(this));
+        }
+    }
+
     class Adapter extends RecyclerView.Adapter<Adapter.PermissionGroupViewHolder> {
 
         private List<Integer> permissionsGroups = null;
         private List<PermissionState> permissions = null;
+        private boolean showIgnore = false;
 
         public void setData(ApplicationInfo data) {
             if (data != null) {
@@ -248,6 +262,11 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
                 permissions = null;
                 permissionsGroups = null;
             }
+            notifyDataSetChanged();
+        }
+
+        public void showIgnorePermissions(boolean showIgnore) {
+            this.showIgnore = showIgnore;
             notifyDataSetChanged();
         }
 
@@ -302,7 +321,9 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
                 for (PermissionState permissionState : groupPermissions) {
                     anyNotify = anyNotify || permissionState.notifyChanges;
                 }
-                ignoreIcon.setImageResource(anyNotify ? R.drawable.ic_ignore_off : R.drawable.ic_ignore_on);
+                boolean isIgnored = !anyNotify;
+                ignoreIcon.setImageResource(isIgnored ? R.drawable.ic_ignore_on : R.drawable.ic_ignore_off);
+                ignoreIcon.setVisibility(showIgnore ? View.VISIBLE : isIgnored ? View.VISIBLE : View.GONE);
 
                 // set has changes flag icon state
                 boolean anyChange = false;

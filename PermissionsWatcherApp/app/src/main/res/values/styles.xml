@@ -37,14 +37,13 @@
         <item name="negativeButtonText">@android:string/cancel</item>
     </style>
 
-    <style name="AppAlertDialog" parent="Theme.AppCompat.DayNight.Dialog.Alert">
+    <style name="AppAlertDialog" parent="Theme.AppCompat.Dialog.Alert">
         <!-- To tint the buttons -->
         <item name="colorAccent">@color/colorAccent</item>
-    </style>
-
-    <style name="AppAlertDialogContent" parent="Theme.AppCompat.DayNight">
-        <!-- To tint EditText and TimePicker -->
-        <item name="colorAccent">@color/colorAccent</item>
+        <!-- Text color -->
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <!-- Used for the background -->
+        <item name="android:background">@color/windowBackground</item>
     </style>
 
 </resources>

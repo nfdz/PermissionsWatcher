@@ -6,6 +6,12 @@
         android:key="@string/prefs_category_view_key">
 
         <SwitchPreferenceCompat
+            android:key="@string/prefs_show_ignore_permission_key"
+            android:title="@string/prefs_show_ignore_permission_title"
+            android:summary="@string/prefs_show_ignore_permission_summary"
+            android:defaultValue="@string/prefs_show_ignore_permission_default" />
+
+        <SwitchPreferenceCompat
             android:key="@string/prefs_show_apps_without_perm_key"
             android:title="@string/prefs_show_apps_without_perm_title"
             android:summary="@string/prefs_show_apps_without_perm_summary"

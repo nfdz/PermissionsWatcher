@@ -27,6 +27,11 @@
     <string name="prefs_category_view_title">Visualization</string>
     <string name="prefs_category_view_key" translatable="false">category_visualization</string>
 
+    <string name="prefs_show_ignore_permission_key" translatable="false">show_ignore_permission</string>
+    <string name="prefs_show_ignore_permission_title">Show ignore permissions</string>
+    <string name="prefs_show_ignore_permission_summary">Enable the ability to ignore certain permissions of an application</string>
+    <string name="prefs_show_ignore_permission_default" translatable="false">false</string>
+
     <string name="prefs_show_apps_without_perm_key" translatable="false">show_apps_without_permissions</string>
     <string name="prefs_show_apps_without_perm_title">No permissions</string>
     <string name="prefs_show_apps_without_perm_summary">Show applications without permissions</string>
@@ -48,7 +53,9 @@
     <string name="prefs_report_time_key" translatable="false">report_time</string>
     <string name="prefs_report_time_title">Report time</string>
     <string name="prefs_report_time_default" translatable="false">12:00</string>
-    <string name="prefs_report_time_summary_format">If there is anything to report, it will be done at this time %1$s</string>
+    <string name="prefs_report_time_summary_format">If there is anything to report, it will be done at this time: %1$s</string>
+    <string name="prefs_report_time_dialog_hour">Hour</string>
+    <string name="prefs_report_time_dialog_minutes">Minutes</string>
 
     <string name="prefs_real_time_enable_key" translatable="false">real_time_enable</string>
     <string name="prefs_real_time_enable_title">Real time</string>
