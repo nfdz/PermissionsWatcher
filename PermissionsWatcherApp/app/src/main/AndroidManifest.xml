@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".main.view.MainActivityView"
-            android:label="@string/app_name">
+            android:label="@string/app_name_long">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,7 +24,7 @@
         </activity>
         <activity
             android:name=".details.view.DetailsActivityView"
-            android:label="@string/app_name"
+            android:label="@string/app_name_long"
             android:parentActivityName=".main.view.MainActivityView">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -42,14 +42,12 @@
            android:exported="false" />
         <service
             android:name="io.github.nfdz.permissionswatcher.sched.ReportService"
-            android:exported="true"
             android:enabled="true" />
         <service
             android:name="io.github.nfdz.permissionswatcher.sched.RealTimeService"
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="true"/>
-        <service android:name="io.github.nfdz.permissionswatcher.sched.TasksService"
-            android:exported="true" />
+        <service android:name="io.github.nfdz.permissionswatcher.sched.TasksService" />
         <receiver
             android:enabled="true"
             android:name="io.github.nfdz.permissionswatcher.sched.BootReceiver"

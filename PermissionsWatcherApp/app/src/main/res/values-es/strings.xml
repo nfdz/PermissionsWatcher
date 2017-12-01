@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Vigilante</string>
+    <string name="app_name_long">Vigilante de Permisos</string>
+    <string name="action_settings">Configuración</string>
+    <string name="action_search">Buscar</string>
+
+    <string name="permissions_label">Permisos</string>
+
+    <string name="permissions_type_calendar">Calendario</string>
+    <string name="permissions_type_camera">Cámara</string>
+    <string name="permissions_type_contacts">Contactos</string>
+    <string name="permissions_type_location">Localización</string>
+    <string name="permissions_type_mic">Micrófono</string>
+    <string name="permissions_type_phone">Teléfono</string>
+    <string name="permissions_type_sensors">Sensores</string>
+    <string name="permissions_type_sms">SMS</string>
+    <string name="permissions_type_storage">Almacenamiento</string>
+    <string name="permissions_type_unknown">Otros</string>
+
+    <!-- Preferences -->
+    <string name="prefs_category_view_title">Visualización</string>
+
+    <string name="prefs_show_ignore_permission_title">Mostrar ignorar permisos</string>
+    <string name="prefs_show_ignore_permission_summary">Habilitar la opción de ignorar ciertos permisos de una applicación</string>
+
+    <string name="prefs_show_apps_without_perm_title">Sin permisos</string>
+    <string name="prefs_show_apps_without_perm_summary">Mostrar las aplicaciones sin permisos adquiridos</string>
+
+    <string name="prefs_show_system_apps_title">Aplicaciones del sistema</string>
+    <string name="prefs_show_system_apps_summary">Mostrar las aplicaciones del sistema</string>
+
+    <string name="prefs_category_notifications_title">Notificaciones</string>
+
+    <string name="prefs_report_enable_title">Reporte</string>
+    <string name="prefs_report_enable_summary">Generar un reporte diario de los permisos adquiridos</string>
+
+    <string name="prefs_report_time_title">Hora de reporte</string>
+    <string name="prefs_report_time_summary_format">Si hay algo que reportar, se hará a esta hora: %1$s</string>
+    <string name="prefs_report_time_dialog_hour">Hora</string>
+    <string name="prefs_report_time_dialog_minutes">Minutos</string>
+
+    <string name="prefs_real_time_enable_title">Tiempo real</string>
+    <string name="prefs_real_time_enable_summary">Monitorizar continuamente permisos que adquieren las aplicaciones en segundo plano</string>
+
+    <!-- Notifications -->
+    <string name="notification_app_change_format_long">%1$s ha adquierido un nuevo permiso: %2$s.</string>
+    <string name="notification_app_change_format_short">%1$s adquirió %2$s.</string>
+    <string name="notification_app_changes_format_long">%1$s ha adquirido %2$d permisos nuevos.</string>
+    <string name="notification_app_changes_format_short">%1$s adquirió %2$d permisos.</string>
+    <string name="notification_app_action_set_up">Configurar</string>
+    <string name="notification_app_action_ignore_app">Ignorar app</string>
+
+    <string name="notification_apps_changes_format_long">Hay %1$d cambios de permisos en varias aplicaciones.</string>
+    <string name="notification_apps_changes_format_short">%1$d changes.</string>
+
+    <string name="notification_alright_long">Análisis completado exitosamente. Todo esta correcto.</string>
+    <string name="notification_alright_short">Todo esta correcto.</string>
+
+    <string name="notification_channel_name">Canal del Vigilante de Permisos</string>
+
+    <!-- Shortcut -->
+    <string name="shortcut_analyze_title">Analizar</string>
+    <string name="shortcut_analyze_title_long">Ejecutar análisis ahora</string>
+    <string name="shortcut_analyze_disabled">El atajo de analizar no esta disponible</string>
+</resources>

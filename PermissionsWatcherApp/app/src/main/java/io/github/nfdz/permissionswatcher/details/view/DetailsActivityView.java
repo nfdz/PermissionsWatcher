@@ -210,7 +210,7 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
                         permissionGroupName.set(getString(R.string.permissions_type_unknown));
                     }
                 });
-        String title = getString(R.string.permissions_dialog_title_format, permissionGroupName.get());
+        String title = permissionGroupName.get();
         List<String> permissionsText = new ArrayList<>();
         for (PermissionState permissionState : PermissionsUtils.filterPermissions(permissions, permissionGroupType, true)) {
             permissionsText.add(PermissionsUtils.shortAndroidPermission(permissionState.permission));

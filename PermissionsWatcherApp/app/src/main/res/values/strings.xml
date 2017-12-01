@@ -1,7 +1,7 @@
 <resources>
 
-    <string name="app_name">Permissions Watcher</string>
-    <string name="app_name_short">Watcher</string>
+    <string name="app_name">Watcher</string>
+    <string name="app_name_long">Permissions Watcher</string>
 
     <string name="app_icon_transition_string" translatable="false">app_icon</string>
 
@@ -20,8 +20,6 @@
     <string name="permissions_type_sms">SMS</string>
     <string name="permissions_type_storage">Storage</string>
     <string name="permissions_type_unknown">Other</string>
-
-    <string name="permissions_dialog_title_format">%1$s permissions</string>
 
     <!-- Preferences -->
     <string name="prefs_category_view_title">Visualization</string>
@@ -65,12 +63,12 @@
     <!-- Notifications -->
     <string name="notification_app_change_format_long">%1$s application has acquired a new permission: %2$s.</string>
     <string name="notification_app_change_format_short">%1$s acquired %2$s.</string>
-    <string name="notification_app_changes_format_long">%1$s application has %2$d permissions changes.</string>
-    <string name="notification_app_changes_format_short">%1$s has %2$d changes.</string>
+    <string name="notification_app_changes_format_long">%1$s application has acquired %2$d permissions.</string>
+    <string name="notification_app_changes_format_short">%1$s acquired %2$d permissions.</string>
     <string name="notification_app_action_set_up">Set up</string>
     <string name="notification_app_action_ignore_app">Ignore app</string>
 
-    <string name="notification_apps_changes_format_long">There are %1$d permissions changes.</string>
+    <string name="notification_apps_changes_format_long">There are %1$d permissions changes in several applications.</string>
     <string name="notification_apps_changes_format_short">%1$d changes.</string>
 
     <string name="notification_alright_long">Analysis completed successfully. Everything is alright.</string>
