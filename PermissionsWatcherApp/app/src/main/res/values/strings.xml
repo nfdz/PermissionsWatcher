@@ -45,19 +45,19 @@
 
     <string name="prefs_report_enable_key" translatable="false">report_enable</string>
     <string name="prefs_report_enable_title">Report</string>
-    <string name="prefs_report_enable_summary">Report the permissions analysis results through a daily notification</string>
+    <string name="prefs_report_enable_summary">Analyze applications daily and generate a report of the incidents</string>
     <string name="prefs_report_enable_default" translatable="false">true</string>
 
     <string name="prefs_report_time_key" translatable="false">report_time</string>
     <string name="prefs_report_time_title">Report time</string>
     <string name="prefs_report_time_default" translatable="false">12:00</string>
-    <string name="prefs_report_time_summary_format">If there is anything to report, it will be done at this time: %1$s</string>
+    <string name="prefs_report_time_summary_format">The analysis will start at this time: %1$s</string>
     <string name="prefs_report_time_dialog_hour">Hour</string>
     <string name="prefs_report_time_dialog_minutes">Minutes</string>
 
     <string name="prefs_real_time_enable_key" translatable="false">real_time_enable</string>
     <string name="prefs_real_time_enable_title">Real time</string>
-    <string name="prefs_real_time_enable_summary">Monitor applications that get permissions in the background</string>
+    <string name="prefs_real_time_enable_summary">Monitor applications that acquire permissions in the background and report them immediately</string>
     <string name="prefs_real_time_enable_default" translatable="false">false</string>
 
     <!-- Notifications -->

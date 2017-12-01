@@ -33,15 +33,15 @@
     <string name="prefs_category_notifications_title">Notificaciones</string>
 
     <string name="prefs_report_enable_title">Reporte</string>
-    <string name="prefs_report_enable_summary">Generar un reporte diario de los permisos adquiridos</string>
+    <string name="prefs_report_enable_summary">Analizar diariamente las aplicaciones y generar un reporte de las incidencias</string>
 
     <string name="prefs_report_time_title">Hora de reporte</string>
-    <string name="prefs_report_time_summary_format">Si hay algo que reportar, se hará a esta hora: %1$s</string>
+    <string name="prefs_report_time_summary_format">El análisis empezará a esta hora: %1$s</string>
     <string name="prefs_report_time_dialog_hour">Hora</string>
     <string name="prefs_report_time_dialog_minutes">Minutos</string>
 
     <string name="prefs_real_time_enable_title">Tiempo real</string>
-    <string name="prefs_real_time_enable_summary">Monitorizar continuamente permisos que adquieren las aplicaciones en segundo plano</string>
+    <string name="prefs_real_time_enable_summary">Monitorizar continuamente los permisos que adquieren las aplicaciones en segundo plano y reportarlos inmediatamente</string>
 
     <!-- Notifications -->
     <string name="notification_app_change_format_long">%1$s ha adquierido un nuevo permiso: %2$s.</string>
