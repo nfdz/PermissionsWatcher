@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".main.view.MainActivityView"
-            android:label="@string/app_name_long">
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,7 +24,7 @@
         </activity>
         <activity
             android:name=".details.view.DetailsActivityView"
-            android:label="@string/app_name_long"
+            android:label="@string/app_name"
             android:parentActivityName=".main.view.MainActivityView">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
