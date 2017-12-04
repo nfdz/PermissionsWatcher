@@ -19,11 +19,16 @@ public class MainActivityPresenter implements MainActivityContract.Presenter  {
     }
 
     @Override
-    public void initialize(Context context, boolean isFirstInitialize) {
+    public void initialize(Context context) {
         if (view != null && interactor != null) {
-            interactor.initialize(context, isFirstInitialize);
+            interactor.initialize(context);
             view.bindViewToLiveData(interactor.loadDataAsync());
         }
+    }
+
+    @Override
+    public void resume() {
+        if (interactor != null) interactor.launchSynchronization();
     }
 
     @Override

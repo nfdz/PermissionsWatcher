@@ -1,6 +1,7 @@
 package io.github.nfdz.permissionswatcher.details.model;
 
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
 
 import java.util.List;
 
@@ -8,21 +9,32 @@ import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.github.nfdz.permissionswatcher.details.DetailsActivityContract;
+import io.github.nfdz.permissionswatcher.sync.SyncService;
 import io.realm.Realm;
 
 public class DetailsActivityInteractor implements DetailsActivityContract.Model {
 
     private Realm realm;
+    private Context context;
 
     @Override
-    public void initialize() {
+    public void initialize(Context context) {
         realm = Realm.getInstance(RealmUtils.getConfiguration());
+        this.context = context;
     }
 
     @Override
     public void destroy() {
         realm.close();
         realm = null;
+        context = null;
+    }
+
+    @Override
+    public void launchSynchronization() {
+        if (context != null) {
+            SyncService.start(context);
+        }
     }
 
     @Override

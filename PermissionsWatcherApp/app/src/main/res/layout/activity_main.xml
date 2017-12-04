@@ -28,6 +28,8 @@
                 android:fontFamily="@font/lato_regular"
                 android:text="@string/app_name"
                 android:textColor="@color/textColorPrimary"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:textSize="@dimen/text_toolbar_title_size" />
 
         </android.support.v7.widget.Toolbar>

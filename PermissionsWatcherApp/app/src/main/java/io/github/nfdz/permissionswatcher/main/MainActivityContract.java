@@ -17,7 +17,8 @@ public interface MainActivityContract {
     }
 
     interface Presenter {
-        void initialize(Context context, boolean isFirstInitialize);
+        void initialize(Context context);
+        void resume();
         void destroy();
         void onSyncSwipe();
         void onIgnoreAppClick(ApplicationInfo app);
@@ -27,7 +28,7 @@ public interface MainActivityContract {
     }
 
     interface Model {
-        void initialize(Context context, boolean isFirstInitialize);
+        void initialize(Context context);
         void destroy();
         void launchSynchronization();
         LiveData<RealmResults<ApplicationInfo>> loadDataAsync();

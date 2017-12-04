@@ -19,15 +19,9 @@ public class MainActivityInteractor implements MainActivityContract.Model {
     private Context context;
 
     @Override
-    public void initialize(Context context, boolean isFirstInitialize) {
+    public void initialize(Context context) {
         this.context = context;
         realm = Realm.getInstance(RealmUtils.getConfiguration());
-
-        // launch synchronization each time that main activity starts
-        // (avoid launch when activity has configuration changes or etc)
-        if (isFirstInitialize) {
-            launchSynchronization();
-        }
     }
 
     @Override

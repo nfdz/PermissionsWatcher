@@ -1,6 +1,7 @@
 package io.github.nfdz.permissionswatcher.details;
 
 import android.arch.lifecycle.LiveData;
+import android.content.Context;
 
 import java.util.List;
 
@@ -16,16 +17,18 @@ public interface DetailsActivityContract {
     }
 
     interface Presenter {
-        void initialize(String packageName);
+        void initialize(Context context, String packageName);
         void destroy();
+        void resume();
         void onClickPermissionGroup();
         void onLongClickPermissionGroup(List<PermissionState> permissions, int permissionGroupType);
         void onIgnorePermissionClick(List<PermissionState> permissions, int permissionGroupType);
     }
 
     interface Model {
-        void initialize();
+        void initialize(Context context);
         void destroy();
+        void launchSynchronization();
         LiveData<ApplicationInfo> loadDataAsync(String packageName);
         void toggleIgnoreFlag(List<PermissionState> permissions);
         void clearChangesFlags(String packageName);

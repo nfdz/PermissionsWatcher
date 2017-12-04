@@ -54,6 +54,8 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         return new Intent(context, MainActivityView.class);
     }
 
+    private static final long FAKE_LOADING_MILLIS = 2000; // 2s
+
     @BindView(R.id.main_activity_recycler_view) RecyclerView recyclerView;
     @BindView(R.id.main_activity_tv_empty) TextView emptyMessage;
     @BindView(R.id.main_activity_swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
@@ -73,7 +75,13 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         setupView();
         PreferencesUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
         presenter = new MainActivityPresenter(this);
-        presenter.initialize(this, savedInstanceState == null);
+        presenter.initialize(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.resume();
     }
 
     private void handleIntent(@Nullable Intent intent) {
@@ -173,7 +181,12 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     @Override
     public void onRefresh() {
         presenter.onSyncSwipe();
-        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        }, FAKE_LOADING_MILLIS);
     }
 
     @Override

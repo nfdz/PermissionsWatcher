@@ -1,5 +1,7 @@
 package io.github.nfdz.permissionswatcher.details.presenter;
 
+import android.content.Context;
+
 import java.util.List;
 
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
@@ -12,6 +14,7 @@ public class DetailsActivityPresenter implements DetailsActivityContract.Present
     private DetailsActivityContract.View view;
     private DetailsActivityContract.Model interactor;
     private String packageName;
+    private boolean skippedFirstResume = false;
 
     public DetailsActivityPresenter(DetailsActivityContract.View view) {
         this.view = view;
@@ -19,10 +22,10 @@ public class DetailsActivityPresenter implements DetailsActivityContract.Present
     }
 
     @Override
-    public void initialize(String packageName) {
+    public void initialize(Context context, String packageName) {
         if (view != null && interactor != null) {
             this.packageName = packageName;
-            interactor.initialize();
+            interactor.initialize(context);
             view.bindViewToLiveData(interactor.loadDataAsync(packageName));
         }
     }
@@ -36,6 +39,17 @@ public class DetailsActivityPresenter implements DetailsActivityContract.Present
         interactor = null;
         packageName = null;
         view = null;
+    }
+
+    @Override
+    public void resume() {
+        if (skippedFirstResume) {
+            if (interactor != null) {
+                interactor.launchSynchronization();
+            }
+        } else {
+            skippedFirstResume = true;
+        }
     }
 
     @Override

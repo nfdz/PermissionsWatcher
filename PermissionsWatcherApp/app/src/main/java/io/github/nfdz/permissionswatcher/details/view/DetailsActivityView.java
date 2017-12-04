@@ -87,11 +87,17 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
             setupView(pkgName);
             PreferencesUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
             presenter = new DetailsActivityPresenter(this);
-            presenter.initialize(pkgName);
+            presenter.initialize(this, pkgName);
         } else {
             Timber.e("Details activity created with no package name.");
             finish();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.resume();
     }
 
     @Override

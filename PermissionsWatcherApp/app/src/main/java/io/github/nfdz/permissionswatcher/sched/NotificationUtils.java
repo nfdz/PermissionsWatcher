@@ -15,7 +15,9 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.github.nfdz.permissionswatcher.R;
@@ -169,8 +171,12 @@ public class NotificationUtils {
     private static int countChanges(List<ApplicationInfo> apps) {
         int result = 0;
         for (ApplicationInfo app : apps) {
-            for (PermissionState permission : app.permissions) {
-                if (permission.hasChanged) result++;
+            Set<Integer> countedTypes = new HashSet<>();
+            for (PermissionState permissionState : app.permissions) {
+                if (permissionState.hasChanged) {
+                    int type = PermissionsUtils.getType(permissionState.permission);
+                    if (countedTypes.add(type)) result++;
+                }
             }
         }
         return result;
