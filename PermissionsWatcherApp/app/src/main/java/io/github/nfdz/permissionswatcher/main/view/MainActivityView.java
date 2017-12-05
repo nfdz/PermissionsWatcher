@@ -24,6 +24,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -34,6 +36,7 @@ import butterknife.OnClick;
 import io.github.nfdz.permissionswatcher.R;
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
+import io.github.nfdz.permissionswatcher.common.utils.Analytics;
 import io.github.nfdz.permissionswatcher.common.utils.PermissionsUtils;
 import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.details.view.DetailsActivityView;
@@ -65,10 +68,12 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     private MainActivityContract.Presenter presenter;
     private Adapter adapter;
     private LiveData<RealmResults<ApplicationInfo>> bindedData = null;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         handleIntent(getIntent());
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
@@ -89,6 +94,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         String action = intent.getAction();
         if (TextUtils.isEmpty(action)) return;
         if (ANALYZE_ACTION.equals(action)) {
+            firebaseAnalytics.logEvent(Analytics.Event.START_ANALYSIS, null);
             ReportService.startAnalysisMode(this);
         }
     }
@@ -108,7 +114,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
-        MenuItem searchMenuItem = menu.findItem( R.id.action_search);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_search);
         searchView = (SearchView)searchMenuItem.getActionView();
         searchView.setMaxWidth(toolbar.getWidth());
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -120,6 +126,12 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
             public boolean onQueryTextChange(String query) {
                 presenter.onSearchQueryChanged(query);
                 return true;
+            }
+        });
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firebaseAnalytics.logEvent(Analytics.Event.SEARCH_APP, null);
             }
         });
         return true;
@@ -180,6 +192,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
     @Override
     public void onRefresh() {
+        firebaseAnalytics.logEvent(Analytics.Event.SWIPE_REFRESH, null);
         presenter.onSyncSwipe();
         swipeRefreshLayout.postDelayed(new Runnable() {
             @Override
@@ -289,11 +302,13 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
             @OnClick(R.id.item_app_container)
             void onAppClick() {
+                firebaseAnalytics.logEvent(Analytics.Event.APP_CLICK, null);
                 presenter.onAppClick(filteredData.get(getAdapterPosition()), icon);
             }
 
             @OnClick(R.id.item_app_iv_ignore)
             void onIgnoreClick() {
+                firebaseAnalytics.logEvent(Analytics.Event.APP_IGNORE, null);
                 presenter.onIgnoreAppClick(filteredData.get(getAdapterPosition()));
             }
 

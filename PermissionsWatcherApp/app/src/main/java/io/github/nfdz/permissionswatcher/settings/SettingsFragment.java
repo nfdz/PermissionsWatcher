@@ -10,20 +10,33 @@ import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.preference.SwitchPreferenceCompat;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import io.github.nfdz.permissionswatcher.R;
+import io.github.nfdz.permissionswatcher.common.utils.Analytics;
 import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.sched.BootReceiver;
 import io.github.nfdz.permissionswatcher.sched.SchedUtils;
 
 public class SettingsFragment extends PreferenceFragmentCompat implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    private FirebaseAnalytics firebaseAnalytics;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(getActivity());
+    }
+
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         // Load the preferences from an XML resource
         setPreferencesFromResource(R.xml.preferences, rootKey);
 
-        handleReportDependency(PreferencesUtils.isReportEnable(getActivity()));
-        handleRealTimeDependency(PreferencesUtils.isRealTimeEnable(getActivity()));
+        boolean isReportEnabled = PreferencesUtils.isReportEnable(getActivity());
+        boolean isRealTimeEnabled = PreferencesUtils.isRealTimeEnable(getActivity());
+        if (!isRealTimeEnabled) handleReportDependency(isReportEnabled);
+        if (!isReportEnabled) handleRealTimeDependency(isRealTimeEnabled);
     }
 
     @Override
@@ -64,7 +77,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
             boolean realTimeEnabled = PreferencesUtils.isRealTimeEnable(getActivity());
             updateBootReceiver(reportEnabled, realTimeEnabled);
-            handleReportDependency(reportEnabled);
+            if (!realTimeEnabled) handleReportDependency(reportEnabled);
+            Bundle params = new Bundle();
+            params.putBoolean(FirebaseAnalytics.Param.VALUE, reportEnabled);
+            firebaseAnalytics.logEvent(Analytics.Event.REPORT_PREF_CHANGE, params);
         } else if (key.equals(getString(R.string.prefs_report_time_key))) {
             SchedUtils.rescheduleReport(getActivity());
         } else if (key.equals(getString(R.string.prefs_real_time_enable_key))) {
@@ -76,7 +92,10 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             }
             boolean reportEnabled = PreferencesUtils.isReportEnable(getActivity());
             updateBootReceiver(reportEnabled, realTimeEnabled);
-            handleRealTimeDependency(realTimeEnabled);
+            if (!reportEnabled) handleRealTimeDependency(realTimeEnabled);
+            Bundle params = new Bundle();
+            params.putBoolean(FirebaseAnalytics.Param.VALUE, realTimeEnabled);
+            firebaseAnalytics.logEvent(Analytics.Event.REAL_TIME_PREF_CHANGE, params);
         }
     }
 

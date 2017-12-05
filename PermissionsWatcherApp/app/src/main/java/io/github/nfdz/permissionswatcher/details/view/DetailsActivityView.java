@@ -25,6 +25,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -38,6 +40,7 @@ import butterknife.OnLongClick;
 import io.github.nfdz.permissionswatcher.R;
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
+import io.github.nfdz.permissionswatcher.common.utils.Analytics;
 import io.github.nfdz.permissionswatcher.common.utils.PermissionsUtils;
 import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.details.DetailsActivityContract;
@@ -76,10 +79,12 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
     private Adapter adapter;
     private LiveData<ApplicationInfo> bindedData = null;
     private String pkgName;
+    private FirebaseAnalytics firebaseAnalytics;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
         setContentView(R.layout.activity_details);
         ButterKnife.bind(this);
         pkgName = readPackageFromIntent(getIntent());
@@ -306,17 +311,20 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
             @OnClick(R.id.item_permission_container)
             void onPermissionClick() {
+                firebaseAnalytics.logEvent(Analytics.Event.PERMISSION_CLICK, null);
                 presenter.onClickPermissionGroup();
             }
 
             @OnLongClick(R.id.item_permission_container)
             boolean onPermissionLongClick() {
+                firebaseAnalytics.logEvent(Analytics.Event.PERMISSION_LONG_CLICK, null);
                 presenter.onLongClickPermissionGroup(permissions, permissionsGroups.get(getAdapterPosition()));
                 return true;
             }
 
             @OnClick(R.id.item_permission_iv_ignore)
             void onIgnoreClick() {
+                firebaseAnalytics.logEvent(Analytics.Event.PERMISSION_IGNORE, null);
                 presenter.onIgnorePermissionClick(permissions, permissionsGroups.get(getAdapterPosition()));
             }
 
