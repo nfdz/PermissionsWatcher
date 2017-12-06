@@ -13,6 +13,7 @@ public interface DetailsActivityContract {
     interface View {
         void bindViewToLiveData(LiveData<ApplicationInfo> data);
         void navigateToPermissionSettings();
+        void navigateToFinish();
         void showPermissionsDetailsDialog(List<PermissionState> permissions, int permissionGroupType);
     }
 
@@ -20,6 +21,7 @@ public interface DetailsActivityContract {
         void initialize(Context context, String packageName);
         void destroy();
         void resume();
+        void onUserFinish();
         void onClickPermissionGroup();
         void onLongClickPermissionGroup(List<PermissionState> permissions, int permissionGroupType);
         void onIgnorePermissionClick(List<PermissionState> permissions, int permissionGroupType);

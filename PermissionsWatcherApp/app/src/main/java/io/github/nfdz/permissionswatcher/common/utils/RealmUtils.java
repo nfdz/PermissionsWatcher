@@ -13,7 +13,7 @@ import io.realm.RealmResults;
 public class RealmUtils {
 
     private static final String DB_NAME = "permissions_watcher.realm";
-    private static final long SCHEMA_VERSION_NAME = 0;
+    private static final long SCHEMA_VERSION_NAME = 1;
 
     public static RealmConfiguration getConfiguration() {
         return new RealmConfiguration.Builder()

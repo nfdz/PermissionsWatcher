@@ -66,20 +66,20 @@ public class TasksService extends IntentService {
                     String packageName = intent.getStringExtra(CLEAR_CHANGES_PKG_EXTRA);
                     if (TextUtils.isEmpty(packageName)) {
                         firebaseAnalytics.logEvent(Analytics.Event.NOTIFICATION_OK_CLEAR_CHANGES, null);
+                        NotificationUtils.cancelAll(this);
                         Timber.d("Tasks service: CLEAR_CHANGES_ACTION");
                         clearChanges();
-                        NotificationUtils.cancelAll(this);
                     } else {
                         Timber.d("Tasks service: CLEAR_CHANGES_ACTION + package_name = %s", packageName);
                         clearChanges(packageName);
                     }
                 } else if (IGNORE_APP_ACTION.equals(action) && intent.hasExtra(IGNORE_APP_PKG_EXTRA)) {
                     firebaseAnalytics.logEvent(Analytics.Event.NOTIFICATION_IGNORE_APP, null);
+                    NotificationUtils.cancelAll(this);
                     String packageName = intent.getStringExtra(IGNORE_APP_PKG_EXTRA);
                     Timber.d("Tasks service: IGNORE_APP_ACTION (" + packageName + ")");
                     clearChanges();
                     ignoreApp(packageName);
-                    NotificationUtils.cancelAll(this);
                 }
             }
         }

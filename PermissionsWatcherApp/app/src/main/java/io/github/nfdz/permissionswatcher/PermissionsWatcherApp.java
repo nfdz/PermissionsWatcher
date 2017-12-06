@@ -26,12 +26,8 @@ public class PermissionsWatcherApp extends Application {
         SchedUtils.initialize(this);
 
         if (PreferencesUtils.isFirstTime(this)) {
-            handleFirstTime();
+            SyncService.startFirstTimeMode(this);
+            PreferencesUtils.setFirstTime(PermissionsWatcherApp.this, false);
         }
-    }
-
-    private void handleFirstTime() {
-        SyncService.startFirstTimeMode(this);
-        PreferencesUtils.setFirstTime(PermissionsWatcherApp.this, false);
     }
 }

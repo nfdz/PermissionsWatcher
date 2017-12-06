@@ -33,7 +33,6 @@ public class DetailsActivityPresenter implements DetailsActivityContract.Present
     @Override
     public void destroy() {
         if (interactor != null) {
-            interactor.clearChangesFlags(packageName);
             interactor.destroy();
         }
         interactor = null;
@@ -49,6 +48,14 @@ public class DetailsActivityPresenter implements DetailsActivityContract.Present
             }
         } else {
             skippedFirstResume = true;
+        }
+    }
+
+    @Override
+    public void onUserFinish() {
+        if (view != null && interactor != null && packageName != null) {
+            interactor.clearChangesFlags(packageName);
+            view.navigateToFinish();
         }
     }
 

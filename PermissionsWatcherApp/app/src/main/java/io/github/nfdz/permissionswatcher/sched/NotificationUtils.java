@@ -66,7 +66,7 @@ public class NotificationUtils {
             Intent okIntent = TasksService.starterClearChanges(context);
             actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_notification_ok,
                     context.getString(R.string.notification_app_action_ok),
-                    PendingIntent.getActivity(context, 0, okIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
+                    PendingIntent.getService(context, 0, okIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
             Intent setUpIntent = PermissionsUtils.starterSettingsActivity(app.packageName);
             actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_notification_setup,
                     context.getString(R.string.notification_app_action_set_up),
@@ -83,7 +83,7 @@ public class NotificationUtils {
             Intent okIntent = TasksService.starterClearChanges(context);
             actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_notification_ok,
                     context.getString(R.string.notification_app_action_ok),
-                    PendingIntent.getActivity(context, 0, okIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
+                    PendingIntent.getService(context, 0, okIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
         }
 
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_round);

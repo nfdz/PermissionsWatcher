@@ -8,12 +8,13 @@ public class RealTimeService extends JobService {
     @Override
     public boolean onStartJob(JobParameters params) {
         ReportService.startRealTimeMode(this);
+        SchedUtils.rescheduleRealmTime(this);
         return false;
     }
 
     @Override
     public boolean onStopJob(JobParameters params) {
-        return true;
+        return false;
     }
 
 }

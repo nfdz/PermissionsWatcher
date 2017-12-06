@@ -95,7 +95,8 @@ public class SchedUtils {
 
         ComponentName component = new ComponentName(context.getPackageName(), RealTimeService.class.getName());
         JobInfo.Builder builder = new JobInfo.Builder(REAL_TIME_JOB_ID, component);
-        builder.setPeriodic(REAL_TIME_FEQ_MILLIS);
+        builder.setMinimumLatency(REAL_TIME_FEQ_MILLIS); // wait at least
+        builder.setOverrideDeadline(REAL_TIME_FEQ_MILLIS); // maximum delay
         JobScheduler scheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (scheduler == null) {
             Timber.e("Cannot schedule real time job because JobScheduler is not available.");

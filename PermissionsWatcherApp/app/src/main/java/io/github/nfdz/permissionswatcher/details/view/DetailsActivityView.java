@@ -116,10 +116,15 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finishAfterTransition();
+            presenter.onUserFinish();
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        presenter.onUserFinish();
     }
 
     @Nullable
@@ -175,6 +180,11 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
     @Override
     public void navigateToPermissionSettings() {
         PermissionsUtils.startSettingsActivity(this, pkgName);
+    }
+
+    @Override
+    public void navigateToFinish() {
+        finishAfterTransition();
     }
 
     @Override
