@@ -12,7 +12,8 @@ public class PreferencesUtils {
         return PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    //region First time flag
+    //region First time flags
+
     public final static String FIRST_TIME_FLAG_KEY = "isFirstTime";
     public final static boolean FIRST_TIME_FLAG_DEFAULT = true;
 
@@ -25,7 +26,27 @@ public class PreferencesUtils {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
         sp.edit().putBoolean(FIRST_TIME_FLAG_KEY, firstTime).apply();
     }
+
+    public final static String SHOW_TUTORIAL_FLAG_KEY = "showTutorial";
+    public final static boolean SHOW_TUTORIAL_FLAG_DEFAULT = true;
+
+    public static boolean showTutorial(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(SHOW_TUTORIAL_FLAG_KEY, SHOW_TUTORIAL_FLAG_DEFAULT);
+    }
+
+    public static void setShowTutorial(Context context, boolean showTutorial) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        sp.edit().putBoolean(SHOW_TUTORIAL_FLAG_KEY, showTutorial).apply();
+    }
+
     //endregion
+
+    public static boolean sortByIgnoreFlag(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        return sp.getBoolean(context.getString(R.string.prefs_sort_ignored_key),
+                Boolean.parseBoolean(context.getString(R.string.prefs_sort_ignored_default)));
+    }
 
     public static boolean showSystemApps(Context context) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);

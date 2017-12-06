@@ -1,5 +1,6 @@
 package io.github.nfdz.permissionswatcher.main.view;
 
+import android.app.AlertDialog;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.Observer;
 import android.content.Context;
@@ -27,6 +28,8 @@ import android.widget.TextView;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,6 +37,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.github.nfdz.permissionswatcher.R;
+import io.github.nfdz.permissionswatcher.common.model.AppComparator;
+import io.github.nfdz.permissionswatcher.common.model.AppIgnoreComparator;
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.common.utils.Analytics;
@@ -81,6 +86,20 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         PreferencesUtils.getSharedPreferences(this).registerOnSharedPreferenceChangeListener(this);
         presenter = new MainActivityPresenter(this);
         presenter.initialize(this);
+
+        if (PreferencesUtils.showTutorial(this)) {
+            showTutorial();
+            PreferencesUtils.setShowTutorial(this, false);
+        }
+    }
+
+    private void showTutorial() {
+        new AlertDialog.Builder(this, R.style.AppAlertDialog)
+                .setTitle(R.string.tutorial_title)
+                .setMessage(R.string.tutorial_message)
+                .setPositiveButton(android.R.string.ok, null)
+                .create()
+                .show();
     }
 
     @Override
@@ -106,6 +125,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         swipeRefreshLayout.setOnRefreshListener(this);
         adapter = new Adapter();
         adapter.setShowAppsWithoutPermissions(PreferencesUtils.showAppsWithoutPermissions(this));
+        adapter.setSortByIgnoreFlag(PreferencesUtils.sortByIgnoreFlag(this));
         RecyclerView.LayoutManager lm = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(lm);
         recyclerView.setAdapter(adapter);
@@ -220,6 +240,8 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
             presenter.onShowSystemAppsFlagChanged();
         } else if (getString(R.string.prefs_show_apps_without_perm_key).equals(key)) {
             adapter.setShowAppsWithoutPermissions(PreferencesUtils.showAppsWithoutPermissions(this));
+        } else if (getString(R.string.prefs_sort_ignored_key).equals(key)) {
+            adapter.setSortByIgnoreFlag(PreferencesUtils.sortByIgnoreFlag(this));
         }
     }
 
@@ -229,23 +251,37 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         private List<ApplicationInfo> filteredData = null;
         private String filterQuery = null;
         private boolean showAppsWithoutPermissions = false;
+        private Comparator<ApplicationInfo> comparator = null;
 
         public void setData(List<ApplicationInfo> data) {
             this.data = data;
             this.filteredData = filterData();
+            sortData();
             notifyDataSetChanged();
         }
 
         public void setFilter(@Nullable String query) {
             this.filterQuery = query;
             this.filteredData = filterData();
+            sortData();
             notifyDataSetChanged();
         }
 
         public void setShowAppsWithoutPermissions(boolean showAppsWithoutPermissions) {
             this.showAppsWithoutPermissions = showAppsWithoutPermissions;
             this.filteredData = filterData();
+            sortData();
             notifyDataSetChanged();
+        }
+
+        public void setSortByIgnoreFlag(boolean sortByIgnoreFlag) {
+            comparator = sortByIgnoreFlag ? new AppIgnoreComparator() : new AppComparator();
+        }
+
+        private void sortData() {
+            if (filteredData != null && comparator != null) {
+                Collections.sort(filteredData, comparator);
+            }
         }
 
         private List<ApplicationInfo> filterData() {

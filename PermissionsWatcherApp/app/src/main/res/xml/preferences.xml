@@ -6,6 +6,12 @@
         android:key="@string/prefs_category_view_key">
 
         <SwitchPreferenceCompat
+            android:key="@string/prefs_sort_ignored_key"
+            android:title="@string/prefs_sort_ignored_title"
+            android:summary="@string/prefs_sort_ignored_summary"
+            android:defaultValue="@string/prefs_sort_ignored_default" />
+
+        <SwitchPreferenceCompat
             android:key="@string/prefs_show_ignore_permission_key"
             android:title="@string/prefs_show_ignore_permission_title"
             android:summary="@string/prefs_show_ignore_permission_summary"

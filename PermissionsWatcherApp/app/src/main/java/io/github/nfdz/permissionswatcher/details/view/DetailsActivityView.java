@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -260,18 +261,23 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
     class Adapter extends RecyclerView.Adapter<Adapter.PermissionGroupViewHolder> {
 
-        private List<Integer> permissionsGroups = null;
+        private List<Integer> grantedPermissionsGroups = null;
+        private List<Integer> otherPermissionsGroups = null;
         private List<PermissionState> permissions = null;
         private boolean showIgnore = false;
 
         public void setData(ApplicationInfo data) {
             if (data != null) {
                 permissions = data.permissions;
-                permissionsGroups = new ArrayList<>(PermissionsUtils.processAndCompactPermissionStates(permissions, true));
-                Collections.sort(permissionsGroups);
+                grantedPermissionsGroups = new ArrayList<>(PermissionsUtils.processAndCompactPermissionStates(permissions, true));
+                otherPermissionsGroups = new ArrayList<>(PermissionsUtils.processAndCompactPermissionStates(permissions, false));
+                otherPermissionsGroups.removeAll(grantedPermissionsGroups);
+                Collections.sort(grantedPermissionsGroups);
+                Collections.sort(otherPermissionsGroups);
             } else {
                 permissions = null;
-                permissionsGroups = null;
+                grantedPermissionsGroups = null;
+                otherPermissionsGroups = null;
             }
             notifyDataSetChanged();
         }
@@ -289,12 +295,32 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
         @Override
         public void onBindViewHolder(PermissionGroupViewHolder holder, int position) {
-            holder.bindPermissionGroup(permissionsGroups.get(position));
+            if (position < getGrantedPermissionsSize()) {
+                holder.bindPermissionGroup(grantedPermissionsGroups.get(position), true);
+            } else {
+                holder.bindPermissionGroup(otherPermissionsGroups.get(position - getGrantedPermissionsSize()), false);
+            }
+        }
+
+        private int getPermissionGroup(int position) {
+            if (position < getGrantedPermissionsSize()) {
+                return grantedPermissionsGroups.get(position);
+            } else {
+                return otherPermissionsGroups.get(position - getGrantedPermissionsSize());
+            }
         }
 
         @Override
         public int getItemCount() {
-            return permissionsGroups != null ? permissionsGroups.size() : 0;
+            return getGrantedPermissionsSize() + getOtherPermissionsSize();
+        }
+
+        private int getGrantedPermissionsSize() {
+            return grantedPermissionsGroups != null ? grantedPermissionsGroups.size() : 0;
+        }
+
+        private int getOtherPermissionsSize() {
+            return otherPermissionsGroups != null ? otherPermissionsGroups.size() : 0;
         }
 
         class PermissionGroupViewHolder extends RecyclerView.ViewHolder {
@@ -317,18 +343,21 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
             @OnLongClick(R.id.item_permission_container)
             boolean onPermissionLongClick() {
-                firebaseAnalytics.logEvent(Analytics.Event.PERMISSION_LONG_CLICK, null);
-                presenter.onLongClickPermissionGroup(permissions, permissionsGroups.get(getAdapterPosition()));
+                int position = getAdapterPosition();
+                if (position < getGrantedPermissionsSize()) {
+                    firebaseAnalytics.logEvent(Analytics.Event.PERMISSION_LONG_CLICK, null);
+                    presenter.onLongClickPermissionGroup(permissions, grantedPermissionsGroups.get(position));
+                }
                 return true;
             }
 
             @OnClick(R.id.item_permission_iv_ignore)
             void onIgnoreClick() {
                 firebaseAnalytics.logEvent(Analytics.Event.PERMISSION_IGNORE, null);
-                presenter.onIgnorePermissionClick(permissions, permissionsGroups.get(getAdapterPosition()));
+                presenter.onIgnorePermissionClick(permissions, getPermissionGroup(getAdapterPosition()));
             }
 
-            void bindPermissionGroup(int permissionType) {
+            void bindPermissionGroup(int permissionType, boolean isGranted) {
                 List<PermissionState> groupPermissions = PermissionsUtils.filterPermissions(permissions, permissionType, false);
                 // set notify flag icon state
                 boolean anyNotify = false;
@@ -399,6 +428,16 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
                         name.setText(R.string.permissions_type_unknown);
                     }
                 });
+
+                if (isGranted) {
+                    int color = ContextCompat.getColor(DetailsActivityView.this, R.color.colorPermissionTypeIcon);
+                    icon.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+                    name.setTextColor(color);
+                } else {
+                    int color = ContextCompat.getColor(DetailsActivityView.this, R.color.textColorGray);
+                    icon.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
+                    name.setTextColor(color);
+                }
             }
         }
     }

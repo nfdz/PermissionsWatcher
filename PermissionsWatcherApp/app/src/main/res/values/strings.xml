@@ -40,13 +40,18 @@
     <string name="prefs_show_system_apps_summary">Show system applications</string>
     <string name="prefs_show_system_apps_default" translatable="false">false</string>
 
+    <string name="prefs_sort_ignored_key" translatable="false">sort_ignored</string>
+    <string name="prefs_sort_ignored_title">Sort by ignored</string>
+    <string name="prefs_sort_ignored_summary">Place the ignored applications at the end of the list</string>
+    <string name="prefs_sort_ignored_default" translatable="false">true</string>
+
     <string name="prefs_category_notifications_title">Notifications</string>
     <string name="prefs_category_notifications_key" translatable="false">category_notification</string>
 
     <string name="prefs_report_enable_key" translatable="false">report_enable</string>
     <string name="prefs_report_enable_title">Report</string>
     <string name="prefs_report_enable_summary">Analyze applications daily and generate a report of the incidents</string>
-    <string name="prefs_report_enable_default" translatable="false">true</string>
+    <string name="prefs_report_enable_default" translatable="false">false</string>
 
     <string name="prefs_report_time_key" translatable="false">report_time</string>
     <string name="prefs_report_time_title">Report time</string>
@@ -58,13 +63,14 @@
     <string name="prefs_real_time_enable_key" translatable="false">real_time_enable</string>
     <string name="prefs_real_time_enable_title">Real time</string>
     <string name="prefs_real_time_enable_summary">Monitor applications that acquire permissions in the background and report them immediately</string>
-    <string name="prefs_real_time_enable_default" translatable="false">false</string>
+    <string name="prefs_real_time_enable_default" translatable="false">true</string>
 
     <!-- Notifications -->
     <string name="notification_app_change_format_long">%1$s application has acquired a new permission: %2$s.</string>
     <string name="notification_app_change_format_short">%1$s acquired %2$s.</string>
     <string name="notification_app_changes_format_long">%1$s application has acquired %2$d permissions.</string>
     <string name="notification_app_changes_format_short">%1$s acquired %2$d permissions.</string>
+    <string name="notification_app_action_ok">Ok</string>
     <string name="notification_app_action_set_up">Set up</string>
     <string name="notification_app_action_ignore_app">Ignore app</string>
 
@@ -80,5 +86,9 @@
     <string name="shortcut_analyze_title">Analyze</string>
     <string name="shortcut_analyze_title_long">Launch analysis now</string>
     <string name="shortcut_analyze_disabled">Analysis shortcut is not available</string>
+
+    <!-- Tutorial -->
+    <string name="tutorial_title">Welcome</string>
+    <string name="tutorial_message">Permissions Watcher will notify you automatically new acquired permissions. If you do not want to receive notifications of an app you can ignore this app with the eye-shaped button. Remember that this app is free and the code is published under GPL on Github.\nWe hope you find it useful!</string>
 
 </resources>

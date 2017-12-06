@@ -6,8 +6,11 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
+
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
+import io.github.nfdz.permissionswatcher.common.utils.Analytics;
 import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.realm.Realm;
 import io.realm.RealmResults;
@@ -34,8 +37,16 @@ public class TasksService extends IntentService {
 
     private static final String SERVICE_NAME = "TasksService";
 
+    private FirebaseAnalytics firebaseAnalytics;
+
     public TasksService() {
         super(SERVICE_NAME);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        firebaseAnalytics = FirebaseAnalytics.getInstance(this);
     }
 
     @Override
@@ -44,9 +55,12 @@ public class TasksService extends IntentService {
             String action = intent.getAction();
             if (!TextUtils.isEmpty(action)) {
                 if (CLEAR_CHANGES_ACTION.equals(action)) {
+                    firebaseAnalytics.logEvent(Analytics.Event.NOTIFICATION_CLEAR_CHANGES, null);
                     Timber.d("Tasks service: CLEAR_CHANGES_ACTION");
                     clearChanges();
+                    NotificationUtils.cancelAll(this);
                 } else if (IGNORE_APP_ACTION.equals(action) && intent.hasExtra(IGNORE_APP_PKG_EXTRA)) {
+                    firebaseAnalytics.logEvent(Analytics.Event.NOTIFICATION_IGNORE_APP, null);
                     String packageName = intent.getStringExtra(IGNORE_APP_PKG_EXTRA);
                     Timber.d("Tasks service: IGNORE_APP_ACTION (" + packageName + ")");
                     clearChanges();

@@ -63,18 +63,27 @@ public class NotificationUtils {
                 notificationTextShort = context.getString(R.string.notification_app_changes_format_short, label, changes);
             }
 
+            Intent okIntent = TasksService.starterClearChanges(context);
+            actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_notification_ok,
+                    context.getString(R.string.notification_app_action_ok),
+                    PendingIntent.getActivity(context, 0, okIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
             Intent setUpIntent = PermissionsUtils.starterSettingsActivity(app.packageName);
-            actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_analyze,
+            actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_notification_setup,
                     context.getString(R.string.notification_app_action_set_up),
                     PendingIntent.getActivity(context, 0, setUpIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
             Intent ignoreAppIntent = TasksService.starterIgnoreApp(context, app.packageName);
-            actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_analyze,
+            actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_notification_ignore,
                     context.getString(R.string.notification_app_action_ignore_app),
                     PendingIntent.getService(context, 0, ignoreAppIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
         } else {
             intent = MainActivityView.starter(context);
             notificationTextLong = context.getString(R.string.notification_apps_changes_format_long, changes);
             notificationTextShort = context.getString(R.string.notification_apps_changes_format_short, changes);
+
+            Intent okIntent = TasksService.starterClearChanges(context);
+            actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_notification_ok,
+                    context.getString(R.string.notification_app_action_ok),
+                    PendingIntent.getActivity(context, 0, okIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
         }
 
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher_round);

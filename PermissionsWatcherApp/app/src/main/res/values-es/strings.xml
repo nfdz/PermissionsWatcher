@@ -24,6 +24,9 @@
     <string name="prefs_show_ignore_permission_title">Mostrar ignorar permisos</string>
     <string name="prefs_show_ignore_permission_summary">Habilitar la opción de ignorar ciertos permisos de una applicación</string>
 
+    <string name="prefs_sort_ignored_title">Ordenar ignoradas</string>
+    <string name="prefs_sort_ignored_summary">Colocar las aplicaciones ignoradas al final de la lista</string>
+
     <string name="prefs_show_apps_without_perm_title">Sin permisos</string>
     <string name="prefs_show_apps_without_perm_summary">Mostrar las aplicaciones sin permisos adquiridos</string>
 
@@ -48,6 +51,7 @@
     <string name="notification_app_change_format_short">%1$s adquirió %2$s.</string>
     <string name="notification_app_changes_format_long">%1$s ha adquirido %2$d permisos nuevos.</string>
     <string name="notification_app_changes_format_short">%1$s adquirió %2$d permisos.</string>
+    <string name="notification_app_action_ok">Ok</string>
     <string name="notification_app_action_set_up">Configurar</string>
     <string name="notification_app_action_ignore_app">Ignorar app</string>
 
@@ -63,4 +67,9 @@
     <string name="shortcut_analyze_title">Analizar</string>
     <string name="shortcut_analyze_title_long">Ejecutar análisis ahora</string>
     <string name="shortcut_analyze_disabled">El atajo de analizar no esta disponible</string>
+
+    <!-- Tutorial -->
+    <string name="tutorial_title">Bienvenido</string>
+    <string name="tutorial_message">Vigilante de Permisos te notificará automáticamente los nuevos permisos concedidos. Si no quieres recibir notificaciones de una app puedes ignorarla con el botón con forma de ojo. Recuerda que esta app es software libre y el código está publicado bajo licencia GPL en Github.\n¡Esperamos que te sea de utilidad!</string>
+
 </resources>
