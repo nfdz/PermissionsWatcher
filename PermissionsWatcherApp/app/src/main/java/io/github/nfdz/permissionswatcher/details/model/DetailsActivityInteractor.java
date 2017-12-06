@@ -9,6 +9,7 @@ import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.github.nfdz.permissionswatcher.details.DetailsActivityContract;
+import io.github.nfdz.permissionswatcher.sched.TasksService;
 import io.github.nfdz.permissionswatcher.sync.SyncService;
 import io.realm.Realm;
 
@@ -65,17 +66,9 @@ public class DetailsActivityInteractor implements DetailsActivityContract.Model 
     }
 
     @Override
-    public void clearChangesFlags(final String packageName) {
-        ApplicationInfo managedApp = realm.where(ApplicationInfo.class)
-                .equalTo(ApplicationInfo.PACKAGE_NAME_FIELD, packageName)
-                .findFirst();
-        if (managedApp != null) {
-            realm.beginTransaction();
-            managedApp.hasChanges = false;
-            for (PermissionState permission : managedApp.permissions) {
-                permission.hasChanged = false;
-            }
-            realm.commitTransaction();
+    public void clearChangesFlags(String packageName) {
+        if (context != null) {
+            TasksService.startClearChanges(context, packageName);
         }
     }
 }

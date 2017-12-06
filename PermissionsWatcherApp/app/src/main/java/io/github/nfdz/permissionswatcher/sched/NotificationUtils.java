@@ -108,8 +108,8 @@ public class NotificationUtils {
         PendingIntent resultPendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationBuilder.setContentIntent(resultPendingIntent);
 
-        Intent clearChangesIntent = TasksService.starterClearChanges(context);
-        notificationBuilder.setDeleteIntent(PendingIntent.getService(context, 0, clearChangesIntent, PendingIntent.FLAG_UPDATE_CURRENT));
+//        Intent clearChangesIntent = TasksService.starterClearChanges(context);
+//        notificationBuilder.setDeleteIntent(PendingIntent.getService(context, 0, clearChangesIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
         for (NotificationCompat.Action action : actions) {
             notificationBuilder.addAction(action);

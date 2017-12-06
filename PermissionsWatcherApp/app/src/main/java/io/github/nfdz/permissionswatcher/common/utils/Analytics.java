@@ -13,7 +13,7 @@ public class Analytics {
         public static final String PERMISSION_IGNORE = "permission_ignore";
         public static final String REPORT_PREF_CHANGE = "report_preference";
         public static final String REAL_TIME_PREF_CHANGE = "real_time_preference";
-        public static final String NOTIFICATION_CLEAR_CHANGES = "notification_clear_changes";
+        public static final String NOTIFICATION_OK_CLEAR_CHANGES = "notification_ok_clear_changes";
         public static final String NOTIFICATION_IGNORE_APP = "notification_ignore_app";
     }
 
