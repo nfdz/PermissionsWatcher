@@ -36,7 +36,8 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.7.1@aar') {
         transitive = true
     }
-    compile 'com.google.firebase:firebase-core:11.6.2'
+    compile 'com.google.firebase:firebase-core:11.8.0'
+    compile 'com.google.firebase:firebase-crash:11.8.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

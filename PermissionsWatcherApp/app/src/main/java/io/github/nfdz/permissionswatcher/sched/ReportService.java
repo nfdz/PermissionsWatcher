@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.util.List;
 
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
@@ -66,6 +68,7 @@ public class ReportService extends IntentService {
             Timber.d("Report finished successfully.");
         } catch (Exception e) {
             Timber.e(e, "There was an error during reporting.");
+            FirebaseCrash.report(e);
         } finally {
             if (realm != null) realm.close();
             if (!isRealTimeMode) SchedUtils.rescheduleReport(this);

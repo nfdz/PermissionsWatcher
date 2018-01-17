@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
@@ -95,6 +96,7 @@ public class TasksService extends IntentService {
             clearChangesTransaction(realm, apps);
         } catch (Exception e) {
             Timber.e(e, "There was an error during clearing changes.");
+            FirebaseCrash.report(e);
         } finally {
             if (realm != null) realm.close();
         }
@@ -111,6 +113,7 @@ public class TasksService extends IntentService {
             clearChangesTransaction(realm, apps);
         } catch (Exception e) {
             Timber.e(e, "There was an error during clearing changes of package_name = %s", packageName);
+            FirebaseCrash.report(e);
         } finally {
             if (realm != null) realm.close();
         }
@@ -142,6 +145,7 @@ public class TasksService extends IntentService {
             }
         } catch (Exception e) {
             Timber.e(e, "There was an error during ignoring app.");
+            FirebaseCrash.report(e);
         } finally {
             if (realm != null) realm.close();
         }
