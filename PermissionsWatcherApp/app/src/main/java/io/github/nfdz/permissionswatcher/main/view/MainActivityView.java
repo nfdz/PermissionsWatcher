@@ -228,7 +228,8 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
             recyclerView.setVisibility(View.INVISIBLE);
             emptyMessage.setVisibility(View.VISIBLE);
         } else {
-            adapter.setData(applicationInfos);
+            // Copy the data to avoid problems with the List implementation of Realm
+            adapter.setData(new ArrayList<>(applicationInfos));
             emptyMessage.setVisibility(View.INVISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
         }
