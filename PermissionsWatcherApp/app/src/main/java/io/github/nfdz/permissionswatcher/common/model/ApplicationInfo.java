@@ -80,4 +80,8 @@ public class ApplicationInfo extends RealmObject {
         return managed;
     }
 
+    @Override
+    public String toString() {
+        return packageName;
+    }
 }

@@ -91,7 +91,7 @@ public class PermissionsParser {
     private boolean isDangerousPermission(String permission) {
         try {
             int protLevel = pm.getPermissionInfo(permission, 0).protectionLevel;
-            return protLevel == PROTECTION_DANGEROUS;
+            return (protLevel & PROTECTION_DANGEROUS) == PROTECTION_DANGEROUS;
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }

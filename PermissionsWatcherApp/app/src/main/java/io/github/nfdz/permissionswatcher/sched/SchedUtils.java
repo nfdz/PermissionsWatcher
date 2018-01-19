@@ -19,7 +19,7 @@ import timber.log.Timber;
 public class SchedUtils {
 
     private static final int REAL_TIME_JOB_ID = 2638;
-    private static final long REAL_TIME_FEQ_MILLIS = TimeUnit.MINUTES.toMillis(30);
+    private static final long REAL_TIME_FEQ_MILLIS = TimeUnit.MINUTES.toMillis(15);
 
     private static final int REPORT_JOB_ID = 2567;
     private static final long SCHEDULE_MARGIN = TimeUnit.MINUTES.toMillis(2);
@@ -89,7 +89,7 @@ public class SchedUtils {
         ComponentName component = new ComponentName(context.getPackageName(), RealTimeJobService.class.getName());
         JobInfo.Builder builder = new JobInfo.Builder(REAL_TIME_JOB_ID, component);
         builder.setMinimumLatency(REAL_TIME_FEQ_MILLIS); // wait at least
-        builder.setOverrideDeadline(REAL_TIME_FEQ_MILLIS); // maximum delay
+        builder.setOverrideDeadline((long) (REAL_TIME_FEQ_MILLIS * 1.05)); // maximum delay
         JobScheduler scheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (scheduler == null) {
             Timber.e("Cannot schedule real time job because JobScheduler is not available.");

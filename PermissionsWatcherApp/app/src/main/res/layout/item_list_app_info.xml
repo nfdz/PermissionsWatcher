@@ -62,11 +62,14 @@
 
     <TextView
         android:id="@+id/item_app_tv_version"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/item_app_tv_name"
         app:layout_constraintStart_toEndOf="@+id/item_app_tv_permissions_value"
+        app:layout_constraintEnd_toEndOf="@+id/item_app_tv_name"
         android:layout_marginStart="8dp"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="@color/textColorGray"
         android:textSize="@dimen/list_item_app_details_size"
         tools:text="v1.0"/>

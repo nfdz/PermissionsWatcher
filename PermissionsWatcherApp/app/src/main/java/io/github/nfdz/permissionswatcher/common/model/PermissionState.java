@@ -31,4 +31,8 @@ public class PermissionState extends RealmObject {
         this.notifyChanges = notifyChanges;
     }
 
+    @Override
+    public String toString() {
+        return permission + "/" + granted + "/" + hasChanged + "/" + notifyChanges;
+    }
 }
