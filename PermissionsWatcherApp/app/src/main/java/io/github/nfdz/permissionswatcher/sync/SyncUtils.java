@@ -2,6 +2,7 @@ package io.github.nfdz.permissionswatcher.sync;
 
 import android.content.pm.PackageManager;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -43,7 +44,7 @@ public class SyncUtils {
     }
 
     private static void delete(ApplicationInfo app) {
-        for (PermissionState permission : app.permissions) {
+        for (PermissionState permission : new ArrayList<>(app.permissions)) {
             permission.deleteFromRealm();
         }
         app.deleteFromRealm();

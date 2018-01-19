@@ -22,6 +22,7 @@ public interface DetailsActivityContract {
         void destroy();
         void resume();
         void onUserFinish();
+        void onNoData();
         void onClickPermissionGroup();
         void onLongClickPermissionGroup(List<PermissionState> permissions, int permissionGroupType);
         void onIgnorePermissionClick(List<PermissionState> permissions, int permissionGroupType);

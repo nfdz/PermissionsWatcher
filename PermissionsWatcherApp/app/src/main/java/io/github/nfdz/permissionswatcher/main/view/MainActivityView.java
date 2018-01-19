@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -118,8 +117,8 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         String action = intent.getAction();
         if (TextUtils.isEmpty(action)) return;
         if (ANALYZE_ACTION.equals(action)) {
-            firebaseAnalytics.logEvent(Analytics.Event.START_ANALYSIS, null);
             AnalysisJobIntentService.start(this);
+            firebaseAnalytics.logEvent(Analytics.Event.START_ANALYSIS, null);
         }
     }
 
@@ -217,7 +216,6 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
     @Override
     public void onRefresh() {
-        firebaseAnalytics.logEvent(Analytics.Event.SWIPE_REFRESH, null);
         presenter.onSyncSwipe();
         swipeRefreshLayout.postDelayed(new Runnable() {
             @Override
@@ -225,26 +223,30 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
                 swipeRefreshLayout.setRefreshing(false);
             }
         }, FAKE_LOADING_MILLIS);
+        firebaseAnalytics.logEvent(Analytics.Event.SWIPE_REFRESH, null);
     }
 
     @Override
-    public void onChanged(@Nullable RealmResults<ApplicationInfo> applicationInfos) {
-        if (applicationInfos == null || applicationInfos.isEmpty()) {
+    public void onChanged(@Nullable RealmResults<ApplicationInfo> apps) {
+        List<ApplicationInfo> appInfos = copyData(apps);
+        if (appInfos == null || appInfos.isEmpty()) {
             recyclerView.setVisibility(View.INVISIBLE);
             emptyMessage.setVisibility(View.VISIBLE);
         } else {
             // Copy the data to avoid problems with the List implementation of Realm
-            adapter.setData(copyData(applicationInfos));
+            adapter.setData(appInfos);
             emptyMessage.setVisibility(View.INVISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
         }
     }
 
-    private List<ApplicationInfo> copyData(@NonNull RealmResults<ApplicationInfo> data) {
+    private List<ApplicationInfo> copyData(@Nullable RealmResults<ApplicationInfo> data) {
         List<ApplicationInfo> result = new ArrayList<>();
-        for (ApplicationInfo d : data) {
-            Realm realm = d.getRealm();
-            result.add(realm.copyFromRealm(d));
+        if (data != null && data.isValid()) {
+            for (ApplicationInfo d : data) {
+                Realm realm = d.getRealm();
+                result.add(realm.copyFromRealm(d));
+            }
         }
         return result;
     }
@@ -356,14 +358,14 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
             @OnClick(R.id.item_app_container)
             void onAppClick() {
-                firebaseAnalytics.logEvent(Analytics.Event.APP_CLICK, null);
                 presenter.onAppClick(filteredData.get(getAdapterPosition()), icon);
+                firebaseAnalytics.logEvent(Analytics.Event.APP_CLICK, null);
             }
 
             @OnClick(R.id.item_app_iv_ignore)
             void onIgnoreClick() {
-                firebaseAnalytics.logEvent(Analytics.Event.APP_IGNORE, null);
                 presenter.onIgnoreAppClick(filteredData.get(getAdapterPosition()));
+                firebaseAnalytics.logEvent(Analytics.Event.APP_IGNORE, null);
             }
 
             void bindApp(ApplicationInfo app) {

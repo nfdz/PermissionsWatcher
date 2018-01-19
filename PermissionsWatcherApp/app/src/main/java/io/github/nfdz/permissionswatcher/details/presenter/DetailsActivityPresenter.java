@@ -60,6 +60,13 @@ public class DetailsActivityPresenter implements DetailsActivityContract.Present
     }
 
     @Override
+    public void onNoData() {
+        if (view != null) {
+            view.navigateToFinish();
+        }
+    }
+
+    @Override
     public void onClickPermissionGroup() {
         view.navigateToPermissionSettings();
     }

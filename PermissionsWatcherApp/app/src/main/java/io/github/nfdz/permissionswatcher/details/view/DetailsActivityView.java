@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -46,6 +47,7 @@ import io.github.nfdz.permissionswatcher.common.utils.PermissionsUtils;
 import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.details.DetailsActivityContract;
 import io.github.nfdz.permissionswatcher.details.presenter.DetailsActivityPresenter;
+import io.realm.Realm;
 import timber.log.Timber;
 
 public class DetailsActivityView extends AppCompatActivity implements DetailsActivityContract.View,
@@ -259,7 +261,20 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
 
     @Override
     public void onChanged(@Nullable ApplicationInfo app) {
-        adapter.setData(app);
+        ApplicationInfo appInfo = copyData(app);
+        if (appInfo != null) {
+            adapter.setData(appInfo);
+        } else {
+            presenter.onNoData();
+        }
+    }
+
+    private ApplicationInfo copyData(@Nullable ApplicationInfo app) {
+        if (app != null && app.isValid()) {
+            Realm realm = app.getRealm();
+            return realm.copyFromRealm(app);
+        }
+        return null;
     }
 
     @Override
@@ -276,19 +291,13 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
         private List<PermissionState> permissions = null;
         private boolean showIgnore = false;
 
-        public void setData(ApplicationInfo data) {
-            if (data != null) {
-                permissions = data.permissions;
-                grantedPermissionsGroups = new ArrayList<>(PermissionsUtils.processAndCompactPermissionStates(permissions, true));
-                otherPermissionsGroups = new ArrayList<>(PermissionsUtils.processAndCompactPermissionStates(permissions, false));
-                otherPermissionsGroups.removeAll(grantedPermissionsGroups);
-                Collections.sort(grantedPermissionsGroups);
-                Collections.sort(otherPermissionsGroups);
-            } else {
-                permissions = null;
-                grantedPermissionsGroups = null;
-                otherPermissionsGroups = null;
-            }
+        public void setData(@NonNull ApplicationInfo data) {
+            permissions = data.permissions;
+            grantedPermissionsGroups = new ArrayList<>(PermissionsUtils.processAndCompactPermissionStates(permissions, true));
+            otherPermissionsGroups = new ArrayList<>(PermissionsUtils.processAndCompactPermissionStates(permissions, false));
+            otherPermissionsGroups.removeAll(grantedPermissionsGroups);
+            Collections.sort(grantedPermissionsGroups);
+            Collections.sort(otherPermissionsGroups);
             notifyDataSetChanged();
         }
 
