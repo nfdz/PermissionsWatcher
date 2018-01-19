@@ -1,5 +1,9 @@
 # PermissionsWatcher
-Android application to help you to control the applications to which you grant permissions
+The new Android permissions system is very powerful. Applications usually ask for permissions in a context where they are justified. However, why do apps keep this acquired permission forever?
+
+This tool app is very simple. It shows the applications with changes (acquired permissions) with an attention icon and alerts with a notification as soon as possible (real time mode) or once a day (report mode).
+
+Control this chaos comfortably with this small free software application.
 
 <p align="center">
   <img src="dev/icon.png?raw=true" alt="Permissions Watcher"/>
