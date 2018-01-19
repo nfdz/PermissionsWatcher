@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
@@ -39,6 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import io.github.nfdz.permissionswatcher.R;
 import io.github.nfdz.permissionswatcher.common.model.AppComparator;
+import io.github.nfdz.permissionswatcher.common.model.AppEqualsStrategy;
 import io.github.nfdz.permissionswatcher.common.model.AppIgnoreComparator;
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
@@ -51,6 +53,7 @@ import io.github.nfdz.permissionswatcher.main.MainActivityContract;
 import io.github.nfdz.permissionswatcher.main.presenter.MainActivityPresenter;
 import io.github.nfdz.permissionswatcher.sched.AnalysisJobIntentService;
 import io.github.nfdz.permissionswatcher.settings.SettingsActivity;
+import io.realm.Realm;
 import io.realm.RealmResults;
 
 public class MainActivityView extends AppCompatActivity implements MainActivityContract.View,
@@ -231,10 +234,19 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
             emptyMessage.setVisibility(View.VISIBLE);
         } else {
             // Copy the data to avoid problems with the List implementation of Realm
-            adapter.setData(new ArrayList<>(applicationInfos));
+            adapter.setData(copyData(applicationInfos));
             emptyMessage.setVisibility(View.INVISIBLE);
             recyclerView.setVisibility(View.VISIBLE);
         }
+    }
+
+    private List<ApplicationInfo> copyData(@NonNull RealmResults<ApplicationInfo> data) {
+        List<ApplicationInfo> result = new ArrayList<>();
+        for (ApplicationInfo d : data) {
+            Realm realm = d.getRealm();
+            result.add(realm.copyFromRealm(d));
+        }
+        return result;
     }
 
     @Override
@@ -249,6 +261,8 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
     }
 
     class Adapter extends RecyclerView.Adapter<Adapter.AppViewHolder> {
+
+        private final AppEqualsStrategy strategy = new AppEqualsStrategy();
 
         private List<ApplicationInfo> data = null;
         private List<ApplicationInfo> filteredData = null;
@@ -273,7 +287,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
         private void updateAdapter(List<ApplicationInfo> newFilteredData) {
             sortData(newFilteredData);
-            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new SimpleDiffUtilListCallback<>(this.filteredData, newFilteredData));
+            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new SimpleDiffUtilListCallback<>(this.filteredData, newFilteredData, strategy));
             this.filteredData = newFilteredData;
             result.dispatchUpdatesTo(this);
         }
@@ -291,7 +305,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         private List<ApplicationInfo> filterData() {
             if (data == null) return null;
             if (TextUtils.isEmpty(filterQuery) && showAppsWithoutPermissions) return data;
-            List<ApplicationInfo> filteredData = new ArrayList<>();
+            List<ApplicationInfo> result = new ArrayList<>();
             for (ApplicationInfo app : data) {
                 boolean add = true;
 
@@ -305,9 +319,9 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
                     add = appText.toLowerCase().contains(filterQuery.trim().toLowerCase());
                 }
 
-                if (add) filteredData.add(app);
+                if (add) result.add(app);
             }
-            return filteredData;
+            return result;
         }
 
         @Override

@@ -7,12 +7,18 @@ import java.util.List;
 
 public class SimpleDiffUtilListCallback<T> extends DiffUtil.Callback {
 
+    public interface EqualsStrategy<T> {
+        boolean sameItem(T item1, T item2);
+    }
+
+    private final EqualsStrategy<T> strategy;
     private final List<T> oldList;
     private final List<T> newList;
 
-    public SimpleDiffUtilListCallback(List<T> oldList, List<T> newList) {
+    public SimpleDiffUtilListCallback(List<T> oldList, List<T> newList, EqualsStrategy<T> strategy) {
         this.oldList = oldList != null ? oldList : Collections.<T>emptyList();
         this.newList = newList != null ? newList : Collections.<T>emptyList();
+        this.strategy = strategy;
     }
 
     @Override
@@ -27,7 +33,7 @@ public class SimpleDiffUtilListCallback<T> extends DiffUtil.Callback {
 
     @Override
     public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-        return oldList.get(oldItemPosition).equals(newList.get(newItemPosition));
+        return strategy.sameItem(oldList.get(oldItemPosition), newList.get(newItemPosition));
     }
 
     @Override
