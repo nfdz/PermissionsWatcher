@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -44,6 +45,7 @@ import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.common.utils.Analytics;
 import io.github.nfdz.permissionswatcher.common.utils.PermissionsUtils;
 import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
+import io.github.nfdz.permissionswatcher.common.utils.SimpleDiffUtilListCallback;
 import io.github.nfdz.permissionswatcher.details.view.DetailsActivityView;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
 import io.github.nfdz.permissionswatcher.main.presenter.MainActivityPresenter;
@@ -256,32 +258,33 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
         public void setData(List<ApplicationInfo> data) {
             this.data = data;
-            this.filteredData = filterData();
-            sortData();
-            notifyDataSetChanged();
+            updateAdapter(filterData());
         }
 
         public void setFilter(@Nullable String query) {
             this.filterQuery = query;
-            this.filteredData = filterData();
-            sortData();
-            notifyDataSetChanged();
+            updateAdapter(filterData());
         }
 
         public void setShowAppsWithoutPermissions(boolean showAppsWithoutPermissions) {
             this.showAppsWithoutPermissions = showAppsWithoutPermissions;
-            this.filteredData = filterData();
-            sortData();
-            notifyDataSetChanged();
+            updateAdapter(filterData());
+        }
+
+        private void updateAdapter(List<ApplicationInfo> newFilteredData) {
+            sortData(newFilteredData);
+            DiffUtil.DiffResult result = DiffUtil.calculateDiff(new SimpleDiffUtilListCallback<>(this.filteredData, newFilteredData));
+            this.filteredData = newFilteredData;
+            result.dispatchUpdatesTo(this);
         }
 
         public void setSortByIgnoreFlag(boolean sortByIgnoreFlag) {
             comparator = sortByIgnoreFlag ? new AppIgnoreComparator() : new AppComparator();
         }
 
-        private void sortData() {
-            if (filteredData != null && comparator != null) {
-                Collections.sort(filteredData, comparator);
+        private void sortData(List<ApplicationInfo> data) {
+            if (data != null && comparator != null) {
+                Collections.sort(data, comparator);
             }
         }
 
@@ -299,7 +302,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
                 if (add && !TextUtils.isEmpty(filterQuery)) {
                     String appText = TextUtils.isEmpty(app.label) ? app.packageName : app.label;
-                    add = appText.toLowerCase().contains(filterQuery.toLowerCase());
+                    add = appText.toLowerCase().contains(filterQuery.trim().toLowerCase());
                 }
 
                 if (add) filteredData.add(app);
