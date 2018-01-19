@@ -19,9 +19,9 @@ Android application to help you to control the applications to which you grant p
   <img src="dev/screenshots/3.png?raw=true" width="250" alt="Screenshot 3"/>
 </p>
 <p align="center">
-  <img src="dev/screenshots/4?raw=true" width="250" alt="Screenshot 4"/>
-  <img src="dev/screenshots/5?raw=true" width="250" alt="Screenshot 5"/>
-  <img src="dev/screenshots/6?raw=true" width="250" alt="Screenshot 6"/>
+  <img src="dev/screenshots/4.png?raw=true" width="250" alt="Screenshot 4"/>
+  <img src="dev/screenshots/5.png?raw=true" width="250" alt="Screenshot 5"/>
+  <img src="dev/screenshots/6.png?raw=true" width="250" alt="Screenshot 6"/>
 </p>
 
 ## TODO
