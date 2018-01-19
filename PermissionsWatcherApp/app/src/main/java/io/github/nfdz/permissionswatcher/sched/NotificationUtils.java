@@ -14,6 +14,8 @@ import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
+import com.google.firebase.crash.FirebaseCrash;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -30,12 +32,17 @@ import timber.log.Timber;
 
 public class NotificationUtils {
 
+    private static final String NOTIFICATION_ERROR = "Cannot send notification because NotificationManager is not available.";
     private static final int NOTIFICATION_ID = 4658;
     private static final String NOTICIATION_CHANNEL_ID = "permissions_watcher_channel";
 
-    public static void notifyReport(Context context, List<ApplicationInfo> appsWithChanges, boolean analyzeMode) {
+    public static void notifyReport(Context context, List<ApplicationInfo> appsWithChanges) {
+        notifyReport(context, appsWithChanges, false);
+    }
+
+    public static void notifyReport(Context context, List<ApplicationInfo> appsWithChanges, boolean notifyEverythingAlright) {
         boolean noApps = appsWithChanges == null || appsWithChanges.isEmpty();
-        if (noApps && analyzeMode) {
+        if (noApps && notifyEverythingAlright) {
             notifyEverythingAlright(context);
         } else if (!noApps) {
             notifyWarnings(context, appsWithChanges);
@@ -63,7 +70,7 @@ public class NotificationUtils {
                 notificationTextShort = context.getString(R.string.notification_app_changes_format_short, label, changes);
             }
 
-            Intent okIntent = TasksService.starterClearChanges(context);
+            Intent okIntent = TasksIntentService.starterClearChanges(context);
             actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_notification_ok,
                     context.getString(R.string.notification_app_action_ok),
                     PendingIntent.getService(context, 0, okIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
@@ -71,7 +78,7 @@ public class NotificationUtils {
             actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_notification_setup,
                     context.getString(R.string.notification_app_action_set_up),
                     PendingIntent.getActivity(context, 0, setUpIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
-            Intent ignoreAppIntent = TasksService.starterIgnoreApp(context, app.packageName);
+            Intent ignoreAppIntent = TasksIntentService.starterIgnoreApp(context, app.packageName);
             actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_notification_ignore,
                     context.getString(R.string.notification_app_action_ignore_app),
                     PendingIntent.getService(context, 0, ignoreAppIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
@@ -80,7 +87,7 @@ public class NotificationUtils {
             notificationTextLong = context.getString(R.string.notification_apps_changes_format_long, changes);
             notificationTextShort = context.getString(R.string.notification_apps_changes_format_short, changes);
 
-            Intent okIntent = TasksService.starterClearChanges(context);
+            Intent okIntent = TasksIntentService.starterClearChanges(context);
             actions.add(new NotificationCompat.Action.Builder(R.drawable.ic_notification_ok,
                     context.getString(R.string.notification_app_action_ok),
                     PendingIntent.getService(context, 0, okIntent, PendingIntent.FLAG_UPDATE_CURRENT)).build());
@@ -108,7 +115,7 @@ public class NotificationUtils {
         PendingIntent resultPendingIntent = taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         notificationBuilder.setContentIntent(resultPendingIntent);
 
-//        Intent clearChangesIntent = TasksService.starterClearChanges(context);
+//        Intent clearChangesIntent = TasksIntentService.starterClearChanges(context);
 //        notificationBuilder.setDeleteIntent(PendingIntent.getService(context, 0, clearChangesIntent, PendingIntent.FLAG_UPDATE_CURRENT));
 
         for (NotificationCompat.Action action : actions) {
@@ -119,7 +126,8 @@ public class NotificationUtils {
         if (notificationManager != null) {
             notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
         } else {
-            Timber.e("Cannot send notification because NotificationManager is not available.");
+            Timber.e(NOTIFICATION_ERROR);
+            FirebaseCrash.report(new Exception(NOTIFICATION_ERROR));
         }
     }
 
@@ -236,7 +244,8 @@ public class NotificationUtils {
         if (notificationManager != null) {
             notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build());
         } else {
-            Timber.e("Cannot send notification because NotificationManager is not available.");
+            Timber.e(NOTIFICATION_ERROR);
+            FirebaseCrash.report(new Exception(NOTIFICATION_ERROR));
         }
     }
 
@@ -245,7 +254,9 @@ public class NotificationUtils {
         if (notificationManager != null) {
             notificationManager.cancel(NOTIFICATION_ID);
         } else {
-            Timber.e("Cannot cancel notification because NotificationManager is not available.");
+            Timber.e(NOTIFICATION_ERROR);
+            FirebaseCrash.report(new Exception(NOTIFICATION_ERROR));
         }
     }
+
 }

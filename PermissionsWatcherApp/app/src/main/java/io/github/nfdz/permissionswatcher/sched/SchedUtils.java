@@ -1,13 +1,12 @@
 package io.github.nfdz.permissionswatcher.sched;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
+
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -22,25 +21,21 @@ public class SchedUtils {
     private static final int REAL_TIME_JOB_ID = 6238;
     private static final long REAL_TIME_FEQ_MILLIS = TimeUnit.MINUTES.toMillis(30);
 
-    private static final long REPORT_WINDOW_LENGTH_MILLIS = TimeUnit.MINUTES.toMillis(1);
-    private static final long MARGIN_TO_SCHEDULE = TimeUnit.MINUTES.toMillis(5);
+    private static final int REPORT_JOB_ID = 5267;
+    private static final long SCHEDULE_MARGIN = TimeUnit.MINUTES.toMillis(2);
 
     private static boolean sInitialized = false;
 
     synchronized public static void initialize(@NonNull final Context context) {
         if (sInitialized) return;
         sInitialized = true;
-        rescheduleReport(context);
-        rescheduleRealmTime(context);
+        if (!isJobScheduled(context, REPORT_JOB_ID)) scheduleReport(context);
+        if (!isJobScheduled(context, REAL_TIME_JOB_ID)) scheduleRealmTime(context);
     }
 
-    public static void rescheduleReport(@NonNull Context context) {
+    public static void scheduleReport(@NonNull Context context) {
         boolean alarmEnabled = PreferencesUtils.isReportEnable(context);
-        if (!alarmEnabled) {
-            unscheduleReport(context);
-            return;
-        }
-        unscheduleReport(context);
+        if (!alarmEnabled) return;
 
         long triggerAtMillis;
         String timeValue = PreferencesUtils.notificationsTime(context);
@@ -51,59 +46,59 @@ public class SchedUtils {
         cal.set(Calendar.HOUR_OF_DAY, hour);
         cal.set(Calendar.MINUTE, minutes);
         long todayTrigger = cal.getTimeInMillis();
-        if (todayTrigger > (now + MARGIN_TO_SCHEDULE)) {
+        if (todayTrigger > (now + SCHEDULE_MARGIN)) {
             triggerAtMillis = todayTrigger;
         } else {
             cal.add(Calendar.DAY_OF_MONTH, 1);
             triggerAtMillis = cal.getTimeInMillis();
         }
 
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (manager != null) {
-            Timber.d("Scheduling report alarm at %s", new Date(triggerAtMillis));
-            manager.setWindow(AlarmManager.RTC, triggerAtMillis, REPORT_WINDOW_LENGTH_MILLIS, getReportOperation(context));
-            Timber.d("Report alarm scheduled successfully.");
+        long timeToTrigger = triggerAtMillis - now;
+
+        ComponentName component = new ComponentName(context.getPackageName(), ReportJobService.class.getName());
+        JobInfo.Builder builder = new JobInfo.Builder(REPORT_JOB_ID, component);
+        builder.setMinimumLatency(timeToTrigger); // wait at least
+        builder.setOverrideDeadline(timeToTrigger); // maximum delay
+        JobScheduler scheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (scheduler == null) {
+            Timber.e("Cannot schedule report job because JobScheduler is not available.");
+            FirebaseCrash.report(new Exception("Cannot schedule report job because JobScheduler is not available."));
+        } else if (scheduler.schedule(builder.build()) == JobScheduler.RESULT_SUCCESS) {
+            Timber.d("Report job scheduled successfully. Trigger at: %s.", new Date(triggerAtMillis));
         } else {
-            Timber.e("Cannot schedule report alarm because AlarmManager is not available.");
+            Timber.e("Cannot schedule report job.");
+            FirebaseCrash.report(new Exception("Cannot schedule report job."));
         }
-    }
-
-    private static PendingIntent getReportOperation(@NonNull Context context) {
-        return PendingIntent.getService(context, 0, getReportIntent(context), PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    private static Intent getReportIntent(@NonNull Context context) {
-        return new Intent(context, ReportService.class);
     }
 
     public static void unscheduleReport(@NonNull Context context) {
-        AlarmManager manager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        if (manager != null) {
-            manager.cancel(getReportOperation(context));
+        JobScheduler scheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (scheduler == null) {
+            Timber.e("Cannot unschedule report job because JobScheduler is not available.");
+            FirebaseCrash.report(new Exception("Cannot unschedule report job because JobScheduler is not available."));
         } else {
-            Timber.e("Cannot cancel report alarm because AlarmManager is not available.");
+            scheduler.cancel(REPORT_JOB_ID);
+            Timber.d("Report job unscheduled successfully.");
         }
     }
 
-    public static void rescheduleRealmTime(@NonNull Context context) {
+    public static void scheduleRealmTime(@NonNull Context context) {
         boolean realmTimeEnabled = PreferencesUtils.isRealTimeEnable(context);
-        if (!realmTimeEnabled) {
-            unscheduleRealTime(context);
-            return;
-        }
-        unscheduleRealTime(context);
+        if (!realmTimeEnabled) return;
 
-        ComponentName component = new ComponentName(context.getPackageName(), RealTimeService.class.getName());
+        ComponentName component = new ComponentName(context.getPackageName(), RealTimeJobService.class.getName());
         JobInfo.Builder builder = new JobInfo.Builder(REAL_TIME_JOB_ID, component);
         builder.setMinimumLatency(REAL_TIME_FEQ_MILLIS); // wait at least
         builder.setOverrideDeadline(REAL_TIME_FEQ_MILLIS); // maximum delay
         JobScheduler scheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (scheduler == null) {
             Timber.e("Cannot schedule real time job because JobScheduler is not available.");
+            FirebaseCrash.report(new Exception("Cannot schedule real time job because JobScheduler is not available."));
         } else if (scheduler.schedule(builder.build()) == JobScheduler.RESULT_SUCCESS) {
             Timber.d("Real time job scheduled successfully.");
         } else {
             Timber.e("Cannot schedule real time job.");
+            FirebaseCrash.report(new Exception("Cannot schedule real time job."));
         }
     }
 
@@ -111,9 +106,21 @@ public class SchedUtils {
         JobScheduler scheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
         if (scheduler == null) {
             Timber.e("Cannot unschedule real time job.");
+            FirebaseCrash.report(new Exception("Cannot unschedule real time job because JobScheduler is not available."));
         } else {
             scheduler.cancel(REAL_TIME_JOB_ID);
+            Timber.d("Real time job unscheduled successfully.");
         }
+    }
+
+    public static boolean isJobScheduled(@NonNull Context context, int jobId) {
+        JobScheduler scheduler = (JobScheduler)context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        if (scheduler != null) {
+            for (JobInfo job : scheduler.getAllPendingJobs()) {
+                if (job.getId() == jobId) return true;
+            }
+        }
+        return false;
     }
 
 }

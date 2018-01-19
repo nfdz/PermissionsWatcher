@@ -1,40 +1,41 @@
 package io.github.nfdz.permissionswatcher.sync;
 
-import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.JobIntentService;
 import android.text.TextUtils;
+
+import com.google.firebase.crash.FirebaseCrash;
 
 import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.realm.Realm;
 import timber.log.Timber;
 
-public class SyncService extends IntentService {
+public class SyncJobIntentService extends JobIntentService {
 
-    public static final String SERVICE_NAME = "SyncService";
+    private static final int JOB_ID = 2378;
 
     private static final String FIRST_TIME_ACTION = "FIRST_TIME";
 
     public static void start(Context context) {
-        context.startService(new Intent(context, SyncService.class));
+        enqueueWork(context, new Intent(context, SyncJobIntentService.class));
     }
 
     public static void startFirstTimeMode(Context context) {
-        Intent starter = new Intent(context, SyncService.class);
+        Intent starter = new Intent(context, SyncJobIntentService.class);
         starter.setAction(FIRST_TIME_ACTION);
-        context.startService(starter);
+        enqueueWork(context, starter);
     }
 
-    public SyncService() {
-        super(SERVICE_NAME);
+    private static void enqueueWork(Context context, Intent work) {
+        enqueueWork(context, SyncJobIntentService.class, JOB_ID, work);
     }
 
     @Override
-    protected void onHandleIntent(@Nullable Intent intent) {
-
+    protected void onHandleWork(@NonNull Intent intent) {
         boolean firstTimeMode = isFirstTimeMode(intent);
-
         Realm realm = null;
         try {
             realm = Realm.getInstance(RealmUtils.getConfiguration());
@@ -42,6 +43,7 @@ public class SyncService extends IntentService {
             Timber.d("Synchronization finished successfully.");
         } catch (Exception e) {
             Timber.e(e, "There was an error during synchronization.");
+            FirebaseCrash.report(e);
         } finally {
             if (realm != null) realm.close();
         }

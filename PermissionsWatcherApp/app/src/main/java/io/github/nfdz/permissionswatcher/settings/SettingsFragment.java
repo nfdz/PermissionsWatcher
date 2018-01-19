@@ -4,11 +4,9 @@ import android.content.ComponentName;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.SwitchPreferenceCompat;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
 
@@ -71,7 +69,7 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
         if (key.equals(getString(R.string.prefs_report_enable_key))) {
             boolean reportEnabled = PreferencesUtils.isReportEnable(getActivity());
             if (reportEnabled) {
-                SchedUtils.rescheduleReport(getActivity());
+                SchedUtils.scheduleReport(getActivity());
             } else {
                 SchedUtils.unscheduleReport(getActivity());
             }
@@ -82,11 +80,11 @@ public class SettingsFragment extends PreferenceFragmentCompat implements Shared
             params.putBoolean(FirebaseAnalytics.Param.VALUE, reportEnabled);
             firebaseAnalytics.logEvent(Analytics.Event.REPORT_PREF_CHANGE, params);
         } else if (key.equals(getString(R.string.prefs_report_time_key))) {
-            SchedUtils.rescheduleReport(getActivity());
+            SchedUtils.scheduleReport(getActivity());
         } else if (key.equals(getString(R.string.prefs_real_time_enable_key))) {
             boolean realTimeEnabled = PreferencesUtils.isRealTimeEnable(getActivity());
             if (realTimeEnabled) {
-                SchedUtils.rescheduleRealmTime(getActivity());
+                SchedUtils.scheduleRealmTime(getActivity());
             } else {
                 SchedUtils.unscheduleRealTime(getActivity());
             }

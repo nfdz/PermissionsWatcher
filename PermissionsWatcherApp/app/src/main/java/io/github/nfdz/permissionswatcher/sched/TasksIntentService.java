@@ -17,7 +17,7 @@ import io.realm.Realm;
 import io.realm.RealmResults;
 import timber.log.Timber;
 
-public class TasksService extends IntentService {
+public class TasksIntentService extends IntentService {
 
     private static final String CLEAR_CHANGES_ACTION = "CLEAR_CHANGES";
     private static final String CLEAR_CHANGES_PKG_EXTRA = "package_name";
@@ -25,30 +25,30 @@ public class TasksService extends IntentService {
     private static final String IGNORE_APP_PKG_EXTRA = "package_name";
 
     public static Intent starterClearChanges(Context context) {
-        Intent intent = new Intent(context, TasksService.class);
+        Intent intent = new Intent(context, TasksIntentService.class);
         intent.setAction(CLEAR_CHANGES_ACTION);
         return intent;
     }
 
     public static void startClearChanges(Context context, String packageName) {
-        Intent intent = new Intent(context, TasksService.class);
+        Intent intent = new Intent(context, TasksIntentService.class);
         intent.setAction(CLEAR_CHANGES_ACTION);
         intent.putExtra(CLEAR_CHANGES_PKG_EXTRA, packageName);
         context.startService(intent);
     }
 
     public static Intent starterIgnoreApp(Context context, String packageName) {
-        Intent intent = new Intent(context, TasksService.class);
+        Intent intent = new Intent(context, TasksIntentService.class);
         intent.setAction(IGNORE_APP_ACTION);
         intent.putExtra(IGNORE_APP_PKG_EXTRA, packageName);
         return intent;
     }
 
-    private static final String SERVICE_NAME = "TasksService";
+    private static final String SERVICE_NAME = "TasksIntentService";
 
     private FirebaseAnalytics firebaseAnalytics;
 
-    public TasksService() {
+    public TasksIntentService() {
         super(SERVICE_NAME);
     }
 

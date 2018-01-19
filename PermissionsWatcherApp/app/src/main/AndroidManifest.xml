@@ -38,16 +38,23 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".main.view.MainActivityView" />
         </activity>
-        <service android:name=".sync.SyncService"
-           android:exported="false" />
+        <service android:name=".sched.TasksIntentService" />
         <service
-            android:name="io.github.nfdz.permissionswatcher.sched.ReportService"
-            android:enabled="true" />
-        <service
-            android:name="io.github.nfdz.permissionswatcher.sched.RealTimeService"
+            android:name=".sync.SyncJobIntentService"
             android:permission="android.permission.BIND_JOB_SERVICE"
-            android:exported="true"/>
-        <service android:name="io.github.nfdz.permissionswatcher.sched.TasksService" />
+            android:exported="false"/>
+        <service
+            android:name=".sched.AnalysisJobIntentService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+        <service
+            android:name=".sched.ReportJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false"/>
+        <service
+            android:name=".sched.RealTimeJobService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
         <receiver
             android:enabled="true"
             android:name="io.github.nfdz.permissionswatcher.sched.BootReceiver"

@@ -8,7 +8,7 @@ import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
-import io.github.nfdz.permissionswatcher.sync.SyncService;
+import io.github.nfdz.permissionswatcher.sync.SyncJobIntentService;
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -34,7 +34,7 @@ public class MainActivityInteractor implements MainActivityContract.Model {
     @Override
     public void launchSynchronization() {
         if (context != null) {
-            SyncService.start(context);
+            SyncJobIntentService.start(context);
         }
     }
 

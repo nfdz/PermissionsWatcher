@@ -47,7 +47,7 @@ import io.github.nfdz.permissionswatcher.common.utils.PreferencesUtils;
 import io.github.nfdz.permissionswatcher.details.view.DetailsActivityView;
 import io.github.nfdz.permissionswatcher.main.MainActivityContract;
 import io.github.nfdz.permissionswatcher.main.presenter.MainActivityPresenter;
-import io.github.nfdz.permissionswatcher.sched.ReportService;
+import io.github.nfdz.permissionswatcher.sched.AnalysisJobIntentService;
 import io.github.nfdz.permissionswatcher.settings.SettingsActivity;
 import io.realm.RealmResults;
 
@@ -114,7 +114,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
         if (TextUtils.isEmpty(action)) return;
         if (ANALYZE_ACTION.equals(action)) {
             firebaseAnalytics.logEvent(Analytics.Event.START_ANALYSIS, null);
-            ReportService.startAnalysisMode(this);
+            AnalysisJobIntentService.start(this);
         }
     }
 

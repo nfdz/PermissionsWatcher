@@ -9,8 +9,8 @@ import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
 import io.github.nfdz.permissionswatcher.common.utils.RealmUtils;
 import io.github.nfdz.permissionswatcher.details.DetailsActivityContract;
-import io.github.nfdz.permissionswatcher.sched.TasksService;
-import io.github.nfdz.permissionswatcher.sync.SyncService;
+import io.github.nfdz.permissionswatcher.sched.TasksIntentService;
+import io.github.nfdz.permissionswatcher.sync.SyncJobIntentService;
 import io.realm.Realm;
 
 public class DetailsActivityInteractor implements DetailsActivityContract.Model {
@@ -34,7 +34,7 @@ public class DetailsActivityInteractor implements DetailsActivityContract.Model 
     @Override
     public void launchSynchronization() {
         if (context != null) {
-            SyncService.start(context);
+            SyncJobIntentService.start(context);
         }
     }
 
@@ -68,7 +68,7 @@ public class DetailsActivityInteractor implements DetailsActivityContract.Model 
     @Override
     public void clearChangesFlags(String packageName) {
         if (context != null) {
-            TasksService.startClearChanges(context, packageName);
+            TasksIntentService.startClearChanges(context, packageName);
         }
     }
 }
