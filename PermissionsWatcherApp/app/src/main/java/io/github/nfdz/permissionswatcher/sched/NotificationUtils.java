@@ -204,9 +204,10 @@ public class NotificationUtils {
     private static String createNotificationChannel(Context context) {
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         CharSequence channelName = context.getString(R.string.notification_channel_name);
-        int importance = NotificationManager.IMPORTANCE_DEFAULT;
+        int importance = NotificationManager.IMPORTANCE_LOW;
         NotificationChannel notificationChannel = new NotificationChannel(NOTICIATION_CHANNEL_ID, channelName, importance);
         notificationChannel.setVibrationPattern(new long[]{ 0L });
+        notificationChannel.enableVibration(false);
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(notificationChannel);
             return NOTICIATION_CHANNEL_ID;
