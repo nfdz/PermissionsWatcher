@@ -108,7 +108,8 @@ public class NotificationUtils {
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationTextShort)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationTextLong))
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setVibrate(new long[]{ 0L });
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntentWithParentStack(intent);
@@ -205,6 +206,7 @@ public class NotificationUtils {
         CharSequence channelName = context.getString(R.string.notification_channel_name);
         int importance = NotificationManager.IMPORTANCE_DEFAULT;
         NotificationChannel notificationChannel = new NotificationChannel(NOTICIATION_CHANNEL_ID, channelName, importance);
+        notificationChannel.setVibrationPattern(new long[]{ 0L });
         if (notificationManager != null) {
             notificationManager.createNotificationChannel(notificationChannel);
             return NOTICIATION_CHANNEL_ID;
@@ -233,7 +235,8 @@ public class NotificationUtils {
                 .setContentTitle(notificationTitle)
                 .setContentText(notificationTextShort)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(notificationTextLong))
-                .setAutoCancel(true);
+                .setAutoCancel(true)
+                .setVibrate(new long[]{ 0L });
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntentWithParentStack(intent);
