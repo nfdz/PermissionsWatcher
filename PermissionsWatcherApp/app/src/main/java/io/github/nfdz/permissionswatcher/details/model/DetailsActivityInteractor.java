@@ -3,7 +3,9 @@ package io.github.nfdz.permissionswatcher.details.model;
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.github.nfdz.permissionswatcher.common.model.ApplicationInfo;
 import io.github.nfdz.permissionswatcher.common.model.PermissionState;
@@ -46,23 +48,40 @@ public class DetailsActivityInteractor implements DetailsActivityContract.Model 
     }
 
     @Override
-    public void toggleIgnoreFlag(List<PermissionState> permissions) {
+    public void toggleIgnoreFlag(final String packageName, final List<PermissionState> permissions, final OperationCallback callback) {
         if (permissions == null || permissions.isEmpty()) return;
         boolean anyNotify = false;
+        final Set<String> permissionsToToggle = new HashSet<>();
         for (PermissionState permission : permissions) {
+            permissionsToToggle.add(permission.permission);
             anyNotify = anyNotify || permission.notifyChanges;
         }
 
-        boolean toggledFlag = !anyNotify;
+        final boolean toggledFlag = !anyNotify;
 
-        realm.beginTransaction();
-        for (PermissionState permission : permissions) {
-            permission.notifyChanges =  toggledFlag;
-            if (!toggledFlag /* not notify */) {
-                permission.hasChanged = false;
+        realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                ApplicationInfo app = realm.where(ApplicationInfo.class)
+                        .equalTo(ApplicationInfo.PACKAGE_NAME_FIELD, packageName)
+                        .findFirst();
+                if (app != null) {
+                    for (PermissionState permissionState : app.permissions) {
+                        if (permissionsToToggle.contains(permissionState.permission)) {
+                            permissionState.notifyChanges =  toggledFlag;
+                            if (!toggledFlag /* not notify */) {
+                                permissionState.hasChanged = false;
+                            }
+                        }
+                    }
+                }
             }
-        }
-        realm.commitTransaction();
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                callback.onSuccess();
+            }
+        });
     }
 
     @Override

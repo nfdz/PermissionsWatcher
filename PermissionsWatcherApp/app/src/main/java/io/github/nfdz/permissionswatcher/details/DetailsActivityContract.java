@@ -29,11 +29,15 @@ public interface DetailsActivityContract {
     }
 
     interface Model {
+        interface OperationCallback {
+            void onSuccess();
+        }
+
         void initialize(Context context);
         void destroy();
         void launchSynchronization();
         LiveData<ApplicationInfo> loadDataAsync(String packageName);
-        void toggleIgnoreFlag(List<PermissionState> permissions);
+        void toggleIgnoreFlag(String packageName, List<PermissionState> permissions, OperationCallback callback);
         void clearChangesFlags(String packageName);
     }
 

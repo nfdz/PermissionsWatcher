@@ -370,7 +370,7 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
                     presenter.onIgnoreAppClick(filteredData.get(position));
                     firebaseAnalytics.logEvent(Analytics.Event.APP_IGNORE, null);
                 } else {
-                    FirebaseCrash.log("OnIgnoreClick invalid position: position=" + position +
+                    FirebaseCrash.log("OnIgnoreClick app invalid position: position=" + position +
                             ", filteredData=" + (filteredData == null ? "null" : ""+filteredData.size()));
                 }
             }

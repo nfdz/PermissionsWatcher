@@ -79,7 +79,14 @@ public class DetailsActivityPresenter implements DetailsActivityContract.Present
     @Override
     public void onIgnorePermissionClick(List<PermissionState> permissions, int permissionGroupType) {
         List<PermissionState> permissionsList = PermissionsUtils.filterPermissions(permissions, permissionGroupType, false);
-        interactor.toggleIgnoreFlag(permissionsList);
-        view.bindViewToLiveData(interactor.loadDataAsync(packageName));
+        interactor.toggleIgnoreFlag(packageName, permissionsList, new DetailsActivityContract.Model.OperationCallback() {
+            @Override
+            public void onSuccess() {
+                if (view != null) {
+                    // Permissions state changes are not notified automatically
+                    view.bindViewToLiveData(interactor.loadDataAsync(packageName));
+                }
+            }
+        });
     }
 }

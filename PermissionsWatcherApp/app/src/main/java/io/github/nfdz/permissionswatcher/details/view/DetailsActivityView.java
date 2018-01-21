@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -322,10 +323,17 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
         }
 
         private int getPermissionGroup(int position) {
-            if (position < getGrantedPermissionsSize()) {
+            int grantedSize = getGrantedPermissionsSize();
+            if (position >= 0 && position < grantedSize) {
                 return grantedPermissionsGroups.get(position);
             } else {
-                return otherPermissionsGroups.get(position - getGrantedPermissionsSize());
+                int otherSize = getOtherPermissionsSize();
+                int otherPosition = position - grantedSize;
+                if (otherPosition >= 0 && otherPosition < otherSize) {
+                    return otherPermissionsGroups.get(otherPosition);
+                } else {
+                    return -1;
+                }
             }
         }
 
@@ -373,7 +381,13 @@ public class DetailsActivityView extends AppCompatActivity implements DetailsAct
             @OnClick(R.id.item_permission_iv_ignore)
             void onIgnoreClick() {
                 firebaseAnalytics.logEvent(Analytics.Event.PERMISSION_IGNORE, null);
-                presenter.onIgnorePermissionClick(permissions, getPermissionGroup(getAdapterPosition()));
+                int position = getAdapterPosition();
+                int permissionGroup = getPermissionGroup(position);
+                if (permissionGroup < 0) {
+                    FirebaseCrash.log("OnIgnoreClick permission invalid: position="+position);
+                } else {
+                    presenter.onIgnorePermissionClick(permissions, permissionGroup);
+                }
             }
 
             void bindPermissionGroup(int permissionType, boolean isGranted) {
