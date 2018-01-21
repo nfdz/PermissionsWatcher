@@ -51,6 +51,7 @@
         android:scaleType="fitCenter"
         android:adjustViewBounds="true"
         app:srcCompat="@drawable/ic_ignore_off"
-        android:layout_gravity="center_vertical"/>
+        android:layout_gravity="center_vertical"
+        android:background="@drawable/selector_list_item"/>
 
 </LinearLayout>

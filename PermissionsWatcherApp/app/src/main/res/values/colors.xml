@@ -8,7 +8,7 @@
     <color name="textColorPrimary">@android:color/white</color>
     <color name="textColorGray">#3F3F3F</color>
 
-    <color name="colorIgnoreOn">@color/colorAccent</color>
+    <color name="colorIgnoreOn">#cc0000</color>
     <color name="colorIgnoreOff">#3F3F3F</color>
 
     <color name="colorPermissionTypeIcon">@android:color/white</color>

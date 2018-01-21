@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.analytics.FirebaseAnalytics;
+import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -364,8 +365,14 @@ public class MainActivityView extends AppCompatActivity implements MainActivityC
 
             @OnClick(R.id.item_app_iv_ignore)
             void onIgnoreClick() {
-                presenter.onIgnoreAppClick(filteredData.get(getAdapterPosition()));
-                firebaseAnalytics.logEvent(Analytics.Event.APP_IGNORE, null);
+                int position = getAdapterPosition();
+                if (filteredData != null && position >= 0 && position < filteredData.size()) {
+                    presenter.onIgnoreAppClick(filteredData.get(position));
+                    firebaseAnalytics.logEvent(Analytics.Event.APP_IGNORE, null);
+                } else {
+                    FirebaseCrash.log("OnIgnoreClick invalid position: position=" + position +
+                            ", filteredData=" + (filteredData == null ? "null" : ""+filteredData.size()));
+                }
             }
 
             void bindApp(ApplicationInfo app) {
