@@ -1,9 +1,9 @@
 # PermissionsWatcher
-The new Android permissions system is very powerful. Applications usually ask for permissions in a context where they are justified. However, why do apps keep this acquired permission forever?
+The Android permissions system since Marshmallow (6.0) is fairly robust and applications usually ask for permissions in a context where they are justified. However, why do apps keep these acquired permissions forever?
 
-This tool app is very simple. It shows the applications with changes (acquired permissions) with an attention icon and alerts with a notification as soon as possible (real time mode) or once a day (report mode).
+This tool is very simple. It shows a warning for applications with changes (acquired permissions) and alerts the user with a notification as soon as possible (real time mode) or once a day (report mode).
 
-Control this chaos comfortably with this small free software application.
+Control this chaos comfortably with this small free and open-source application.
 
 <p align="center">
   <img src="dev/icon.png?raw=true" alt="Permissions Watcher"/>
